@@ -3690,9 +3690,11 @@ function ScanStage({settings, basket, scanned, setScanned, budget, total, onDone
           <b>🧾 찍은 물건</b>
           <div className="col" style={{gap:6, marginTop:6}}>
             {validScanned.length===0 && <div className="muted">아직 찍은 물건이 없어요.</div>}
-            {/* 찍은 물건도 4개씩 (찍는 칸과 같은 화면에 나란히 두려고) */}
-            <Paged items={validScanned} per={4} resetKey={'scanned'+validScanned.length} cls="col scanlist" render={p=>(
-              <div key={p.id} className="list-item"><span>{p.name}</span><b>{won(p.price)}</b></div>
+            {/* 찍은 물건도 4개씩 (찍는 칸과 같은 화면에 나란히 두려고).
+                followLast: 방금 찍은 물건이 있는 쪽으로 화면이 저절로 넘어가요 —
+                예전엔 찍을 때마다 1쪽으로 되돌아가서, 학생이 '다음'을 눌러도 소용없었어요. */}
+            <Paged items={validScanned} per={4} followLast={true} resetKey="kioskscan" cls="col scanlist" render={(p,i,now)=>(
+              <div key={p.id} className={"list-item"+(now?' now':'')}><span>{p.name}</span><b>{won(p.price)}</b></div>
             )} />
           </div>
           <hr/>
