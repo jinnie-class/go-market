@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ko">
 <head>
 <meta charset="UTF-8" />
@@ -1359,7 +1359,7 @@ let autoVoice = false;
 let chosenVoice = null;
 let koVoices = [];
 let studentGender = 'female';   // 학생 목소리: 'female' | 'male'
-let clerkGender = 'female';      // 점원(그림·목소리): 'female' | 'male'
+let clerkGender = 'male';        // 점원(그림·목소리): 'male' | 'female'  (기본=남자 점원)
 let currentCharacter = null;     // 학생이 고른 쇼핑 캐릭터 {kind:'preset',id,name} | {kind:'photo',photo,name}
 let currentStudentName = '';     // 지금 쇼핑하는 학생 이름 (캐릭터 밑에 함께 보여 줘요 · 출처는 학생 명단)
 let lastBrowse = { floor:null, scene:'facade' };   // 구경하GO에 다시 오면 마지막 층으로 바로 돌아가요
@@ -1425,11 +1425,25 @@ function sayBtn(text, role){
   if(!voiceEnabled) return;
   _utter(text, role);
 }
+/* ⚠️ 말이 겹치는 것을 막는 핵심 (2026-07-28)
+   크롬은 cancel() 바로 뒤에 speak()를 부르면 앞말이 안 끊기고 '두 말이 겹쳐' 나올 때가 있어요.
+   (화면이 바뀌는 순간에 자주 생겼어요 — 예: 찍어보GO의 '모두 합해서 ○○원이에요'와
+    계산하GO 점원의 '안녕하세요! 어서 오세요'가 함께 들림)
+   그래서 ①cancel 뒤 아주 잠깐(90ms) 쉬었다 말하고, ②그 사이 새 말이 들어오면
+   기다리던 말은 버려요(_speakSeq 번호표). 이 두 가지로 겹침·중복을 함께 막아요. */
+let _speakSeq = 0;
+function _speakSoon(synth, u){
+  const my = ++_speakSeq;
+  try{ synth.cancel(); }catch(e){}
+  window.setTimeout(()=>{
+    if(my !== _speakSeq) return;    // 그 사이 다른 말이 시작됐으면 이 말은 취소
+    try{ synth.speak(u); }catch(e){}
+  }, 90);
+}
 function _utter(text, role){
   try{
     const synth = window.speechSynthesis;
     if(!synth) return;
-    synth.cancel();               // 이전 음성 취소 → 겹치지 않음
     if(!koVoices.length) refreshVoice();
     const u = new SpeechSynthesisUtterance(text);
     u.lang = 'ko-KR';
@@ -1437,10 +1451,11 @@ function _utter(text, role){
     if(prof.voice) u.voice = prof.voice;
     u.pitch = prof.pitch;
     u.rate = prof.rate;
-    synth.speak(u);
+    _speakSoon(synth, u);
   }catch(e){}
 }
-function stopSpeak(){ try{ window.speechSynthesis && window.speechSynthesis.cancel(); }catch(e){} }
+/* 기다리던 말까지 함께 취소해요 (번호표를 올려서) */
+function stopSpeak(){ _speakSeq++; try{ window.speechSynthesis && window.speechSynthesis.cancel(); }catch(e){} }
 
 /* 말이 '끝난 뒤' 다음 동작으로 이어 주는 speak.
    점원이 물건을 하나씩 찍어 줄 때처럼, 정해진 시간마다 밀어붙이면
@@ -1453,7 +1468,6 @@ function speakThen(text, role, done, fallbackMs){
   try{
     const synth = window.speechSynthesis;
     if(!synth){ later(); return; }
-    synth.cancel();
     if(!koVoices.length) refreshVoice();
     const u = new SpeechSynthesisUtterance(text);
     u.lang = 'ko-KR';
@@ -1466,7 +1480,7 @@ function speakThen(text, role, done, fallbackMs){
     u.onend = go;
     u.onerror = go;
     window.setTimeout(go, 6000);   // onend가 오지 않는 브라우저를 대비한 안전장치
-    synth.speak(u);
+    _speakSoon(synth, u);          // 겹침 방지 (위 _speakSoon 설명 참고)
   }catch(e){ later(); }
 }
 
@@ -1481,7 +1495,6 @@ function sayBtnThen(text, role, done, fallbackMs){
   try{
     const synth = window.speechSynthesis;
     if(!synth){ later(); return; }
-    synth.cancel();
     if(!koVoices.length) refreshVoice();
     const u = new SpeechSynthesisUtterance(text);
     u.lang = 'ko-KR';
@@ -1494,7 +1507,7 @@ function sayBtnThen(text, role, done, fallbackMs){
     u.onend = go;
     u.onerror = go;
     window.setTimeout(go, 6000);   // onend가 오지 않는 브라우저를 대비한 안전장치
-    synth.speak(u);
+    _speakSoon(synth, u);          // 겹침 방지 (위 _speakSoon 설명 참고)
   }catch(e){ later(); }
 }
 
@@ -1717,9 +1730,9 @@ const DEFAULT_SETTINGS = {
   /* voiceMode:'auto' — 처음부터 안내 음성이 저절로 나와요 (2026-07-28).
      글자를 못 읽는 학생이 많아, 버튼을 눌러야만 들리는 'manual'보다 이쪽이 기본에 맞아요.
      소리가 부담되는 학생은 교사 설정에서 '눌렀을 때만'으로 바꿔 주세요. */
-  difficulty:'easy', voice:true, voiceMode:'auto', studentVoice:'female', clerkGender:'female', fontSize:'big', reduceMotion:false, soldOut:false,
+  difficulty:'easy', voice:true, voiceMode:'auto', studentVoice:'female', clerkGender:'male', fontSize:'big', reduceMotion:false, soldOut:false,
   cashierChat:true, walletView:true, switchScan:false, scanSpeed:2600,
-  quietMode:false, budgetByStudent:true, sfx:true, v:3,
+  quietMode:false, budgetByStudent:true, sfx:true, v:4,
 };
 function loadStore(key, fallback){
   try{ const v=localStorage.getItem(key); return v? JSON.parse(v): fallback; }catch(e){ return fallback; }
@@ -1760,7 +1773,9 @@ function App(){
     // 예전 버전(개수 3개 제한 등) 자동 업그레이드 + 새 항목 기본값 채우기
     if(saved.v!==2 && saved.v!==3){ saved.maxItems = 99; }
     // v3: 안내 음성을 '자동 재생'으로 (이미 쓰던 기기도 함께 바뀌게)
-    if(saved.v!==3){ saved.voiceMode = 'auto'; saved.v = 3; }
+    if(saved.v!==3 && saved.v!==4){ saved.voiceMode = 'auto'; }
+    // v4: 점원 기본을 '남자 점원'으로
+    if(saved.v!==4){ saved.clerkGender = 'male'; saved.v = 4; }
     return {...DEFAULT_SETTINGS, ...saved};
   });
   const [screen, setScreen] = useState('home'); // home | teacher | activity
@@ -1792,7 +1807,7 @@ function App(){
   useEffect(()=>{
     voiceEnabled = settings.voice;
     autoVoice = settings.voice && settings.voiceMode==='auto';
-    clerkGender = settings.clerkGender || 'female';
+    clerkGender = settings.clerkGender || 'male';
     sfxEnabled = settings.sfx !== false;   // 효과음은 음성 안내와 따로 끌 수 있어요
     /* 학생 이름·목소리는 아래에서 '학생 명단'을 보고 정해요 (여기서 정하면 옛 값이 덮어써요) */
     if(!voiceEnabled || !autoVoice) stopSpeak();
@@ -2427,7 +2442,7 @@ function TeacherSettings({settings, setSettings, onDone, onResult, students, set
           {s.voice && (
             <div className="choices" style={{marginTop:10}}>
               <span className="lbl" style={{alignSelf:'center'}}>점원 목소리</span>
-              <Choice on={(s.clerkGender||'female')==='female'} onClick={()=>{set('clerkGender','female'); clerkGender='female'; sayBtn('어서 오세요. 무엇을 사고 싶어요?', 'clerk');}}>여자</Choice>
+              <Choice on={(s.clerkGender||'male')==='female'} onClick={()=>{set('clerkGender','female'); clerkGender='female'; sayBtn('어서 오세요. 무엇을 사고 싶어요?', 'clerk');}}>여자</Choice>
               <Choice on={s.clerkGender==='male'} onClick={()=>{set('clerkGender','male'); clerkGender='male'; sayBtn('어서 오세요. 무엇을 사고 싶어요?', 'clerk');}}>남자</Choice>
             </div>
           )}
@@ -2448,7 +2463,7 @@ function TeacherSettings({settings, setSettings, onDone, onResult, students, set
         <div className="field">
           <label>6. 점원 그림</label>
           <div className="choices">
-            <Choice on={(s.clerkGender||'female')==='female'} onClick={()=>{set('clerkGender','female'); clerkGender='female';}}>여자 점원</Choice>
+            <Choice on={(s.clerkGender||'male')==='female'} onClick={()=>{set('clerkGender','female'); clerkGender='female';}}>여자 점원</Choice>
             <Choice on={s.clerkGender==='male'} onClick={()=>{set('clerkGender','male'); clerkGender='male';}}>남자 점원</Choice>
           </div>
           <p className="muted" style={{fontSize:'.9em', marginTop:8}}>계산할 때 나오는 점원 그림과 목소리가 함께 바뀌어요.</p>
