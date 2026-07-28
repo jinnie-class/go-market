@@ -808,12 +808,15 @@ body.fs-active .facade-wrap .facade-scene{height:clamp(420px,78vh,980px);}
 .hero-cols .hero-img{max-height:58vh;width:auto;max-width:100%;margin:0;}
 .hero-cols .hero-right{flex:1;display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center;min-width:0;}
 .ws-cols{display:flex;gap:22px;align-items:stretch;margin-top:8px;}
-/* 지갑 화면 왼쪽 : 위=설명 그림, 아래=내가 고른 캐릭터·이름 (위아래로 쌓아요).
-   설명 그림을 52vh→34vh로 줄여, 캐릭터를 더해도 한 화면에 들어와요. */
-.ws-left{flex:0 0 36%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;min-width:0;}
-.ws-left .wallet-kid{max-height:34vh;width:auto;max-width:100%;margin:0;}
-.ws-me{display:flex;flex-direction:column;align-items:center;gap:6px;}
-.ws-me-name{font-size:1.3em;font-weight:900;color:var(--ink);line-height:1.2;text-align:center;}
+/* 지갑 화면 왼쪽 : 위=설명 그림(작게), 아래=내가 고른 캐릭터(크게).
+   ★ 주인공은 '나'예요 — 설명 그림은 '무엇을 하는 화면인지' 알려 주는 보조 그림이라 작게,
+     내가 고른 캐릭터는 크게 보여 줘요. 위쪽에 붙여(flex-start) 캐릭터 자리를 넉넉히 잡아요. */
+.ws-left{flex:0 0 36%;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:14px;min-width:0;}
+.ws-left .wallet-kid{max-height:22vh;width:auto;max-width:300px;margin:0;}
+.ws-me{display:flex;flex-direction:column;align-items:center;gap:8px;}
+/* 캐릭터 뒤에 은은한 원을 깔아 '주인공'처럼 보이게 */
+.ws-me .avatar{box-shadow:0 0 0 6px #fff, 0 0 0 11px #ffe9a8, var(--shadow-lg);}
+.ws-me-name{font-size:1.55em;font-weight:900;color:var(--ink);line-height:1.2;text-align:center;}
 .ws-right{flex:1;display:flex;flex-direction:column;gap:10px;justify-content:center;min-width:0;}
 .ws-presets{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
 .ws-presets .choice{justify-content:center;font-size:1.05em;font-weight:900;padding:12px 6px;white-space:nowrap;}
@@ -821,17 +824,17 @@ body.fs-active .facade-wrap .facade-scene{height:clamp(420px,78vh,980px);}
   .hero-cols{flex-direction:column;}
   .hero-cols .hero-img{max-height:26vh;}
   .ws-cols{flex-direction:column;}
-  .ws-left .wallet-kid{max-height:20vh;}
+  .ws-left .wallet-kid{max-height:16vh;max-width:190px;}
   /* 좁은 화면에선 설명 그림과 캐릭터를 나란히 (세로로 쌓으면 화면을 넘쳐요) */
-  .ws-left{flex-direction:row;gap:14px;}
-  .ws-me .avatar{width:84px !important;height:84px !important;}
-  .ws-me-name{font-size:1.1em;}
+  .ws-left{flex-direction:row;gap:16px;justify-content:center;}
+  .ws-me .avatar{width:112px !important;height:112px !important;}
+  .ws-me-name{font-size:1.2em;}
 }
-/* 세로가 짧은 기기(노트북·전자칠판)에서 지갑 화면이 넘치지 않게 */
+/* 세로가 짧은 기기(노트북·전자칠판) — 설명 그림을 더 줄이고 캐릭터는 크게 지켜요 */
 @media (max-height:820px){
-  .ws-left .wallet-kid{max-height:28vh;}
-  .ws-me .avatar{width:96px !important;height:96px !important;}
-  .ws-me-name{font-size:1.15em;}
+  .ws-left .wallet-kid{max-height:17vh;max-width:250px;}
+  .ws-me .avatar{width:144px !important;height:144px !important;}
+  .ws-me-name{font-size:1.35em;}
 }
 
 /* ===== 홈 화면 (그림을 크게 강조, 눌러서 입장) ===== */
@@ -5224,7 +5227,7 @@ function WalletSetup({name, initial, onConfirm, onHome}){
           <div className="ws-left">
             <WalletKidImg />
             <div className="ws-me">
-              <Avatar size={124} />
+              <Avatar size={176} />
               {name && <b className="ws-me-name">{name}</b>}
             </div>
           </div>
