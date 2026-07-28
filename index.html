@@ -2052,7 +2052,7 @@ function App(){
       onBack={()=> setScreen('teacher')} />;
   }
 
-  // ---- 실제 매장용 쇼핑 리스트 인쇄 ----
+  // ---- 실제 문구점 쇼핑 리스트 인쇄 ----
   if(screen==='printlist'){
     return <ShoppingListPrint settings={settings} basket={basket} budget={budget}
       onBack={()=> setScreen('finish')} />;
@@ -4766,7 +4766,7 @@ function FinishScreen({settings, basket, likes, activity, onReplay, onRestart, o
           <div className="row center" style={{gap:12}}>
             <button className="btn ghost" onClick={onReplay}>🔁 오늘 활동 다시 보기</button>
             <button className="btn ghost" onClick={()=>{ if(confirm('처음부터 다시 할까요? 기록이 지워져요.')) onRestart(); }}>🆕 처음부터 다시 하기</button>
-            <button className="btn sky" onClick={onPrintList}>🖨️ 실제 매장용 쇼핑 리스트</button>
+            <button className="btn sky" onClick={onPrintList}>🖨️ 실제 문구점 쇼핑 리스트</button>
           </div>
         </div>
       </div>
@@ -5469,7 +5469,7 @@ function CashierChat({mode, total, studentName, onDone}){
   );
 }
 
-/* ---- 실제 매장용 쇼핑 리스트 인쇄 (일반화 도구) ---- */
+/* ---- 실제 문구점 쇼핑 리스트 인쇄 (일반화 도구) ---- */
 function ShoppingListPrint({settings, basket, budget, onBack}){
   const total = sum(basket);
   const t = new Date();
