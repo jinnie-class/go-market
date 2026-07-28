@@ -1166,7 +1166,8 @@ const PRODUCTS = [
   { id:'w7', corner:'write', name:'샤프 세트', price:2000, emoji:'✏️', color:'검정색', feat:'깎지 않아요', use:'깎지 않는 샤프예요. 샤프심도 같이 들어 있어요.' },
   { id:'w8', corner:'write', name:'네임펜', price:1000, emoji:'🖋️', color:'검정색', feat:'또렷하게 써요', use:'굵고 진한 네임펜이에요. 이름을 또렷하게 써요.' },
   { id:'w9', corner:'write', name:'연필 세트', price:1000, emoji:'✏️', color:'알록달록', feat:'부드러워요(택1)', use:'잡기 쉽고 부드럽게 잘 써져요.' },
-  { id:'w10', corner:'write', name:'미니 수정테이프', price:1000, emoji:'⬜', color:'하얀색', feat:'슥슥 덮어요', use:'틀린 글씨를 하얗게 덮어요. 슥 밀면 깨끗해져요.' },
+  /* 이모지 ⬜(흰 네모)는 꾸미기 놀이터 도장·가방 그림에서 흰 바탕에 묻혀 '빈 칸'처럼 보였어요 → 🧽 */
+  { id:'w10', corner:'write', name:'미니 수정테이프', price:1000, emoji:'🧽', color:'하얀색', feat:'슥슥 덮어요', use:'틀린 글씨를 하얗게 덮어요. 슥 밀면 깨끗해져요.' },
   { id:'w11', corner:'write', name:'연필깎이', price:1000, emoji:'🌀', color:'하얀색', feat:'빙글빙글 깎아요', use:'귀여운 젖소 모양 연필깎이예요. 연필을 뾰족하게 깎아요.' },
   { id:'w12', corner:'write', name:'알록달록 볼펜 세트', price:2000, emoji:'🖊️', color:'4색', feat:'색이 네 가지', use:'한 자루에 검정·빨강·파랑·초록 4색이 들어 있어요. 색을 바꿔가며 써요.' },
   // 그리기
@@ -1259,7 +1260,8 @@ const PRODUCTS = [
   { id:'t5', corner:'toy', name:'비눗방울', price:1000, emoji:'🫧', color:'투명', feat:'미니 버블스틱', use:'비눗방울을 후 불며 놀아요.' },
   { id:'t6', corner:'toy', name:'미니 볼링 놀이 세트', price:6000, emoji:'🎳', color:'알록달록', feat:'핀 쓰러뜨리기', use:'볼링을 굴리며 놀아요.' },
   { id:'t7', corner:'toy', name:'말랑 스퀴시', price:4000, emoji:'🧁', color:'알록달록', feat:'6종 랜덤', use:'쪼물쪼물 만질 수 있는 귀여운 모찌 인형 스퀴시예요.' },
-  { id:'t8', corner:'toy', name:'공기놀이', price:2000, emoji:'⚪', color:'알록달록', feat:'3세트 15알 공기', use:'공기놀이를 하며 놀아요.' },
+  /* ⚪(흰 동그라미)도 같은 이유로 안 보였어요 → 🔵 */
+  { id:'t8', corner:'toy', name:'공기놀이', price:2000, emoji:'🔵', color:'알록달록', feat:'3세트 15알 공기', use:'공기놀이를 하며 놀아요.' },
   { id:'t9', corner:'toy', name:'젠가 게임', price:5000, emoji:'🗼', color:'나무색', feat:'하나씩 쌓고 빼기', use:'친구와 나무쌓기 놀이를 해요.' },
   { id:'t10', corner:'toy', name:'딱지 세트', price:1000, emoji:'🎴', color:'여러 색', feat:'2종(택1)', use:'재미있는 그림 딱지로 딱지치기를 해요.' },
 ];
@@ -4364,7 +4366,13 @@ const PG_CW = 560, PG_CH = 340;   // 캔버스 내부 해상도
 function Playground({settings, basket, activity, onBack, onDone}){
   const PAPERS = ['#fffdf5','#fdeef3','#eaf7fe','#eafaf1','#f3f0fb','#fff7e6'];
   const COLORS = ['#ff6b6b','#ff9f43','#ffd23f','#2fbf71','#5ec8f2','#5b6ef5','#b39ddb','#ff8fb1','#8b5a2b','#2b2b3a'];
-  const boughtEmojis = Array.from(new Set(basket.map(p=>p.emoji)));
+  /* 도장으로 쓸 수 없는 이모지는 걸러요 (2026-07-28).
+     · 비어 있거나 공백뿐인 것 — 선생님이 상품을 추가할 때 이모지를 안 넣은 경우
+     · 흰색 도형(⬜⚪▫️◽◻️) — 흰 종이 위에 찍으면 안 보여서 '빈 칸'처럼 보였어요 */
+  const BLANKISH = ['⬜','⚪','▫️','◽','◻️'];
+  const boughtEmojis = Array.from(new Set(
+    basket.map(p=>p.emoji).filter(e=> e && String(e).trim() && BLANKISH.indexOf(e)<0)
+  ));
   const FUN = ['⭐','🌈','💗','🌸','✨','🎈','🦋','🐰','🍀','🌟','😊','🎀','🌷','🐱','🍭','🎨'];
   const STAMPS = Array.from(new Set([...boughtEmojis, ...FUN])).slice(0, 18);
   const SZ = { small:{stamp:34, brush:8}, medium:{stamp:54, brush:16}, large:{stamp:82, brush:30} };
