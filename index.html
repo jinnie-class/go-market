@@ -193,6 +193,10 @@ img.cicon{object-fit:contain;border-radius:.2em;}
 /* 글자 길이에 딱 맞게 줄어드는 안내 상자 (가운데 정렬) */
 .hint.fit{width:fit-content;max-width:100%;margin-left:auto;margin-right:auto;text-align:center;}
 .hint.soft{background:#f3f0fb;border-color:#e0d6f5;color:#3e2e63;}
+/* 눌러서 들을 수 있는 안내 상자 — 누를 수 있다는 걸 손 모양·살짝 뜨는 느낌으로 알려요. */
+.hint.tappable{cursor:pointer;transition:transform .12s ease, box-shadow .12s ease;}
+.hint.tappable:hover{transform:translateY(-2px);box-shadow:var(--shadow);}
+.hint.tappable:active{transform:translateY(0);}
 /* 상품 설명·오늘의 문구 취향: 문장이 중간에 끊기지 않고 '문장 단위'로 줄바꿈되게.
    아이콘은 따로 떼어 두어, 줄이 바뀌어도 글자가 아이콘 밑으로 들어가지 않아요. */
 .use-text{display:flex;align-items:baseline;gap:6px;}
@@ -1680,9 +1684,14 @@ function Speak({text, role}){
 }
 
 /* ---------- 안내 배너 ---------- */
-function Hint({children, kind='', text, style}){
+/* onSpeak: 배너(칩) 자체를 눌러도 그 내용을 읽어 줘요 (2026-07-28).
+   작은 🔊 단추를 정확히 누르기 어려운 학생도 넓은 칸을 눌러 들을 수 있어요. */
+function Hint({children, kind='', text, style, onSpeak}){
+  const tap = onSpeak ? ()=> sayBtn(onSpeak) : null;
   return (
-    <div className={"hint "+kind} style={style}>
+    <div className={"hint "+kind+(tap?' tappable':'')} style={style}
+      onClick={tap || undefined} role={tap?'button':undefined} tabIndex={tap?0:undefined}
+      onKeyDown={tap? (e)=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); tap(); } } : undefined}>
       <span>{children}</span>
       <span className="spacer"></span>
       {text && <Speak text={text} />}
@@ -4696,13 +4705,15 @@ function FinishScreen({settings, basket, likes, activity, onReplay, onRestart, o
     ? `${nm}${nmJosa} 오늘 ${itemText}${itemJosa} 샀어요. ` + (actName? `그리고 ${actName} 활동을 하며 즐겼어요.` : '')
     : `${nm}${nmJosa} 오늘 문구점에 다녀왔어요.`;
 
-  useEffect(()=>{ speak('오늘의 문구 취향을 골라 보세요.'); }, []);
+  /* 여기는 고르는 화면이 아니라 '오늘 있었던 일'을 보여 주는 화면이라
+     '골라 보세요'가 아니라 이렇게 알려 줘요. */
+  useEffect(()=>{ speak('오늘의 문구 취향이에요.'); }, []);
 
   return (
     <div className="app" style={{paddingTop:20}}>
       <div className="panel">
         <div className="section-title">🌈 오늘의 문구 취향 <Speak text={summary} /></div>
-        <Hint kind="soft">
+        <Hint kind="soft" onSpeak={summary}>
           {/* 문장 단위로 줄바꿈 (문장이 중간에 끊기지 않게) */}
           {itemText
             ? <span className="sent">{nm}{nmJosa} 오늘 <b style={{color:'#1b6fd6'}}>{itemText}</b>{itemJosa} 샀어요.&nbsp;</span>
