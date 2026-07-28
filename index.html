@@ -787,8 +787,12 @@ body.quiet .confetti{display:none !important;}
 .hero-cols .hero-img{max-height:58vh;width:auto;max-width:100%;margin:0;}
 .hero-cols .hero-right{flex:1;display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center;min-width:0;}
 .ws-cols{display:flex;gap:22px;align-items:stretch;margin-top:8px;}
-.ws-left{flex:0 0 36%;display:flex;align-items:center;justify-content:center;min-width:0;}
-.ws-left .wallet-kid{max-height:52vh;width:auto;max-width:100%;margin:0;}
+/* 지갑 화면 왼쪽 : 위=설명 그림, 아래=내가 고른 캐릭터·이름 (위아래로 쌓아요).
+   설명 그림을 52vh→34vh로 줄여, 캐릭터를 더해도 한 화면에 들어와요. */
+.ws-left{flex:0 0 36%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;min-width:0;}
+.ws-left .wallet-kid{max-height:34vh;width:auto;max-width:100%;margin:0;}
+.ws-me{display:flex;flex-direction:column;align-items:center;gap:6px;}
+.ws-me-name{font-size:1.3em;font-weight:900;color:var(--ink);line-height:1.2;text-align:center;}
 .ws-right{flex:1;display:flex;flex-direction:column;gap:10px;justify-content:center;min-width:0;}
 .ws-presets{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
 .ws-presets .choice{justify-content:center;font-size:1.05em;font-weight:900;padding:12px 6px;white-space:nowrap;}
@@ -796,7 +800,17 @@ body.quiet .confetti{display:none !important;}
   .hero-cols{flex-direction:column;}
   .hero-cols .hero-img{max-height:26vh;}
   .ws-cols{flex-direction:column;}
-  .ws-left .wallet-kid{max-height:24vh;}
+  .ws-left .wallet-kid{max-height:20vh;}
+  /* 좁은 화면에선 설명 그림과 캐릭터를 나란히 (세로로 쌓으면 화면을 넘쳐요) */
+  .ws-left{flex-direction:row;gap:14px;}
+  .ws-me .avatar{width:84px !important;height:84px !important;}
+  .ws-me-name{font-size:1.1em;}
+}
+/* 세로가 짧은 기기(노트북·전자칠판)에서 지갑 화면이 넘치지 않게 */
+@media (max-height:820px){
+  .ws-left .wallet-kid{max-height:28vh;}
+  .ws-me .avatar{width:96px !important;height:96px !important;}
+  .ws-me-name{font-size:1.15em;}
 }
 
 /* ===== 홈 화면 (그림을 크게 강조, 눌러서 입장) ===== */
@@ -5166,7 +5180,16 @@ function WalletSetup({name, initial, onConfirm, onHome}){
         </div>
 
         <div className="ws-cols">
-          <div className="ws-left"><WalletKidImg /></div>
+          {/* 왼쪽 : 위=무엇을 하는 화면인지 알려 주는 설명 그림(글자를 못 읽는 학생용),
+              아래=내가 고른 캐릭터와 이름.
+              위 그림 속 아이를 '나'로 오해하는 학생이 있어서, 진짜 '나'를 크게 함께 보여 줘요. (2026-07-29) */}
+          <div className="ws-left">
+            <WalletKidImg />
+            <div className="ws-me">
+              <Avatar size={124} />
+              {name && <b className="ws-me-name">{name}</b>}
+            </div>
+          </div>
           <div className="ws-right">
             <div className="center">
               <div style={{textAlign:'center'}}>
