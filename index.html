@@ -1703,9 +1703,12 @@ function Confetti({show}){
 /* ---------- localStorage 기본 설정 ---------- */
 const DEFAULT_SETTINGS = {
   name:'', budget:5000, maxItems:99, pay:'choose', moneyPractice:false,
-  difficulty:'easy', voice:true, voiceMode:'manual', studentVoice:'female', clerkGender:'female', fontSize:'big', reduceMotion:false, soldOut:false,
+  /* voiceMode:'auto' — 처음부터 안내 음성이 저절로 나와요 (2026-07-28).
+     글자를 못 읽는 학생이 많아, 버튼을 눌러야만 들리는 'manual'보다 이쪽이 기본에 맞아요.
+     소리가 부담되는 학생은 교사 설정에서 '눌렀을 때만'으로 바꿔 주세요. */
+  difficulty:'easy', voice:true, voiceMode:'auto', studentVoice:'female', clerkGender:'female', fontSize:'big', reduceMotion:false, soldOut:false,
   cashierChat:true, walletView:true, switchScan:false, scanSpeed:2600,
-  quietMode:false, budgetByStudent:true, sfx:true, v:2,
+  quietMode:false, budgetByStudent:true, sfx:true, v:3,
 };
 function loadStore(key, fallback){
   try{ const v=localStorage.getItem(key); return v? JSON.parse(v): fallback; }catch(e){ return fallback; }
@@ -1744,7 +1747,9 @@ function App(){
     const saved = loadStore('go_settings', null);
     if(!saved) return {...DEFAULT_SETTINGS};
     // 예전 버전(개수 3개 제한 등) 자동 업그레이드 + 새 항목 기본값 채우기
-    if(saved.v!==2){ saved.maxItems = 99; saved.v = 2; }
+    if(saved.v!==2 && saved.v!==3){ saved.maxItems = 99; }
+    // v3: 안내 음성을 '자동 재생'으로 (이미 쓰던 기기도 함께 바뀌게)
+    if(saved.v!==3){ saved.voiceMode = 'auto'; saved.v = 3; }
     return {...DEFAULT_SETTINGS, ...saved};
   });
   const [screen, setScreen] = useState('home'); // home | teacher | activity
@@ -4007,11 +4012,17 @@ function CardPay({total, items, onBack, onComplete}){
   const dots = phase==='checking';
   const done = phase==='done';
 
+  /* 말이 '끝난 뒤' 다음으로 넘어가요 (2026-07-28).
+     예전엔 1.3초·2.7초·3.9초로 밀어붙여서 "카드를 넣었…", "계산이 끝났…"처럼
+     말이 중간에 잘렸어요(다음 말이 앞말을 취소하기 때문). 이제 speakThen 으로 이어요. */
   const runProcess = ()=>{
-    setPhase('checking'); speak('카드를 넣었어요. 확인하고 있어요.');
-    setTimeout(()=> speak('잠시 기다려 주세요.'), 1300);
-    setTimeout(()=>{ setPhase('done'); speak('계산이 끝났어요.'); }, 2700);
-    setTimeout(()=> onComplete(), 3900);
+    setPhase('checking');
+    speakThen('카드를 넣었어요. 확인하고 있어요.', null, ()=>{
+      speakThen('잠시 기다려 주세요.', null, ()=>{
+        setPhase('done');
+        speakThen('계산이 끝났어요.', null, ()=> window.setTimeout(onComplete, 700), 1200);
+      }, 1100);
+    }, 2200);
   };
 
   const overSlot = (x,y)=>{
