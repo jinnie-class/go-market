@@ -5401,6 +5401,11 @@ function CashierChat({mode, total, studentName, onDone}){
   ];
   const [i, setI] = useState(0);
   const [busy, setBusy] = useState(false);   // 학생이 말하는 동안 버튼 잠금 (겹치기·건너뛰기 방지)
+  /* ⚠️ 점원은 speak(자동 안내를 따름), 학생은 sayBtnThen(눌렀을 때만) — 일부러 다릅니다.
+     버그가 아니에요. 점원은 '나에게 말을 걸어오는 상대'라 저절로 말하고,
+     학생 대사는 '내가 골라서 하는 말'이라 눌러야 나와요. 실제 가게에서 점원이 먼저
+     인사하면 내 차례에 대답하는 순서 그대로예요. 학생 말까지 자동으로 나오면
+     학생은 보고만 있게 되어 대화 연습이 되지 않아요. (2026-07-28 확인) */
   // 다음 단계로 오면 점원이 먼저 말하고, 학생 버튼 잠금을 풀어요.
   useEffect(()=>{ speak(script[i].c, false, 'clerk'); setBusy(false); }, [i]);
   const cur = script[i];
