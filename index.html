@@ -4706,8 +4706,13 @@ function FinishScreen({settings, basket, likes, activity, onReplay, onRestart, o
     : `${nm}${nmJosa} 오늘 문구점에 다녀왔어요.`;
 
   /* 여기는 고르는 화면이 아니라 '오늘 있었던 일'을 보여 주는 화면이라
-     '골라 보세요'가 아니라 이렇게 알려 줘요. */
-  useEffect(()=>{ speak('오늘의 문구 취향이에요.'); }, []);
+     '골라 보세요'가 아니라 이렇게 알려 줘요.
+     그리고 첫 문장을 '다 말한 뒤'(onend) 보라색 칩 내용까지 이어서 읽어 줘요 —
+     정해진 시간으로 밀어붙이면 "오늘의 문구 취향이…"처럼 앞말이 잘려요.
+     수동 모드(눌렀을 때만)에서는 speak가 아무 말도 하지 않으므로 조용히 넘어가요. */
+  useEffect(()=>{
+    speakThen('오늘의 문구 취향이에요.', null, ()=> window.setTimeout(()=> speak(summary), 350), 1800);
+  }, []);
 
   return (
     <div className="app" style={{paddingTop:20}}>
