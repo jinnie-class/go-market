@@ -3895,9 +3895,11 @@ function SimplePayCash({settings, total, onBack, onComplete}){
   const hand = ()=>{
     if(done) return;
     setDone(true);
-    /* 완료음 '딩동'은 세 갈래가 모이는 PayingPage.finishPay 에서 한 번만 울려요 */
-    speak('지갑에서 돈을 꺼내 건넸어요. 스스로 잘 계산했어요!', true);
-    setTimeout(()=> onComplete(total, 0), 1300);
+    /* 완료음 '딩동'은 세 갈래가 모이는 PayingPage.finishPay 에서 한 번만 울려요.
+       말을 '다 한 뒤'에 넘어가요 (2026-07-28) — 예전엔 1.3초로 정해 두어
+       "지갑에서 돈을 꺼내 건넸…"까지만 들리고 다음 장면(점원 인사)이 말을 잘랐어요. */
+    speakThen('지갑에서 돈을 꺼내 건넸어요. 스스로 잘 계산했어요!', null,
+      ()=> window.setTimeout(()=> onComplete(total, 0), 500), 1500);
   };
   return (
     <div className="card center" style={{flexDirection:'column', gap:16}}>
