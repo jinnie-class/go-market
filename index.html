@@ -684,6 +684,27 @@ body.quiet .confetti{display:none !important;}
   border:none;border-radius:12px 12px 0 0;background:none;overflow:hidden;cursor:pointer;padding:0;font:inherit;}
 .art-door::before{content:none;}
 .art-door .f-door-panel{transition:transform .85s ease;}
+/* 건물 정면: 안내 문구를 건물 아래로 (대문을 가리지 않게, 두 문구가 겹치지 않게) — 2026-07-29 */
+.facade-wrap{display:flex;flex-direction:column;align-items:center;gap:10px;}
+/* 아래에 문구 두 줄이 더해지므로 건물 높이를 그만큼 줄여요 (한 화면에 들어오게) */
+.facade-wrap .facade-scene{height:clamp(340px,60vh,640px);}
+.facade-msgs{display:flex;flex-direction:column;align-items:center;gap:8px;}
+/* 안내 칩을 '떠 있는' 상태에서 '흐름 안'으로 (건물 아래에 놓이게) */
+.scene-hint.flow{position:static;transform:none;left:auto;bottom:auto;}
+.facade-doorbtn{border:2px solid #ffd66b;background:linear-gradient(135deg,#fff6d8,#ffe9a8);
+  color:#6a5200;font-weight:900;font-size:1.05em;border-radius:999px;padding:11px 24px;
+  box-shadow:var(--shadow);cursor:pointer;font-family:inherit;min-height:52px;
+  transition:transform .12s ease, box-shadow .12s ease;}
+.facade-doorbtn:hover{transform:translateY(-2px);box-shadow:var(--shadow-lg);}
+.facade-doorbtn:active{transform:translateY(0);}
+/* 1024×768 계산: 예전엔 건물 568px 하나로 넘침 0이었는데, 이제 아래 문구가 약 108px
+   (칩 44 + 단추 46 + 사이 18)을 쓰므로 건물은 460px = 58vh 로 잡았어요. */
+@media (max-height:800px){
+  .facade-wrap .facade-scene{height:clamp(300px,58vh,560px);}
+  .facade-doorbtn{font-size:1em;padding:9px 20px;min-height:46px;}
+}
+/* 전체화면일 때도 아래 문구 자리를 빼고 잡아요 (88vh → 78vh) */
+body.fs-active .facade-wrap .facade-scene{height:clamp(420px,78vh,980px);}
 .home-facade .facade-art{height:auto;}
 .home-facade .facade-img{max-height:56vh;}
 
@@ -2863,10 +2884,10 @@ function FacadeArt({opening, onDoor}){
         <React.Fragment>
           {/* 건물 간판(빈 판)에 가게 이름을 얹어요 */}
           <div className="facade-title"><span className="ft-go">GO!</span> 문구마켓</div>
+          {/* 문 위에는 글자를 얹지 않아요 — 대문이 가려져서 아래로 내렸어요(StoreFacade 참고) */}
           <button className={"f-door art-door"+(opening?' open':'')} onClick={onDoor} aria-label="문을 열고 들어가기">
             <span className="f-door-panel left"></span>
             <span className="f-door-panel right"></span>
-            <span className="f-door-label">{opening? '어서 오세요!' : '🚪 문을 눌러 들어가요'}</span>
           </button>
         </React.Fragment>
       )}
@@ -2890,13 +2911,25 @@ function StoreFacade({onEnter}){
        문에는 이미 '어서 오세요!' 글자가 뜨거든요. */
     setTimeout(onEnter, 950);
   };
+  /* 안내 문구를 건물 '아래'로 내렸어요 (2026-07-29).
+     예전엔 문 위 라벨(bottom:7px)과 안내 칩(bottom:10px)이 둘 다 맨 아래 가운데에 있어
+     서로 포개졌고, 글자가 대문을 가려서 문이 잘 안 보였어요.
+     이제 건물은 온전히 보이고, 두 문구는 아래에 위아래로 나란히 놓여요. */
   return (
-    <div className="facade-scene">
-      <BgImg name="건물배경" />
-      <FacadeArt opening={opening} onDoor={open} />
-      <div className="scene-hint">
-        🏬 {FACADE_HINT}
-        <Speak text={FACADE_HINT} />
+    <div className="facade-wrap">
+      <div className="facade-scene">
+        <BgImg name="건물배경" />
+        <FacadeArt opening={opening} onDoor={open} />
+      </div>
+      <div className="facade-msgs">
+        <div className="scene-hint flow">
+          🏬 {FACADE_HINT}
+          <Speak text={FACADE_HINT} />
+        </div>
+        {/* 문 대신 이 단추를 눌러도 들어가요 — 문을 정확히 누르기 어려운 학생을 위해 */}
+        <button className="facade-doorbtn" onClick={open}>
+          {opening? '어서 오세요!' : '🚪 문을 눌러 들어가요'}
+        </button>
       </div>
     </div>
   );
