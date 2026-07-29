@@ -1483,7 +1483,12 @@ function sayBtn(text, role){
    그래서 ①cancel 뒤 아주 잠깐(90ms) 쉬었다 말하고, ②그 사이 새 말이 들어오면
    기다리던 말은 버려요(_speakSeq 번호표). 이 두 가지로 겹침·중복을 함께 막아요. */
 let _speakSeq = 0;
+/* ⚠️ 말하는 중인 문장을 전역에 붙잡아 둬요.
+   안 그러면 안드로이드 크롬이 말하는 도중에 이 객체를 치워 버려(가비지 컬렉션)
+   말이 시작되자마자 끊기거나 아예 안 나오는 일이 있어요. (알려진 버그) */
+let _heldUtter = null;
 function _speakSoon(synth, u){
+  _heldUtter = u;
   const my = ++_speakSeq;
   /* ⚠️ 휴대폰·태블릿은 '사용자가 누른 바로 그 순간'에 speak()를 불러야 소리를 내 줘요.
      0.09초라도 미루면 '사용자가 누른 게 아니다'라고 보고 막아 버립니다(2026-07-29 확인).
@@ -1498,6 +1503,28 @@ function _speakSoon(synth, u){
     if(my !== _speakSeq) return;    // 그 사이 다른 말이 시작됐으면 이 말은 취소
     try{ synth.speak(u); }catch(e){}
   }, 90);
+}
+/* 소리가 안 날 때 '무엇이 문제인지' 알려 주는 검사 (선생님 설정 → 소리 검사).
+   기기마다 원인이 달라서(한국어 음성 없음 / 브라우저가 막음 / 설정 꺼짐) 눈으로 확인해요. */
+function soundReport(){
+  const L = [];
+  const s = window.speechSynthesis;
+  L.push('· 음성 안내 설정 : ' + (voiceEnabled ? '켜짐' : '⚠️ 꺼짐'));
+  L.push('· 재생 방식 : ' + (autoVoice ? '자동 안내' : '눌렀을 때만'));
+  L.push('· 효과음 설정 : ' + (sfxEnabled ? '켜짐' : '⚠️ 꺼짐'));
+  if(!s){ L.push('· 말하기 기능 : ⚠️ 이 브라우저가 지원하지 않아요'); }
+  else{
+    let all = [];
+    try{ all = s.getVoices() || []; }catch(e){}
+    const ko = all.filter(v=> (v.lang||'').toLowerCase().indexOf('ko')===0);
+    L.push('· 이 기기의 목소리 : 전체 ' + all.length + '개');
+    L.push('· 한국어 목소리 : ' + (ko.length ? ko.length + '개 (' + (ko[0].name||'이름없음') + ')'
+                                              : '⚠️ 0개 — 기기에 한국어 음성을 설치해야 해요'));
+    L.push('· 지금 말하는 중 : ' + (s.speaking ? '예' : '아니요'));
+  }
+  L.push('· 소리 잠금 : ' + (_audioUnlocked ? '풀림' : '⚠️ 아직 안 풀림'));
+  L.push('· 효과음 장치 : ' + (_actx ? _actx.state : '아직 안 만들어짐'));
+  return L.join('\n');
 }
 function _utter(text, role){
   try{
@@ -2371,6 +2398,7 @@ function TeacherSettings({settings, setSettings, onDone, onResult, students, set
   const [s, setS] = useState(settings);
   const [custom, setCustom] = useState(String(settings.budget));
   const [markOpen, setMarkOpen] = useState(null);   // 표시 고르는 중인 학생 id
+  const [soundInfo, setSoundInfo] = useState(null); // '소리 검사' 결과
   // 새 상품 입력칸
   const [np, setNp] = useState({corner:'write', name:'', price:1000, color:'', feat:'', use:'', emoji:'🛍️', photo:null});
   const npSet = (k,v)=> setNp(p=>({...p,[k]:v}));
@@ -2517,6 +2545,20 @@ function TeacherSettings({settings, setSettings, onDone, onResult, students, set
             <Choice on={s.voice} onClick={()=>set('voice',true)}>켜기</Choice>
             <Choice on={!s.voice} onClick={()=>set('voice',false)}>끄기</Choice>
           </div>
+          {/* 소리가 안 나는 기기에서 '무엇이 문제인지' 바로 볼 수 있게 (2026-07-29).
+              기기마다 원인이 달라서(한국어 음성 없음 / 브라우저가 막음 / 설정 꺼짐) 필요해요. */}
+          <div className="row" style={{gap:8, marginTop:10, alignItems:'center', flexWrap:'wrap'}}>
+            <button className="btn sm sky" onClick={()=>{
+              sayBtn('소리 검사예요. 이 말이 들리면 잘 되는 거예요.');
+              playSfx('drop');
+              setSoundInfo(soundReport());
+            }}>🔊 소리 검사</button>
+            <span className="muted" style={{fontSize:'.85em'}}>소리가 안 나는 기기에서 눌러 보세요.</span>
+          </div>
+          {soundInfo && (
+            <pre style={{whiteSpace:'pre-wrap', background:'#f6f8fc', border:'2px solid var(--line)',
+              borderRadius:12, padding:'10px 14px', margin:'8px 0 0', fontSize:'.9em', fontFamily:'inherit'}}>{soundInfo}</pre>
+          )}
           {s.voice && (
             <div className="choices" style={{marginTop:10}}>
               <span className="lbl" style={{alignSelf:'center'}}>재생 방식</span>
@@ -2813,7 +2855,7 @@ function BrowseStage({settings, products, likes, setLikes, basket, setBasket, bu
             setCorner(id); speak(c.title+' 코너예요. '+c.desc);
           }}
           onElevator={()=>{ setEvFrom(floor); setFloor(null); setScene('elevator'); }}
-          onLiked={()=>{ setShowLiked(true); speak('내가 좋아요를 누른 문구예요.'); }} />
+          onLiked={()=>{ setShowLiked(true); speak('내가 "좋아요"를 누른 문구예요.'); }} />
       )}
 
       {(corner || showLiked) && (
@@ -3592,7 +3634,7 @@ function ChooseStage({settings, likes, basket, setBasket, budget, total, remaini
 
       {likes.length>0 && (
         <div className="card" style={{padding:12}}>
-          <div className="section-title" style={{fontSize:'1.1em', margin:'0 0 6px'}}>💗 좋아요 중에서 고르기</div>
+          <div className="section-title" style={{fontSize:'1.1em', margin:'0 0 6px'}}>"💗 좋아요" 중에서 고르기</div>
           {/* 큰 사진 카드 대신 목록으로 — 바구니와 나란히 한 화면에 들어가게 */}
           <Paged items={likes} per={3} resetKey={'choose-likes'} cls="choose-list" render={p=>(
               <div key={p.id} className="list-item">
@@ -4980,7 +5022,7 @@ function TeacherResult({settings, likes, basket, scanned, receipt, activity, hel
 ========================================================= */
 const HELP_STEPS = {
   browse:['코너 카드를 눌러 문구를 구경해요.','마음에 드는 문구의 하트를 눌러 보세요.','바구니에 담기 버튼을 눌러 담아요.','도움이 필요하면 선생님을 불러요.'],
-  choose:['좋아요를 누른 문구에서 하나를 골라요.','바구니에 담기·빼기로 바꿀 수 있어요.','남은 돈을 보며 골라요.','도움이 필요하면 선생님을 불러요.'],
+  choose:['"좋아요"를 누른 문구에서 하나를 골라요.','바구니에 담기·빼기로 바꿀 수 있어요.','남은 돈을 보며 골라요.','도움이 필요하면 선생님을 불러요.'],
   scan:['왼쪽 문구를 손가락으로 눌러 스캐너로 끌어요.','스캐너가 초록색이 되면 손을 떼요.','모든 문구를 끌어다 찍어요.','도움이 필요하면 선생님을 불러요.'],
   pay:['현금이나 카드를 골라요.','현금은 지폐를 눌러 넣어요.','알맞은 금액이 되면 계산해요.','도움이 필요하면 선생님을 불러요.'],
   enjoy:['영수증과 물건을 확인해요.','즐길 활동을 하나 골라요.','시간을 골라 천천히 즐겨요.','도움이 필요하면 선생님을 불러요.'],
