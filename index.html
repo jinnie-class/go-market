@@ -1485,6 +1485,14 @@ function sayBtn(text, role){
 let _speakSeq = 0;
 function _speakSoon(synth, u){
   const my = ++_speakSeq;
+  /* ⚠️ 휴대폰·태블릿은 '사용자가 누른 바로 그 순간'에 speak()를 불러야 소리를 내 줘요.
+     0.09초라도 미루면 '사용자가 누른 게 아니다'라고 보고 막아 버립니다(2026-07-29 확인).
+     그래서 지금 아무도 말하고 있지 않으면 기다리지 않고 곧바로 말해요.
+     기다림(cancel 뒤 90ms)은 '앞말을 끊고 새 말을 할 때'만 필요하고,
+     그때는 이미 화면 전환 중이라 모바일 규칙과 부딪히지 않아요. */
+  let busy = false;
+  try{ busy = synth.speaking || synth.pending; }catch(e){}
+  if(!busy){ try{ synth.speak(u); }catch(e){} return; }
   try{ synth.cancel(); }catch(e){}
   window.setTimeout(()=>{
     if(my !== _speakSeq) return;    // 그 사이 다른 말이 시작됐으면 이 말은 취소
@@ -1603,6 +1611,32 @@ function _ac(){
     return _actx;
   }catch(e){ return null; }
 }
+
+/* ===== 소리 잠금 풀기 (휴대폰·일부 태블릿에서 소리가 안 나던 문제 — 2026-07-29) =====
+   모바일 브라우저는 '사용자가 한 번이라도 화면을 누르기 전'에는 소리를 막아요.
+   이 앱은 홈 화면에 들어가자마자 안내를 시작하므로 그 첫 안내가 막히고,
+   기기에 따라 그 뒤로도 계속 소리가 안 나는 일이 있었어요.
+   그래서 '맨 처음 누른 순간'에 딱 한 번, 아주 짧고 소리 없는 말을 흘려보내
+   브라우저에게 '사용자가 허락했다'는 자격을 얻어 둡니다. 그 뒤로는 잘 나와요. */
+let _audioUnlocked = false;
+function unlockAudio(){
+  if(_audioUnlocked) return;
+  _audioUnlocked = true;
+  try{ _ac(); }catch(e){}              // 효과음(Web Audio) 깨우기
+  try{
+    const s = window.speechSynthesis;
+    if(s){
+      const u = new SpeechSynthesisUtterance(' ');
+      u.lang = 'ko-KR';
+      u.volume = 0;                    // 들리지 않게 (자격만 얻어요)
+      s.speak(u);
+      refreshVoice();                  // 이때쯤이면 목소리 목록이 준비돼 있어요
+    }
+  }catch(e){}
+}
+['pointerdown','touchend','click','keydown'].forEach(ev=>{
+  try{ window.addEventListener(ev, unlockAudio, {capture:true, passive:true}); }catch(e){}
+});
 /* 짧은 음 하나. 시작·끝을 부드럽게 해야 '툭' 하는 잡음이 안 생겨요. */
 function _tone(ac, {freq, from, dur, type='sine', vol=0.16, slideTo=null}){
   const o = ac.createOscillator(), g = ac.createGain();
