@@ -2407,7 +2407,7 @@ function TeacherSettings({settings, setSettings, onDone, onResult, students, set
           <button className="btn sm ghost" style={{fontSize:'.62em'}} onClick={onDone}>닫기</button></div>
 
         <div className="field">
-          <label>1. 우리 반 학생 <span className="muted" style={{fontWeight:400,fontSize:'.85em'}}>학생마다 하트·활동 기록이 따로 모여요</span></label>
+          <label>1. 우리 반 학생 <span className="muted" style={{fontWeight:400,fontSize:'.85em'}}>학생마다 좋아요·활동 기록이 따로 모여요</span></label>
           {students.length===0 && (
             <p className="muted" style={{margin:'0 0 8px', fontSize:'.92em'}}>
               아직 학생이 없어요. 학생을 추가하면 쇼핑을 시작할 때 <b>“누가 쇼핑할까요?”</b> 화면이 나와요.
@@ -2434,7 +2434,7 @@ function TeacherSettings({settings, setSettings, onDone, onResult, students, set
                         studentGender='male'; sayBtn('안녕하세요! 제 목소리예요.', 'student'); }}>남자</button>
                   </span>
                   <button className="btn ghost sm" onClick={()=>{
-                    if(confirm(`'${st.name||'이 학생'}'을(를) 명단에서 지울까요?\n그동안 모은 하트와 활동 기록도 함께 지워져요.`)){
+                    if(confirm(`'${st.name||'이 학생'}'을(를) 명단에서 지울까요?\n그동안 모은 좋아요와 활동 기록도 함께 지워져요.`)){
                       setStudents(list=> list.filter(x=>x.id!==st.id)); setMarkOpen(null);
                     }
                   }}>지우기</button>
@@ -2799,7 +2799,7 @@ function BrowseStage({settings, products, likes, setLikes, basket, setBasket, bu
             setCorner(id); speak(c.title+' 코너예요. '+c.desc);
           }}
           onElevator={()=>{ setEvFrom(floor); setFloor(null); setScene('elevator'); }}
-          onLiked={()=>{ setShowLiked(true); speak('내가 좋아한 문구를 다시 봐요.'); }} />
+          onLiked={()=>{ setShowLiked(true); speak('내가 좋아요를 누른 문구예요.'); }} />
       )}
 
       {(corner || showLiked) && (
@@ -2809,7 +2809,7 @@ function BrowseStage({settings, products, likes, setLikes, basket, setBasket, bu
             <div className="row" style={{margin:0, position:'relative', zIndex:1}}>
               <button className="btn ghost" onClick={()=>{setCorner(null); setShowLiked(false);}}>⬅️ 매장으로 돌아가기</button>
               <div className="section-title corner-title" style={{margin:0}}>
-                {showLiked? '💗 내가 좋아한 문구'
+                {showLiked? '💗 좋아요'
                   : <React.Fragment><CornerIcon id={corner} /> {CORNERS.find(c=>c.id===corner).title} 코너</React.Fragment>}
               </div>
             </div>
@@ -3162,8 +3162,8 @@ function LikedMark(){
 function ShelfUnit({shelf, items, likesCount, accent, style, innerRef, onClick, here}){
   if(shelf.kind==='liked'){
     return (
-      <button className={"shelf heart"+(here?' here':'')} ref={innerRef} style={style} onClick={onClick} aria-label="내가 좋아한 문구 보기">
-        <span className="shelf-sign" style={{background:'#ff8a8a'}}>💗 좋아한 문구</span>
+      <button className={"shelf heart"+(here?' here':'')} ref={innerRef} style={style} onClick={onClick} aria-label="좋아요를 누른 문구 보기">
+        <span className="shelf-sign" style={{background:'#ff8a8a'}}>💗 좋아요</span>
         {/* 개수 라벨('하트 누른 문구 ○개')을 뺐어요 (2026-07-29).
             이 진열대만 아래에 라벨이 하나 더 붙어서 다른 진열대와 높이가 안 맞고
             혼자 붕 떠 보였어요. 개수는 몰라도 되는 정보예요. */}
@@ -3487,7 +3487,7 @@ function ProductImg({p, mini}){
 function ProductCard({p, liked, inBasket, soldOut, onLike, onDetail, onAdd, onRemove}){
   return (
     <div className={"product "+(inBasket?'selected-mark':'')}>
-      <button className={"heart-btn "+(liked?'on':'')} aria-label="마음에 들어요" onClick={onLike}>{liked?'❤️':'🤍'}</button>
+      <button className={"heart-btn "+(liked?'on':'')} aria-label="좋아요" onClick={onLike}>{liked?'❤️':'🤍'}</button>
       <div className="art"><ProductImg key={p.id} p={p} /></div>
       <div className="name">{p.name}</div>
       <div className="row" style={{justifyContent:'space-between'}}>
@@ -3533,7 +3533,7 @@ function DetailModal({p, liked, inBasket, onLike, onAdd, onClose}){
           </span>
         </Hint>
         <div className="row" style={{marginTop:18}}>
-          <button className={"btn "+(liked?'primary':'ghost')} onClick={onLike}>{liked?'❤️ 좋아요':'🤍 마음에 들어요'}</button>
+          <button className={"btn "+(liked?'primary':'ghost')} onClick={onLike}>{liked?'❤️ 좋아요':'🤍 좋아요'}</button>
           {!inBasket
             ? <button className="btn mint" onClick={onAdd}>🧺 바구니에 담을래요</button>
             : <span className="pill" style={{padding:'12px 16px'}}>✅ 담았어요</span>}
@@ -3578,7 +3578,7 @@ function ChooseStage({settings, likes, basket, setBasket, budget, total, remaini
 
       {likes.length>0 && (
         <div className="card" style={{padding:12}}>
-          <div className="section-title" style={{fontSize:'1.1em', margin:'0 0 6px'}}>💗 내가 좋아한 문구에서 고르기</div>
+          <div className="section-title" style={{fontSize:'1.1em', margin:'0 0 6px'}}>💗 좋아요 중에서 고르기</div>
           {/* 큰 사진 카드 대신 목록으로 — 바구니와 나란히 한 화면에 들어가게 */}
           <Paged items={likes} per={3} resetKey={'choose-likes'} cls="choose-list" render={p=>(
               <div key={p.id} className="list-item">
@@ -4966,7 +4966,7 @@ function TeacherResult({settings, likes, basket, scanned, receipt, activity, hel
 ========================================================= */
 const HELP_STEPS = {
   browse:['코너 카드를 눌러 문구를 구경해요.','마음에 드는 문구의 하트를 눌러 보세요.','바구니에 담기 버튼을 눌러 담아요.','도움이 필요하면 선생님을 불러요.'],
-  choose:['좋아한 문구에서 하나를 골라요.','바구니에 담기·빼기로 바꿀 수 있어요.','남은 돈을 보며 골라요.','도움이 필요하면 선생님을 불러요.'],
+  choose:['좋아요를 누른 문구에서 하나를 골라요.','바구니에 담기·빼기로 바꿀 수 있어요.','남은 돈을 보며 골라요.','도움이 필요하면 선생님을 불러요.'],
   scan:['왼쪽 문구를 손가락으로 눌러 스캐너로 끌어요.','스캐너가 초록색이 되면 손을 떼요.','모든 문구를 끌어다 찍어요.','도움이 필요하면 선생님을 불러요.'],
   pay:['현금이나 카드를 골라요.','현금은 지폐를 눌러 넣어요.','알맞은 금액이 되면 계산해요.','도움이 필요하면 선생님을 불러요.'],
   enjoy:['영수증과 물건을 확인해요.','즐길 활동을 하나 골라요.','시간을 골라 천천히 즐겨요.','도움이 필요하면 선생님을 불러요.'],
