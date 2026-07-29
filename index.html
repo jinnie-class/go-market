@@ -1811,13 +1811,15 @@ function Confetti({show}){
 
 /* ---------- localStorage 기본 설정 ---------- */
 const DEFAULT_SETTINGS = {
-  name:'', budget:5000, maxItems:99, pay:'choose', moneyPractice:false,
+  /* moneyPractice:true — 계산 연습(지폐·거스름돈)이 기본이에요 (2026-07-29 선생님 확정).
+     '간단히(돈 건네기 한 번)'로 바꾸려면 교사 설정 12번에서 고르면 됩니다. */
+  name:'', budget:5000, maxItems:99, pay:'choose', moneyPractice:true,
   /* voiceMode:'auto' — 처음부터 안내 음성이 저절로 나와요 (2026-07-28).
      글자를 못 읽는 학생이 많아, 버튼을 눌러야만 들리는 'manual'보다 이쪽이 기본에 맞아요.
      소리가 부담되는 학생은 교사 설정에서 '눌렀을 때만'으로 바꿔 주세요. */
   difficulty:'easy', voice:true, voiceMode:'auto', studentVoice:'female', clerkGender:'male', fontSize:'big', reduceMotion:false, soldOut:false,
   cashierChat:true, walletView:true, switchScan:false, scanSpeed:2600,
-  quietMode:false, budgetByStudent:true, sfx:true, v:4,
+  quietMode:false, budgetByStudent:true, sfx:true, v:5,
 };
 function loadStore(key, fallback){
   try{ const v=localStorage.getItem(key); return v? JSON.parse(v): fallback; }catch(e){ return fallback; }
@@ -1855,12 +1857,23 @@ function App(){
   const [settings, setSettings] = useState(()=>{
     const saved = loadStore('go_settings', null);
     if(!saved) return {...DEFAULT_SETTINGS};
-    // 예전 버전(개수 3개 제한 등) 자동 업그레이드 + 새 항목 기본값 채우기
-    if(saved.v!==2 && saved.v!==3){ saved.maxItems = 99; }
-    // v3: 안내 음성을 '자동 재생'으로 (이미 쓰던 기기도 함께 바뀌게)
-    if(saved.v!==3 && saved.v!==4){ saved.voiceMode = 'auto'; }
-    // v4: 점원 기본을 '남자 점원'으로
-    if(saved.v!==4){ saved.clerkGender = 'male'; saved.v = 4; }
+    /* v5 (2026-07-29) : 선생님이 확정한 기본 설정을 '이미 쓰던 기기'에도 한 번 맞춰요.
+       한 번만 실행되고(v가 5로 바뀜), 그 뒤에 선생님이 바꾼 값은 그대로 유지됩니다.
+       (예전 v2~v4 업그레이드도 여기에 모두 포함돼 있어 따로 둘 필요가 없어요.) */
+    if(saved.v !== 5){
+      saved.budgetByStudent = true;    // ① 예산 정하기 : 학생이 지갑에서 고름
+      saved.maxItems        = 99;      // ② 최대 구매 수 : 제한 없음
+      saved.pay             = 'choose';// ③ 계산 방법 : 학생이 선택
+      saved.voice           = true;    // ④ 음성 안내 : 켜기
+      saved.voiceMode       = 'auto';  // ⑤ 재생 방식 : 자동 안내
+      saved.clerkGender     = 'male';  // ⑥⑧ 점원 목소리·그림 : 남자
+      saved.sfx             = true;    // ⑦ 효과음 : 켜기
+      saved.fontSize        = 'big';   // ⑨ 글자 크기 : 크게
+      saved.cashierChat     = true;    // ⑩ 점원과의 대화 연습 : 켜기
+      saved.walletView      = true;    // ⑪ 지갑 보기 : 켜기
+      saved.moneyPractice   = true;    // ⑫ 계산 방식 : 계산 연습(지폐·거스름돈)
+      saved.v = 5;
+    }
     return {...DEFAULT_SETTINGS, ...saved};
   });
   const [screen, setScreen] = useState('home'); // home | teacher | activity
