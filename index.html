@@ -36,7 +36,15 @@
   --shadow-lg:0 14px 40px rgba(50,60,90,.16);
   --radius:22px;
   --fs:1;            /* 글자 크기 배율 */
+  /* 매장 진열대 한 칸의 폭. 진열대 사이 간격도 이 값을 기준으로 벌려요(FloorPanorama.posCss).
+     화면이 작아지면 아래 미디어쿼리에서 줄어듭니다 — 태블릿에서 진열대가 붙던 문제 때문. */
+  --shelfw:310px;
 }
+/* 태블릿·작은 노트북 : 진열대를 줄여 간격이 남게 */
+@media (max-width:1200px){ :root{ --shelfw:250px; } }
+@media (max-width:900px){  :root{ --shelfw:215px; } }
+@media (max-height:820px){ :root{ --shelfw:250px; } }
+@media (max-height:700px){ :root{ --shelfw:215px; } }
 *{box-sizing:border-box;}
 html,body{margin:0;padding:0;}
 body{
@@ -662,8 +670,9 @@ body.quiet .confetti{display:none !important;}
 @media (max-height:860px){
   .facade-scene,.elev-scene{height:clamp(380px,64vh,580px);}
   /* 건물 정면은 위쪽 예산바를 감추므로 그만큼 그림을 크게 보여 줘요 (2026-07-28).
-     74vh는 측정으로 정한 값 — 1024×768에서 568px, 넘침 0. */
-  .facade-scene{height:clamp(400px,74vh,660px);}
+     2026-07-29: 태블릿에서 아래가 남아 보여 '남는 높이 전부'를 쓰도록 calc로 바꿨어요.
+     빼는 136px = 위 스텝바(약 56) + 아래 여백(60) + 사이 여백(20). */
+  .facade-scene{height:clamp(400px, calc(100vh - 136px), 760px);}
   .ev-num{width:46px;height:46px;font-size:1.15em;}
   .ev-row{padding:6px 12px 6px 6px;}
 }
@@ -680,6 +689,14 @@ body.quiet .confetti{display:none !important;}
   background:linear-gradient(135deg,#ff8a8a,#ff6b6b);padding:5px 18px;border-radius:11px;
   box-shadow:0 5px 12px rgba(50,60,90,.26);border:2px solid rgba(255,255,255,.85);}
 .facade-title .ft-go{color:#ffe17a;}
+/* 안내 칩을 '문 위쪽'으로 올려요 (2026-07-29).
+   문(.art-door)은 그림 아래 24%를 차지하는데, 칩이 bottom:10px에 있어서
+   태블릿에서는 문을 통째로 가렸어요. 26%로 올려 문이 온전히 보이게 합니다. */
+.facade-scene .scene-hint{bottom:26%;}
+@media (max-width:820px){
+  /* 좁은 화면에선 글자를 줄여 칩이 문 폭을 넘지 않게 */
+  .facade-scene .scene-hint{font-size:.92em;padding:7px 14px;}
+}
 .art-door{position:absolute;left:50%;transform:translateX(-50%);bottom:0;width:33%;height:24%;
   border:none;border-radius:12px 12px 0 0;background:none;overflow:hidden;cursor:pointer;padding:0;font:inherit;}
 .art-door::before{content:none;}
@@ -717,14 +734,16 @@ body.quiet .confetti{display:none !important;}
   font:inherit;color:inherit;display:flex;flex-direction:column;align-items:center;z-index:3;}
 .shelf-sign{border-radius:16px 16px 0 0;padding:11px 28px;font-weight:900;font-size:1.28em;color:#fff;
   display:flex;gap:8px;align-items:center;box-shadow:var(--shadow);}
-.shelf-body{width:310px;background:#f9f1e2;border:4px solid #caa77a;border-radius:8px;padding:12px 12px 8px;
+.shelf-body{width:var(--shelfw);background:#f9f1e2;border:4px solid #caa77a;border-radius:8px;padding:12px 12px 8px;
   display:flex;flex-direction:column;gap:10px;box-shadow:var(--shadow);transition:transform .12s, box-shadow .12s;}
 .shelf:hover .shelf-body{transform:translateY(-4px);box-shadow:0 0 0 4px rgba(255,210,63,.55), var(--shadow-lg);}
 .shelf:hover .shelf-sign{filter:brightness(1.08);}
 .shelf-row{display:flex;justify-content:space-around;align-items:flex-end;border-bottom:8px solid #caa77a;
   padding-bottom:4px;min-height:70px;gap:6px;}
-.shelf-item{font-size:44px;line-height:1;display:flex;align-items:flex-end;justify-content:center;width:82px;height:68px;overflow:hidden;}
-.shelf-item .prod-mini{width:64px;height:64px;}
+/* 진열대 폭에 맞춰 물건 칸도 함께 줄어요 (한 줄에 3개가 넘치지 않게) */
+.shelf-item{font-size:44px;line-height:1;display:flex;align-items:flex-end;justify-content:center;
+  width:calc((var(--shelfw) - 62px)/3);height:68px;overflow:hidden;}
+.shelf-item .prod-mini{width:88%;height:auto;max-height:100%;}
 .shelf-label{margin-top:8px;font-weight:800;color:var(--ink-soft);font-size:1.02em;background:#fff;
   border:2px solid var(--line);border-radius:999px;padding:6px 18px;}
 /* 캐릭터가 지금 서 있는 진열대 — 한 번 더 누르면 들어가요 (노란 테두리로 분명하게) */
@@ -831,9 +850,13 @@ body.quiet .confetti{display:none !important;}
    게다가 태블릿·전자칠판은 손으로 누르는데, 누른 뒤 hover 상태가 남아 뜬 채로 있기도 했어요.
    대신 '테두리 색'만 바꿔서 누를 수 있다는 걸 알려요 — 자리는 그대로. */
 .home-enter:hover, .home-enter:focus-visible{border-color:#ffd23f;}
+/* 홈 그림은 화면 아래까지 꽉 차게 (2026-07-29).
+   vh만 쓰면 위아래 여백(위 14px + .app 아래 60px + 테두리 10px)만큼 늘 남았어요.
+   calc로 그 여백을 빼서 '남는 높이 전부'를 그림이 쓰게 합니다. */
+.home-screen{padding-bottom:10px;}
 .home-enter .hero-img{display:block;margin:0;border-radius:0;box-shadow:none;
   background:none;padding:0;border:none;
-  max-height:86vh;width:auto;max-width:100%;}
+  max-height:calc(100vh - 44px);width:auto;max-width:100%;}
 .home-enter-hint{position:absolute;left:50%;bottom:16px;transform:translateX(-50%);white-space:nowrap;
   background:linear-gradient(135deg,#ff8a8a,#ff6b6b);color:#fff;font-weight:900;font-size:1.2em;
   padding:12px 26px;border-radius:999px;box-shadow:var(--shadow-lg);animation:homePulse 1.8s ease-in-out infinite;}
@@ -843,7 +866,6 @@ body.quiet .confetti{display:none !important;}
 .home-welcome{text-align:center;}
 .home-welcome .hint{font-size:1.25em;}
 @media (max-height:820px){
-  .home-enter .hero-img{max-height:82vh;}
   .home-tools .iconbtn{width:48px;height:48px;font-size:1.2em;}
   .home-enter-hint{font-size:1.05em;padding:9px 20px;bottom:12px;}
 }
@@ -3108,8 +3130,10 @@ function ShelfUnit({shelf, items, likesCount, accent, style, innerRef, onClick, 
     return (
       <button className={"shelf heart"+(here?' here':'')} ref={innerRef} style={style} onClick={onClick} aria-label="내가 좋아한 문구 보기">
         <span className="shelf-sign" style={{background:'#ff8a8a'}}>💗 좋아한 문구</span>
+        {/* 개수 라벨('하트 누른 문구 ○개')을 뺐어요 (2026-07-29).
+            이 진열대만 아래에 라벨이 하나 더 붙어서 다른 진열대와 높이가 안 맞고
+            혼자 붕 떠 보였어요. 개수는 몰라도 되는 정보예요. */}
         <span className="shelf-body"><span className="shelf-row"><LikedMark /></span></span>
-        <span className="shelf-label">하트 누른 문구 {likesCount}개</span>
       </button>
     );
   }
@@ -3153,8 +3177,17 @@ function FloorPanorama({floorNo, products, likesCount, onCorner, onElevator, onL
   const shelves = floor.corners.map(id=>({key:id, kind:'corner', id, c:CORNERS.find(x=>x.id===id)}));
   if(likesCount>0) shelves.push({key:'liked', kind:'liked'});
   const n = shelves.length;
-  const spacing = 20;                              // 진열대 사이 간격(%)
-  const posPct = (i)=> (50 - spacing*(n-1)/2) + i*spacing;
+  /* 진열대 자리 (2026-07-29 수정)
+     예전엔 '매장 폭의 20%'로 벌렸는데, 태블릿은 층 그림이 작아지면서 20%가
+     진열대 폭(310px)보다 좁아져 진열대끼리 딱 붙어 버렸어요.
+     이제 '진열대 폭 + 46px'만큼 px로 벌려서, 화면이 작아도 간격이 늘 같아요.
+     (--shelfw 는 화면 크기에 따라 CSS에서 310/250/210px 로 바뀝니다) */
+  const posCss = (i)=>{
+    const off = i - (n-1)/2;                       // …-1.5, -0.5, 0.5, 1.5…
+    if(off === 0) return '50%';
+    const sign = off < 0 ? '-' : '+';
+    return `calc(50% ${sign} ${Math.abs(off)} * (var(--shelfw) + 46px))`;
+  };
 
   /* 진열대의 '가운데' 좌표.
      ⚠️ `.shelf`는 left:○○% + transform:translateX(-50%) 로 놓여 있어서
@@ -3270,7 +3303,7 @@ function FloorPanorama({floorNo, products, likesCount, onCorner, onElevator, onL
             <ShelfUnit key={s.key} shelf={s}
               items={s.kind==='corner'? products.filter(p=>p.corner===s.id).slice(0,6) : []}
               here={atShelf===s.key}
-              likesCount={likesCount} accent={floor.accent} style={{left:posPct(i)+'%'}}
+              likesCount={likesCount} accent={floor.accent} style={{left:posCss(i)}}
               innerRef={el=>{ if(el) shelfRefs.current[s.key]=el; }}
               onClick={()=> s.kind==='corner'? walkTo(s.key, ()=>onCorner(s.id)) : walkTo(s.key, onLiked)} />
           ))}
