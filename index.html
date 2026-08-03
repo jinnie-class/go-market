@@ -706,6 +706,12 @@ body.quiet .confetti{display:none !important;}
 
 /* ===== 1인칭 매장 파노라마 ===== */
 .pano-frame{border:5px solid #2b2b3a;border-radius:26px;overflow:hidden;background:#1d2233;box-shadow:var(--shadow-lg);}
+/* 매장 그림만 앱 폭(1060px)을 벗어나 화면 전체를 씁니다 (2026-08-03).
+   전자칠판(1920)에서도 앱이 1060px로 묶여 있어 매장이 아이패드와 거의 같은 크기였고,
+   진열대가 1개 반밖에 안 보였어요(주 사용 기기가 전자칠판인데도).
+   가운데 기준으로 펼쳐서 큰 화면에서는 진열대 3개가 온전히 보입니다.
+   ⚠️ 매장(파노라마)에만 적용 — 다른 화면은 글이 너무 넓게 퍼지면 읽기 어려워 1060px 유지. */
+.pano-frame{width:min(1700px, calc(100vw - 32px));margin-left:50%;transform:translateX(-50%);}
 .pano-top{display:flex;align-items:center;gap:8px;padding:10px 16px;color:#fff;font-weight:800;flex-wrap:wrap;}
 .pano-top .elev{display:flex;gap:6px;align-items:center;flex-wrap:wrap;}
 .elev-btn{border:2px solid #4a5270;background:#2e3550;color:#fff;border-radius:12px;padding:8px 14px;
@@ -1055,9 +1061,13 @@ body.reduce-motion .stamp-slot.today{animation:none;}
   .btn{min-height:48px;padding:11px 16px;}   /* 낮은 화면: 버튼 전체 살짝 압축 */
   /* 파노라마 : 화면 세로를 채우되 스크롤이 안 생기게 */
   .pano-view{height:clamp(300px,58vh,700px);}
-  .shelf-body{width:270px;}
+  /* ⚠️ .shelf-body 와 .shelf-item 의 '가로폭'은 여기서 정하지 않아요 (2026-08-03).
+     진열대 폭·간격은 --shelfw 변수 하나로 관리합니다(맨 위 :root 참고).
+     예전엔 여기에 width:270px / 72px 고정값이 있었는데, 이 미디어쿼리가 max-height:10000px
+     (=모든 화면)이라 변수를 늘 덮어써서 **폭은 안 바뀌고 간격만 바뀌는** 상태였어요.
+     그 탓에 작은 화면에서 진열대 사이가 26px밖에 안 돼 붙어 보였습니다. */
   .shelf-row{min-height:60px;}
-  .shelf-item{font-size:38px;height:58px;width:72px;}
+  .shelf-item{font-size:38px;height:58px;}
   .shelf-item .prod-mini{width:54px;height:54px;}
   .shelf-liked-img{height:126px;}
   .shelf-sign{font-size:1.12em;padding:9px 22px;}
@@ -3267,16 +3277,19 @@ function FloorPanorama({floorNo, products, likesCount, onCorner, onElevator, onL
   const shelves = floor.corners.map(id=>({key:id, kind:'corner', id, c:CORNERS.find(x=>x.id===id)}));
   if(likesCount>0) shelves.push({key:'liked', kind:'liked'});
   const n = shelves.length;
-  /* 진열대 자리 (2026-07-29 수정)
+  /* 진열대 자리 (2026-07-29 → 2026-08-03 간격 조정)
      예전엔 '매장 폭의 20%'로 벌렸는데, 태블릿은 층 그림이 작아지면서 20%가
-     진열대 폭(310px)보다 좁아져 진열대끼리 딱 붙어 버렸어요.
-     이제 '진열대 폭 + 46px'만큼 px로 벌려서, 화면이 작아도 간격이 늘 같아요.
-     (--shelfw 는 화면 크기에 따라 CSS에서 310/250/210px 로 바뀝니다) */
+     진열대 폭보다 좁아져 진열대끼리 딱 붙어 버렸어요.
+     이제 '진열대 폭 + 70px'만큼 px로 벌려서, 화면이 작아도 간격이 늘 같아요.
+     (--shelfw 는 화면 크기에 따라 CSS에서 310/250/215px 로 바뀝니다)
+     📌 간격을 바꾸려면 아래 70px 숫자만 고치면 됩니다.
+        벌릴수록 매장이 옆으로 길어져서 ◀▶를 더 눌러야 하니 균형을 볼 것. */
+  const SHELF_GAP = 70;
   const posCss = (i)=>{
     const off = i - (n-1)/2;                       // …-1.5, -0.5, 0.5, 1.5…
     if(off === 0) return '50%';
     const sign = off < 0 ? '-' : '+';
-    return `calc(50% ${sign} ${Math.abs(off)} * (var(--shelfw) + 46px))`;
+    return `calc(50% ${sign} ${Math.abs(off)} * (var(--shelfw) + ${SHELF_GAP}px))`;
   };
 
   /* 진열대의 '가운데' 좌표.
@@ -5673,7 +5686,6 @@ function ShoppingListPrint({settings, basket, budget, onBack}){
               실제 문구점 가격은 앱과 다를 수 있어 딱 맞춰 가면 모자랄 수 있고,
               여유가 있어야 학생이 가게에서 마음을 바꿔 고를 자유도 생겨요. */}
           <b style={{display:'block'}}>💰 예산 봉투 — {won(budget)}을 지갑에 넣어 가요</b>
-
           <div className="wrap" style={{gap:8, marginTop:10, justifyContent:'center'}}>
             {billsFor(budget).map((b,i)=><MiniBill key={i} b={b} />)}
           </div>
