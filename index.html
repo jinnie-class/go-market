@@ -5667,7 +5667,13 @@ function ShoppingListPrint({settings, basket, budget, onBack}){
         <div className="row"><b>예상 합계</b><span className="spacer"></span><b className="bignum" style={{color:'#c0392b'}}>{won(total)}</b></div>
         {/* 문장을 한 줄로 두고, 지폐 그림은 그 아래에 가운데로 */}
         <div className="budget-envelope">
-          <b style={{display:'block'}}>💰 예산 봉투 — 이만큼의 돈을 지갑에 넣어 가요</b>
+          {/* 봉투에 금액을 글자로 함께 적어요 (2026-08).
+              위에 '준비할 돈'과 '예상 합계' 두 금액이 나란히 있어서, 지폐 그림만으로는
+              어느 쪽인지 헷갈렸어요. 봉투에 담는 돈은 '예산'(가져갈 돈)이지 '산 금액'이 아닙니다 —
+              실제 문구점 가격은 앱과 다를 수 있어 딱 맞춰 가면 모자랄 수 있고,
+              여유가 있어야 학생이 가게에서 마음을 바꿔 고를 자유도 생겨요. */}
+          <b style={{display:'block'}}>💰 예산 봉투 — {won(budget)}을 지갑에 넣어 가요</b>
+
           <div className="wrap" style={{gap:8, marginTop:10, justifyContent:'center'}}>
             {billsFor(budget).map((b,i)=><MiniBill key={i} b={b} />)}
           </div>
