@@ -214,6 +214,24 @@ img.cicon{object-fit:contain;border-radius:.2em;}
 .use-sent{display:inline-block;margin-right:4px;}
 .hint.soft .sent{display:inline-block;}
 
+/* 수량 고르기 (➖ 2개 ➕) — 2026-08-09
+   손가락으로 누르기 쉽게 단추를 넉넉히 잡았어요. */
+.qtybox{display:inline-flex;align-items:center;background:#fff;border:2px solid var(--mint,#59c9a5);
+  border-radius:14px;overflow:hidden;box-shadow:var(--shadow);flex:none;}
+.qtybox .qtybtn{border:none;background:#eafaf4;color:#14795c;font-size:1.05em;font-weight:900;
+  width:40px;height:38px;cursor:pointer;line-height:1;padding:0;}
+.qtybox .qtybtn:hover{background:#d3f3e8;}
+.qtybox .qtynum{min-width:52px;text-align:center;font-weight:900;color:#14795c;font-size:.98em;
+  padding:0 4px;white-space:nowrap;}
+.qtybox.big .qtybtn{width:52px;height:48px;font-size:1.2em;}
+.qtybox.big .qtynum{min-width:64px;font-size:1.1em;}
+/* 코너 제목 옆 '＋ 우리 반 문구' — 선생님용이라 학생 단추보다 조용한 색으로 (2026-08-09) */
+.add-here{margin-left:auto;flex:none;border:2px dashed #b9c6d1;color:#5b6b7a;background:#f7fafc;font-weight:800;}
+.add-here:hover{background:#eaf3f9;border-color:#8fb4cd;color:#2c4a63;}
+/* 목록에서 '2개 이상'일 때만 이름 옆에 붙는 작은 표시 (×2) */
+.qty-tag{flex:none;background:#eafaf4;color:#14795c;border-radius:8px;padding:1px 7px;
+  font-size:.85em;font-weight:900;white-space:nowrap;margin-left:4px;}
+
 /* 지폐 */
 /* 지폐 — 실제 지폐처럼 가로로 긴 비율(세로를 줄여 앞 화면 지폐와 통일) */
 .bill{border-radius:12px;color:#fff;font-weight:900;padding:9px 14px;min-width:136px;text-align:center;
@@ -221,12 +239,26 @@ img.cicon{object-fit:contain;border-radius:.2em;}
 .bill{display:flex;align-items:center;justify-content:center;min-height:58px;}
 .bill .amt{font-size:1.55em;display:flex;align-items:baseline;justify-content:center;gap:3px;white-space:nowrap;}
 .bill .won{font-size:.62em;opacity:.95;}
-/* 실제 한국 지폐 색 — 천 원 파랑 · 오천 원 주황 · 만 원 초록 */
+/* 실제 한국 지폐 색 — 천 원 파랑 · 오천 원 주황 · 만 원 초록 · 오만 원 노랑
+   (지폐 사진이 없을 때만 쓰이는 대체 그림이에요) */
 .bill.b1000{background:linear-gradient(135deg,#79b7f0,#3f79c0);}
 .bill.b5000{background:linear-gradient(135deg,#ff9e7a,#e8663a);}
 .bill.b10000{background:linear-gradient(135deg,#7fd8a6,#3fa06a);}
+.bill.b50000{background:linear-gradient(135deg,#f6d365,#d99a24);}
 .bill.dim{opacity:.32;filter:grayscale(.4);}
 .bill.glow{box-shadow:0 0 0 4px #ffd23f, var(--shadow-lg);}
+/* 실제 지폐 그림을 넣었을 때 (이미지/지폐/1000·5000·10000·50000.png)
+   그림이 있으면 위의 색깔 그라데이션 대신 사진이 버튼이 됩니다.
+   그림 파일을 지우면 자동으로 다시 색깔 버튼으로 돌아가요 (2026-08-09).
+
+   ⚠️ height만 정하고 width는 auto 로 둡니다 — 이유가 있어요.
+   우리나라 지폐는 높이가 68mm로 전부 같고 가로만 조금씩 길어져요.
+     천 원 136 · 오천 원 142 · 만 원 148 · 오만 원 154 (mm)
+   width를 고정하면 이 차이가 사라져서 네 장이 똑같은 크기로 보입니다.
+   높이만 맞추면 실제처럼 '액수가 클수록 조금 더 긴' 모양이 그대로 나와요.
+   (학생이 길이만 보고도 큰돈인지 알 수 있어요) */
+.bill-img{display:block;height:86px;width:auto;border-radius:7px;}
+.bill:has(.bill-img){padding:5px;min-width:0;min-height:0;background:#fbfbfb;border:2px solid #e2e2e2;}
 
 /* 스캐너 */
 .scanner{border:3px dashed var(--sky);border-radius:22px;background:#f0faff;min-height:150px;
@@ -377,6 +409,7 @@ img.cicon{object-fit:contain;border-radius:.2em;}
 .billnote.n1000{background:linear-gradient(135deg,#a9d3f5,#5b93c8);color:#0d3350;}
 .billnote.n5000{background:linear-gradient(135deg,#ffc59e,#f08a4b);color:#6a3410;}
 .billnote.n10000{background:linear-gradient(135deg,#a7e8c4,#5bb883);color:#0d4a2e;}
+.billnote.n50000{background:linear-gradient(135deg,#fbe3a0,#e0b64a);color:#5a4310;}
 .wallet-ico-btn{border:2px solid var(--sky);background:#eaf7fe;border-radius:50%;width:44px;height:44px;
   display:inline-flex;align-items:center;justify-content:center;cursor:pointer;padding:0;box-shadow:var(--shadow);
   transition:transform .1s;}
@@ -495,7 +528,7 @@ body.quiet .btn.primary,body.quiet .btn.sky,body.quiet .btn.mint,body.quiet .btn
 body.quiet .confetti{display:none !important;}
 
 /* 인쇄용 봉투/체크리스트 */
-.budget-envelope{background:#fffef2;border:2px dashed #e5dcae;border-radius:14px;padding:16px;margin-top:16px;}
+.wallet-box{background:#fffef2;border:2px dashed #e5dcae;border-radius:14px;padding:16px;margin-top:16px;}
 .checklist{background:#f2fbff;border-radius:12px;padding:14px 16px;margin-top:14px;font-weight:700;color:#0b4a63;}
 /* 한 줄에 하나씩, 네모칸을 왼쪽 기준선에 맞춰 정렬 + 줄무늬 배경 (손으로 체크하기 쉽게) */
 .check-line{display:flex;align-items:center;gap:10px;padding:7px 10px;border-radius:8px;font-size:1.02em;}
@@ -519,7 +552,7 @@ body.quiet .confetti{display:none !important;}
   /* 종이 여백을 줄여 한 장에 넉넉히 */
   @page{margin:12mm;}
   .app{padding:0 !important;max-width:100% !important;}
-  .budget-envelope{break-inside:avoid;}
+  .wallet-box{break-inside:avoid;}
   .checklist{break-inside:avoid;}
   .print-head{display:flex !important;}
 }
@@ -1384,7 +1417,11 @@ function josa(word, withBatchim, withoutBatchim){
   if(!(last>=0xAC00 && last<=0xD7A3)) return withoutBatchim;   // 한글이 아니면 받침 없음으로
   return ((last-0xAC00)%28) ? withBatchim : withoutBatchim;
 }
-const sum = (items) => items.reduce((t,p)=>t + (p.price||0), 0);
+/* 수량 (2026-08-09) — 바구니의 문구 하나하나가 qty(몇 개)를 가져요.
+   qty가 없는 옛 기록(브라우저에 저장돼 있던 바구니)은 1개로 봅니다. */
+const qtyOf   = (p) => Math.max(1, (p && p.qty) || 1);
+const sum     = (items) => items.reduce((t,p)=> t + (p.price||0)*qtyOf(p), 0);
+const countOf = (items) => items.reduce((n,p)=> n + qtyOf(p), 0);   // 몇 '개'인지 (종류 수가 아니라)
 const change = (paid, total) => Math.max(0, (paid||0) - (total||0));
 const shortfall = (paid, total) => Math.max(0, (total||0) - (paid||0));
 
@@ -2283,6 +2320,7 @@ function App(){
           settings={settings} products={allProducts} likes={likes} setLikes={setLikes}
           basket={basket} setBasket={setBasket} budget={budget} total={total} remaining={remaining}
           maxItems={settings.maxItems} onNext={()=>advance('choose')} celebrate={celebrate}
+          onAddProduct={(p)=> setCustomProducts(l=>[...l, p])}
           onChangeCharacter={()=>{ stopSpeak(); setCharFromShopping(true); setScreen('charselect'); }}
           onWalletReset={settings.budgetByStudent!==false ? ()=>{ stopSpeak(); setScreen('walletsetup'); } : null} />}
 
@@ -2413,37 +2451,11 @@ function TeacherSettings({settings, setSettings, onDone, onResult, students, set
   const [np, setNp] = useState({corner:'write', name:'', price:1000, color:'', feat:'', use:'', emoji:'🛍️', photo:null});
   const npSet = (k,v)=> setNp(p=>({...p,[k]:v}));
   const photoRef = useRef(null);
-  const onProductPhoto = (e)=>{
-    const file = e.target.files && e.target.files[0];
-    e.target.value = '';
-    if(!file) return;
-    const reader = new FileReader();
-    reader.onload = (ev)=>{
-      const img = new Image();
-      img.onload = ()=>{
-        try{
-          const S=320, cv=document.createElement('canvas'); cv.width=S; cv.height=S;
-          const ctx=cv.getContext('2d');
-          ctx.fillStyle='#fff'; ctx.fillRect(0,0,S,S);
-          const r=Math.min(S/img.width, S/img.height), w=img.width*r, h=img.height*r;
-          ctx.drawImage(img, (S-w)/2, (S-h)/2, w, h);
-          let url; try{ url=cv.toDataURL('image/jpeg', 0.82); }catch(_){ url=ev.target.result; }
-          npSet('photo', url);
-        }catch(_){ npSet('photo', ev.target.result); }
-      };
-      img.src = ev.target.result;
-    };
-    reader.readAsDataURL(file);
-  };
+  const onProductPhoto = (e)=> readProductPhoto(e, (url)=> npSet('photo', url));
   const addProduct = ()=>{
     const name = np.name.trim();
     if(!name){ alert('상품 이름을 적어 주세요.'); return; }
-    setCustomProducts(list=>[...list, {
-      id:'c'+Date.now()+Math.floor(Math.random()*1000),
-      corner:np.corner, name, price:np.price, emoji:np.emoji||'🛍️',
-      color:np.color.trim()||'여러 색', feat:np.feat.trim()||'우리 반 문구',
-      use:np.use.trim()||(name+'을(를) 즐겁게 사용해요.'), photo:np.photo, custom:true
-    }]);
+    setCustomProducts(list=>[...list, makeCustomProduct(np)]);
     setNp({corner:np.corner, name:'', price:1000, color:'', feat:'', use:'', emoji:'🛍️', photo:null});
   };
   const set = (k,v)=> setS(p=>({...p,[k]:v}));
@@ -2804,7 +2816,7 @@ function BudgetBar({name, budget, total, remaining, basketCount, maxItems, walle
 /* =========================================================
    ① 구경하GO!
 ========================================================= */
-function BrowseStage({settings, products, likes, setLikes, basket, setBasket, budget, total, remaining, maxItems, onNext, celebrate, onWalletReset, onChangeCharacter}){
+function BrowseStage({settings, products, likes, setLikes, basket, setBasket, budget, total, remaining, maxItems, onNext, celebrate, onWalletReset, onChangeCharacter, onAddProduct}){
   const [floor, setFloor] = useState(()=> lastBrowse.floor);       // null=입장 전 | 1·2·3=층 파노라마
   const [scene, setScene] = useState(()=> lastBrowse.scene);       // facade(건물 정면) | elevator(엘리베이터)
   const [evFrom, setEvFrom] = useState(()=> lastBrowse.floor||1);  // 엘리베이터 출발 층
@@ -2812,14 +2824,36 @@ function BrowseStage({settings, products, likes, setLikes, basket, setBasket, bu
   const [corner, setCorner] = useState(null);
   const [detail, setDetail] = useState(null);
   const [showLiked, setShowLiked] = useState(false);
+  const [quickAdd, setQuickAdd] = useState(false);   // 코너에서 바로 문구 더하기 창
   const inBasket = (id)=> basket.some(p=>p.id===id);
   const toggleLike = (p)=>{
     setLikes(l=> l.some(x=>x.id===p.id)? l.filter(x=>x.id!==p.id) : [...l, p]);
   };
+  const qtyIn = (id)=> { const f = basket.find(p=>p.id===id); return f ? qtyOf(f) : 0; };
+  /* ⚠️ 개수를 바꿀 땐 반드시 setBasket(b=> ...) 안에서 '지금 b'를 보고 계산해요 (2026-08-09).
+     바깥의 basket 값을 보고 계산하면, 빠르게 두 번 누를 때 두 번 다 '옛 개수'를 보고
+     같은 결과를 써서 한 번만 눌린 것처럼 됩니다. 손이 떨려 연속으로 눌리는 학생에게 꼭 필요해요. */
   const addBasket = (p)=>{
-    if(inBasket(p.id)) return;
-    if(basket.length >= maxItems){ speak(`바구니에는 ${maxItems}개까지 담을 수 있어요.`); return; }
-    setBasket(b=>[...b, p]); playSfx('drop'); celebrate(); speak(p.name+'을 바구니에 담았어요.');
+    if(countOf(basket) >= maxItems){ speak(`바구니에는 ${maxItems}개까지 담을 수 있어요.`); return; }
+    // 예산을 넘어도 막지 않아요. 좋아하는 문구를 자유롭게 담고, 필요하면 스스로 바꿔요.
+    const already = inBasket(p.id);
+    setBasket(b=> b.some(x=>x.id===p.id)
+      ? b.map(x=> x.id===p.id ? {...x, qty:qtyOf(x)+1} : x)
+      : [...b, {...p, qty:1}]);
+    playSfx('drop'); celebrate();
+    speak(already ? p.name+' 하나 더 담았어요.' : p.name+'을 바구니에 담았어요.');
+  };
+  /* ➖ : 2개 이상이면 하나 줄이고, 1개일 때 누르면 바구니에서 빼요 */
+  const lessBasket = (p)=>{
+    const last = qtyIn(p.id) <= 1;
+    setBasket(b=>{
+      const cur = b.find(x=>x.id===p.id);
+      if(!cur) return b;
+      return qtyOf(cur) <= 1 ? b.filter(x=>x.id!==p.id)
+                             : b.map(x=> x.id===p.id ? {...x, qty:qtyOf(x)-1} : x);
+    });
+    playSfx('drop');
+    speak(last ? p.name+'을 바구니에서 뺐어요.' : p.name+' 하나 뺐어요.');
   };
   const removeBasket = (id)=> setBasket(b=>b.filter(p=>p.id!==id));
 
@@ -2835,7 +2869,7 @@ function BrowseStage({settings, products, likes, setLikes, basket, setBasket, bu
   return (
     <div className="col" style={{gap:9}}>
       {!onFacade && (
-        <BudgetBar name={settings.name} budget={budget} total={total} remaining={remaining} basketCount={basket.length} maxItems={maxItems} wallet={settings.walletView!==false} onWalletReset={onWalletReset} onBasket={onNext}
+        <BudgetBar name={settings.name} budget={budget} total={total} remaining={remaining} basketCount={countOf(basket)} maxItems={maxItems} wallet={settings.walletView!==false} onWalletReset={onWalletReset} onBasket={onNext}
           caption="문구점을 구경해요" onChangeCharacter={onChangeCharacter} />
       )}
 
@@ -2878,27 +2912,41 @@ function BrowseStage({settings, products, likes, setLikes, basket, setBasket, bu
                 {showLiked? '💗 좋아요'
                   : <React.Fragment><CornerIcon id={corner} /> {CORNERS.find(c=>c.id===corner).title} 코너</React.Fragment>}
               </div>
+              {/* 선생님이 진열된 문구를 보면서 그 자리에서 우리 반 문구를 넣을 수 있어요.
+                  설정 화면(12번)까지 가지 않아도 되고, 코너는 이미 정해져 있습니다. (2026-08-09) */}
+              {corner && onAddProduct && (
+                <button className="btn ghost sm add-here" title="이 코너에 우리 반 문구 넣기"
+                  onClick={()=>{ stopSpeak(); setQuickAdd(true); }}>＋ 우리 반 문구</button>
+              )}
             </div>
           </div>
           {list.length===0 && <div className="card muted">아직 담긴 문구가 없어요.</div>}
           <Paged items={list} per={6} resetKey={(corner||'')+'_'+(showLiked?'liked':'')}
             render={p=>(
-              <ProductCard key={p.id} p={p} liked={likes.some(x=>x.id===p.id)} inBasket={inBasket(p.id)}
+              <ProductCard key={p.id} p={p} liked={likes.some(x=>x.id===p.id)} qty={qtyIn(p.id)}
                 soldOut={settings.soldOut && p.id==='d4'} onLike={()=>toggleLike(p)}
-                onDetail={()=>setDetail(p)} onAdd={()=>addBasket(p)} onRemove={()=>removeBasket(p.id)} />
+                onDetail={()=>setDetail(p)} onAdd={()=>addBasket(p)} onLess={()=>lessBasket(p)} />
             )} />
           <div className="row" style={{marginTop:10, justifyContent:'flex-end'}}>
             <button className="btn primary big" disabled={basket.length===0}
               onClick={()=> basket.length? onNext() : speak('먼저 마음에 드는 문구를 바구니에 담아 주세요.')}>
-              🧺 이제 골라볼래요 ({basket.length}개) ▶
+              🧺 이제 골라볼래요 ({countOf(basket)}개) ▶
             </button>
           </div>
         </div>
       )}
 
-      {detail && <DetailModal p={detail} liked={likes.some(x=>x.id===detail.id)} inBasket={inBasket(detail.id)}
-        onLike={()=>toggleLike(detail)} onAdd={()=>{addBasket(detail); setDetail(null);}}
+      {/* 자세히 보기 창: 처음 담을 땐(onAdd) 예전처럼 창이 닫히고,
+          이미 담은 뒤엔 창 안에서 ➖ ➕ 로 개수를 바꿔요(onPlus·onLess). */}
+      {detail && <DetailModal p={detail} liked={likes.some(x=>x.id===detail.id)} qty={qtyIn(detail.id)}
+        onLike={()=>toggleLike(detail)}
+        onAdd={()=>{addBasket(detail); setDetail(null);}}
+        onPlus={()=>addBasket(detail)} onLess={()=>lessBasket(detail)}
         onClose={()=>setDetail(null)} />}
+
+      {quickAdd && corner && <QuickAddModal corner={corner}
+        onAdd={(p)=>{ onAddProduct(p); playSfx('done'); speak(p.name+'을 매장에 넣었어요.'); }}
+        onClose={()=>setQuickAdd(false)} />}
     </div>
   );
 }
@@ -3553,7 +3601,113 @@ function ProductImg({p, mini}){
     onError={()=>{ if(i<srcs.length-1) setI(i+1); else setFailed(true); }} />;
 }
 
-function ProductCard({p, liked, inBasket, soldOut, onLike, onDetail, onAdd, onRemove}){
+/* ── 우리 반 문구 더하기 — 함께 쓰는 도구 (2026-08-09) ──
+   교사 설정(12번)과 코너 안의 '＋ 우리 반 문구' 두 곳이 같은 코드를 씁니다. */
+
+/* 찍은 사진을 320×320 정사각형으로 줄여 저장해요.
+   원본 그대로 두면 사진 한 장이 몇 MB라 브라우저 저장 공간이 금방 찹니다. */
+function readProductPhoto(e, done){
+  const file = e.target.files && e.target.files[0];
+  e.target.value = '';
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = (ev)=>{
+    const img = new Image();
+    img.onload = ()=>{
+      try{
+        const S=320, cv=document.createElement('canvas'); cv.width=S; cv.height=S;
+        const ctx=cv.getContext('2d');
+        ctx.fillStyle='#fff'; ctx.fillRect(0,0,S,S);
+        const r=Math.min(S/img.width, S/img.height), w=img.width*r, h=img.height*r;
+        ctx.drawImage(img, (S-w)/2, (S-h)/2, w, h);
+        let url; try{ url=cv.toDataURL('image/jpeg', 0.82); }catch(_){ url=ev.target.result; }
+        done(url);
+      }catch(_){ done(ev.target.result); }
+    };
+    img.src = ev.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+/* 입력한 값으로 '매장에 넣을 문구' 하나를 만들어요. 안 적은 칸은 무난한 말로 채웁니다. */
+function makeCustomProduct(np){
+  const name = (np.name||'').trim();
+  return {
+    id:'c'+Date.now()+Math.floor(Math.random()*1000),
+    corner:np.corner, name, price:np.price, emoji:np.emoji||'🛍️',
+    color:(np.color||'').trim()||'여러 색', feat:(np.feat||'').trim()||'우리 반 문구',
+    use:(np.use||'').trim()||(name+'을(를) 즐겁게 사용해요.'), photo:np.photo||null, custom:true
+  };
+}
+
+/* 코너를 구경하면서 그 자리에서 바로 문구를 더하는 창 (2026-08-09 선생님 요청).
+   설정 화면까지 갔다 오지 않고, 진열된 문구를 옆에 두고 견주며 넣을 수 있어요.
+   코너는 지금 보고 있는 코너로 이미 정해져 있어서 고를 필요가 없습니다. */
+function QuickAddModal({corner, onAdd, onClose}){
+  const c = CORNERS.find(x=>x.id===corner);
+  const [np, setNp] = useState({corner, name:'', price:1000, color:'', feat:'', use:'', emoji:'🛍️', photo:null});
+  const npSet = (k,v)=> setNp(p=>({...p,[k]:v}));
+  const photoRef = useRef(null);
+  const save = ()=>{
+    if(!np.name.trim()){ alert('문구 이름을 적어 주세요.'); return; }
+    onAdd(makeCustomProduct(np));
+    onClose();
+  };
+  const Chip = ({on, onClick, children})=>(
+    <button className={"choice "+(on?'on':'')} onClick={onClick}>{on?'✓ ':''}{children}</button>
+  );
+  return (
+    <div className="overlay" onClick={onClose}>
+      <div className="modal" onClick={e=>e.stopPropagation()} style={{maxWidth:620}}>
+        <h2 style={{margin:'0 0 4px'}}>＋ {c?c.title:''} 코너에 문구 더하기</h2>
+        <p className="muted" style={{margin:'0 0 12px', fontSize:'.9em'}}>
+          교실에 있는 진짜 문구를 넣어 보세요. 이름만 적어도 돼요.
+        </p>
+        <input className="input" style={{margin:0}} value={np.name} autoFocus
+          placeholder="문구 이름 (예: 우리 반 스티커)" onChange={e=>npSet('name', e.target.value)} />
+        <div className="row" style={{margin:'10px 0 0', gap:6, flexWrap:'wrap'}}>
+          {[1000,2000,3000,5000].map(v=>(
+            <Chip key={v} on={np.price===v} onClick={()=>npSet('price',v)}>{won(v)}</Chip>
+          ))}
+        </div>
+        <div className="row" style={{margin:'10px 0 0', gap:8, flexWrap:'wrap'}}>
+          <input className="input" style={{flex:'1 1 130px', margin:0}} value={np.color}
+            placeholder="색 (선택)" onChange={e=>npSet('color', e.target.value)} />
+          <input className="input" style={{flex:'1 1 160px', margin:0}} value={np.feat}
+            placeholder="특징 (선택)" onChange={e=>npSet('feat', e.target.value)} />
+        </div>
+        <div className="row" style={{margin:'10px 0 0', gap:10, alignItems:'center', flexWrap:'wrap'}}>
+          <input type="file" accept="image/*" capture="environment" ref={photoRef}
+            onChange={e=>readProductPhoto(e, url=>npSet('photo',url))} style={{display:'none'}} />
+          <button className="btn sky sm" onClick={()=>photoRef.current && photoRef.current.click()}>📷 사진 찍기</button>
+          {np.photo && <span className="cprod-thumb big"><img src={np.photo} alt="" /></span>}
+          {np.photo && <button className="btn ghost sm" onClick={()=>npSet('photo',null)}>사진 지우기</button>}
+        </div>
+        <div className="row" style={{marginTop:18}}>
+          <button className="btn ghost" onClick={onClose}>그만두기</button>
+          <span className="spacer" style={{flex:1}}></span>
+          <button className="btn primary" onClick={save}>＋ 이 코너에 넣기</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* 수량 고르기 단추 (2026-08-09)
+   ➖ 를 1개에서 한 번 더 누르면 바구니에서 빠져요 — '빼기' 단추를 따로 두지 않아
+   화면이 간결하고, 학생이 배울 단추가 두 개(➖ ➕)뿐입니다. */
+function QtyBox({n, onMinus, onPlus, big}){
+  return (
+    <span className={"qtybox"+(big?' big':'')}>
+      <button className="qtybtn" onClick={onMinus} aria-label="한 개 빼기">➖</button>
+      <span className="qtynum" aria-label={n+'개'}>{n}개</span>
+      <button className="qtybtn" onClick={onPlus} aria-label="한 개 더 담기">➕</button>
+    </span>
+  );
+}
+
+function ProductCard({p, liked, qty, soldOut, onLike, onDetail, onAdd, onLess}){
+  const inBasket = qty>0;
   return (
     <div className={"product "+(inBasket?'selected-mark':'')}>
       <button className={"heart-btn "+(liked?'on':'')} aria-label="좋아요" onClick={onLike}>{liked?'❤️':'🤍'}</button>
@@ -3567,7 +3721,7 @@ function ProductCard({p, liked, inBasket, soldOut, onLike, onDetail, onAdd, onRe
       <div className="row" style={{gap:8}}>
         <button className="btn sm ghost" onClick={onDetail}>🔎 자세히</button>
         {inBasket
-          ? <button className="btn sm yellow" onClick={onRemove}>🧺 빼기</button>
+          ? <QtyBox n={qty} onMinus={onLess} onPlus={onAdd} />
           : <button className="btn sm mint" onClick={onAdd}>🧺 담기</button>}
       </div>
       {soldOut && <div className="soldout"><span>😌 품절</span><span style={{fontSize:'.7em'}}>다른 문구를 구경해요</span></div>}
@@ -3575,7 +3729,8 @@ function ProductCard({p, liked, inBasket, soldOut, onLike, onDetail, onAdd, onRe
   );
 }
 
-function DetailModal({p, liked, inBasket, onLike, onAdd, onClose}){
+function DetailModal({p, liked, qty, onLike, onAdd, onPlus, onLess, onClose}){
+  const inBasket = qty>0;
   useEffect(()=>{ speak(p.name+'. 가격은 '+won(p.price)+'이에요. '+p.use); }, []);
   return (
     <div className="overlay" onClick={onClose}>
@@ -3605,7 +3760,7 @@ function DetailModal({p, liked, inBasket, onLike, onAdd, onClose}){
           <button className={"btn "+(liked?'primary':'ghost')} onClick={onLike}>{liked?'❤️ 좋아요':'🤍 좋아요'}</button>
           {!inBasket
             ? <button className="btn mint" onClick={onAdd}>🧺 바구니에 담을래요</button>
-            : <span className="pill" style={{padding:'12px 16px'}}>✅ 담았어요</span>}
+            : <QtyBox n={qty} big onMinus={onLess} onPlus={onPlus} />}
           <button className="btn ghost" onClick={onClose}>👀 조금 더 구경할래요</button>
         </div>
       </div>
@@ -3618,28 +3773,43 @@ function DetailModal({p, liked, inBasket, onLike, onAdd, onClose}){
 ========================================================= */
 function ChooseStage({settings, likes, basket, setBasket, budget, total, remaining, maxItems, onBack, onNext, onRetry, onWalletReset, onChangeCharacter}){
   const inBasket = (id)=> basket.some(p=>p.id===id);
+  const qtyIn = (id)=> { const f = basket.find(p=>p.id===id); return f ? qtyOf(f) : 0; };
+  /* ⚠️ 개수 계산은 setBasket(b=> ...) 안에서 — 빠르게 두 번 눌러도 두 번 다 반영돼요.
+     (같은 이유를 구경하GO! 화면의 addBasket 위에도 적어 두었어요) */
   const addBasket = (p)=>{
-    if(inBasket(p.id)) return;
-    if(basket.length>=maxItems){ speak(`바구니에는 ${maxItems}개까지 담을 수 있어요.`); return; }
+    if(countOf(basket)>=maxItems){ speak(`바구니에는 ${maxItems}개까지 담을 수 있어요.`); return; }
     // 예산을 넘어도 막지 않아요. 좋아하는 문구를 자유롭게 담고, 필요하면 스스로 바꿔요.
-    setBasket(b=>[...b,p]); playSfx('drop');
+    setBasket(b=> b.some(x=>x.id===p.id)
+      ? b.map(x=> x.id===p.id ? {...x, qty:qtyOf(x)+1} : x)
+      : [...b, {...p, qty:1}]);
+    playSfx('drop');
+  };
+  /* ➖ : 2개 이상이면 하나 줄이고, 1개일 때 누르면 바구니에서 빼요 */
+  const lessBasket = (p)=>{
+    setBasket(b=>{
+      const cur = b.find(x=>x.id===p.id);
+      if(!cur) return b;
+      return qtyOf(cur) <= 1 ? b.filter(x=>x.id!==p.id)
+                             : b.map(x=> x.id===p.id ? {...x, qty:qtyOf(x)-1} : x);
+    });
+    playSfx('drop');
   };
   const removeBasket = (id)=> setBasket(b=>b.filter(p=>p.id!==id));
   return (
     <div className="col" style={{gap:10}}>
-      <BudgetBar name={settings.name} budget={budget} total={total} remaining={remaining} basketCount={basket.length} maxItems={maxItems} wallet={settings.walletView!==false} onWalletReset={onWalletReset} onChangeCharacter={onChangeCharacter} />
+      <BudgetBar name={settings.name} budget={budget} total={total} remaining={remaining} basketCount={countOf(basket)} maxItems={maxItems} wallet={settings.walletView!==false} onWalletReset={onWalletReset} onChangeCharacter={onChangeCharacter} />
       <StageScene stage="choose" />
 
       {/* 좋아한 문구가 있으면 두 칸을 나란히 (세로로 쌓으면 화면을 넘쳐요) */}
       <div className={"choose-cols"+(likes.length>0?' two':'')}>
       <div className="card" style={{padding:12}}>
-        <div className="section-title" style={{fontSize:'1.1em', margin:'0 0 6px'}}>🧺 지금 바구니 <Speak text={'바구니에 '+basket.length+'개, 합계 '+won(total)+'이에요.'} /></div>
+        <div className="section-title" style={{fontSize:'1.1em', margin:'0 0 6px'}}>🧺 지금 바구니 <Speak text={'바구니에 '+countOf(basket)+'개, 합계 '+won(total)+'이에요.'} /></div>
         {basket.length===0 && <div className="muted">아직 담은 문구가 없어요. 아래에서 골라 담아 보세요.</div>}
         {/* 좋아한 문구 칸이 옆에 함께 나오면 바구니는 3개씩, 없으면 8개씩 (측정으로 정한 값) */}
         <Paged items={basket} per={likes.length>0 ? 3 : 8} resetKey={'basket'+basket.length+'-'+(likes.length>0)} cls="choose-list" render={p=>(
             <div key={p.id} className="list-item">
               <span><b>{p.name}</b> · {won(p.price)}</span>
-              <button className="btn sm yellow" onClick={()=>removeBasket(p.id)}>🧺 빼기</button>
+              <QtyBox n={qtyOf(p)} onMinus={()=>lessBasket(p)} onPlus={()=>addBasket(p)} />
             </div>
           )} />
         {remaining<0 && <Hint kind="soft" style={{padding:'6px 12px', fontSize:'.95em'}} text="지갑보다 많아요. 물건을 하나 빼 볼까요?">💛 지갑보다 많아요. 물건을 하나 빼 볼까요?</Hint>}
@@ -3653,7 +3823,7 @@ function ChooseStage({settings, likes, basket, setBasket, budget, total, remaini
               <div key={p.id} className="list-item">
                 <span><b>{p.name}</b> · {won(p.price)}</span>
                 {inBasket(p.id)
-                  ? <span className="pill" style={{fontSize:'.82em'}}>✅ 담았어요</span>
+                  ? <QtyBox n={qtyIn(p.id)} onMinus={()=>lessBasket(p)} onPlus={()=>addBasket(p)} />
                   : <button className="btn sm mint" onClick={()=>addBasket(p)}>🧺 담기</button>}
               </div>
             )} />
@@ -3689,7 +3859,10 @@ function ScanStage({settings, basket, scanned, setScanned, budget, total, onDone
     });
   }, [basket]);
 
-  const validScanned = scanned.filter(p=> basket.some(b=>b.id===p.id));
+  /* 찍은 물건은 '바구니의 지금 상태'를 다시 찾아 씁니다 (2026-08-09).
+     찍어 둔 사본을 그대로 쓰면, 학생이 고르기로 되돌아가 개수를 바꿨을 때
+     옛 개수로 합계가 계산돼요. id로 다시 찾으면 언제나 지금 개수가 반영됩니다. */
+  const validScanned = scanned.map(s=> basket.find(b=>b.id===s.id)).filter(Boolean);
   const notScanned = basket.filter(p=>!validScanned.some(x=>x.id===p.id));
   const allDone = basket.length>0 && notScanned.length===0;   // '남은 것이 없다'로 판정 (개수 비교 X)
 
@@ -3820,7 +3993,7 @@ function ScanStage({settings, basket, scanned, setScanned, budget, total, onDone
           {/* 찍은 물건도 6개씩 나눠 보여 줘요 (스크롤 없이) */}
           <div style={{width:'100%', maxWidth:920}}>
             <Paged items={validScanned} per={6} followLast={true} resetKey="clerkscan" cls="choose-list" render={(p,i,now)=>(
-              <div key={p.id} className={"list-item"+(now?' now':'')}><span>{p.name}</span><b>{won(p.price)}</b></div>
+              <div key={p.id} className={"list-item"+(now?' now':'')}><span>{p.name}{qtyOf(p)>1 && <b className="qty-tag"> &times;{qtyOf(p)}</b>}</span><b>{won(p.price*qtyOf(p))}</b></div>
             )} />
           </div>
           {validScanned.length>0 && (
@@ -3852,6 +4025,7 @@ function ScanStage({settings, basket, scanned, setScanned, budget, total, onDone
                     <ProductImg key={p.id} p={p} mini={true} />
                   </span>
                   <b style={{whiteSpace:'nowrap'}}>{p.name}</b>
+                  {qtyOf(p)>1 && <b className="qty-tag">&times;{qtyOf(p)}</b>}
                   <span className="grab-hint" style={{flex:'0 0 auto', marginLeft:'auto'}}>✋ 끌기</span>
                 </div>
                 <div className="row" style={{alignItems:'center', gap:8, flexWrap:'nowrap'}}>
@@ -3890,7 +4064,7 @@ function ScanStage({settings, basket, scanned, setScanned, budget, total, onDone
                 followLast: 방금 찍은 물건이 있는 쪽으로 화면이 저절로 넘어가요 —
                 예전엔 찍을 때마다 1쪽으로 되돌아가서, 학생이 '다음'을 눌러도 소용없었어요. */}
             <Paged items={validScanned} per={4} followLast={true} resetKey="kioskscan" cls="col scanlist" render={(p,i,now)=>(
-              <div key={p.id} className={"list-item"+(now?' now':'')}><span>{p.name}</span><b>{won(p.price)}</b></div>
+              <div key={p.id} className={"list-item"+(now?' now':'')}><span>{p.name}{qtyOf(p)>1 && <b className="qty-tag"> &times;{qtyOf(p)}</b>}</span><b>{won(p.price*qtyOf(p))}</b></div>
             )} />
           </div>
           <hr/>
@@ -3984,7 +4158,7 @@ function PayStage({settings, basket, total, budget, onBack, onGoPay, checkoutMod
         <div className="section-title" style={{fontSize:'1.1em', margin:'0 0 6px'}}>
           {checkoutMode==='kiosk' ? '🖥️ 셀프 계산대' : '🧾 점원 계산대'} <Speak text={'모두 합해서 '+won(total)+'이에요.'} /></div>
         <Paged items={basket} per={6} resetKey={'pay'+basket.length} cls="choose-list" render={p=>(
-          <div key={p.id} className="list-item"><span>{p.name}</span><b>{won(p.price)}</b></div>
+          <div key={p.id} className="list-item"><span>{p.name}{qtyOf(p)>1 && <b className="qty-tag"> &times;{qtyOf(p)}</b>}</span><b>{won(p.price*qtyOf(p))}</b></div>
         )} />
         <hr/>
         <div className="row"><b>총 금액</b><span className="spacer"></span><b className="bignum" style={{color:'#c0392b'}}>{won(total)}</b></div>
@@ -4101,7 +4275,7 @@ function SimplePayCash({settings, total, onBack, onComplete}){
 
 /* ---- 현금 결제 (계산 연습 모드) ---- */
 function CashPay({settings, total, paidBills, setPaidBills, onBack, onRetry, onComplete}){
-  const BILLS=[1000,5000,10000];
+  const BILLS=[1000,5000,10000,50000];
   const paid = paidBills.reduce((a,b)=>a+b,0);
   const need = shortfall(paid, total);
   const chg = change(paid, total);
@@ -4153,7 +4327,7 @@ function CashPay({settings, total, paidBills, setPaidBills, onBack, onRetry, onC
           <div className="row" style={{gap:14, justifyContent:'center', flexWrap:'wrap'}}>
             {BILLS.map(b=>(
               <button key={b} className={"bill b"+b+(highlight(b)?' glow':'')+(dim(b)?' dim':'')} onClick={()=>add(b)}>
-                <div className="amt">{b.toLocaleString('ko-KR')}<span className="won">원</span></div>
+                <BillFace b={b} />
               </button>
             ))}
           </div>
@@ -4763,7 +4937,9 @@ function Receipt({settings, receipt}){
       <hr/>
       <div className="r-row"><span>학생</span><span>{settings.name||'우리 학생'}</span></div>
       <hr/>
-      {receipt.items.map(p=>(<div key={p.id} className="r-row"><span>{p.name}</span><span>{won(p.price)}</span></div>))}
+      {receipt.items.map(p=>(<div key={p.id} className="r-row">
+        <span>{p.name}{qtyOf(p)>1 && ' ×'+qtyOf(p)}</span><span>{won(p.price*qtyOf(p))}</span>
+      </div>))}
       <hr/>
       <div className="r-row"><b>총 금액</b><b>{won(receipt.total)}</b></div>
       <div className="r-row"><span>계산 방법</span><span>{receipt.method==='cash'?'현금':'카드'}</span></div>
@@ -5074,10 +5250,22 @@ function HelpFab({onClick}){
 function billsFor(amount){
   let a = Math.max(0, Math.round((amount||0)/1000)*1000);
   const out=[];
+  while(a>=50000){ out.push(50000); a-=50000; }
   while(a>=10000){ out.push(10000); a-=10000; }
   while(a>=5000){ out.push(5000); a-=5000; }
   while(a>=1000){ out.push(1000); a-=1000; }
   return out;
+}
+/* 큰 지폐 버튼('지폐를 눌러 계산대에 넣어요')의 얼굴.
+   이미지/지폐/1000.png 등이 있으면 그 그림을, 없으면 예전처럼 숫자만 보여 줘요.
+   ※ 그림 파일을 넣고 빼는 것만으로 바뀌므로 코드를 다시 고칠 필요가 없어요 (2026-08-09). */
+function BillFace({b}){
+  const srcs = imgList('이미지/지폐/'+b);
+  const [i, setI] = useState(0);
+  const [failed, setFailed] = useState(false);
+  if(!failed) return <img className="bill-img" src={srcs[i]} alt={won(b)}
+    onError={()=>{ if(i<srcs.length-1) setI(i+1); else setFailed(true); }} />;
+  return <div className="amt">{b.toLocaleString('ko-KR')}<span className="won">원</span></div>;
 }
 /* 지폐 그림 : 이미지/지폐/10000.png 등이 있으면 실제 화폐 사진, 없으면 지폐 모양 그래픽 */
 function MiniBill({b}){
@@ -5086,7 +5274,7 @@ function MiniBill({b}){
   const [failed, setFailed] = useState(false);
   if(!failed) return <img className="billnote-img" src={srcs[i]} alt={won(b)}
     onError={()=>{ if(i<srcs.length-1) setI(i+1); else setFailed(true); }} />;
-  const cls = b>=10000?'n10000':b>=5000?'n5000':'n1000';
+  const cls = b>=50000?'n50000':b>=10000?'n10000':b>=5000?'n5000':'n1000';
   return (
     <span className={"billnote "+cls} aria-label={won(b)}>
       <span className="billnote-num">{b.toLocaleString('ko-KR')}</span>
@@ -5664,30 +5852,29 @@ function ShoppingListPrint({settings, basket, budget, onBack}){
         <h1 style={{marginTop:0}}>🛒 실제 문구점 쇼핑 리스트</h1>
         <p className="muted">가상 문구점에서 골라 본 문구를 진짜 문구점에서 다시 사 보아요. (부모님과 함께)</p>
         <table style={{width:'100%', borderCollapse:'collapse'}}>
-          <thead><tr><th style={th}><span className="check-icon">✓</span>담기</th><th style={th}>문구</th><th style={{...th, textAlign:'right'}}>예상 가격</th></tr></thead>
+          <thead><tr><th style={th}><span className="check-icon">✓</span>담기</th><th style={th}>문구</th><th style={{...th, textAlign:'center'}}>개수</th><th style={{...th, textAlign:'right'}}>예상 가격</th></tr></thead>
           <tbody>
             {basket.map(p=>(
               <tr key={p.id} style={{borderBottom:'1px solid #eee'}}>
                 <td style={{padding:'10px'}}><span className="check-box">☐</span></td>
                 <td style={{padding:'10px'}}>{p.name}</td>
-                <td style={{padding:'10px', textAlign:'right'}}>{won(p.price)}</td>
+                <td style={{padding:'10px', textAlign:'center'}}>{qtyOf(p)}개</td>
+                <td style={{padding:'10px', textAlign:'right'}}>{won(p.price*qtyOf(p))}</td>
               </tr>
             ))}
           </tbody>
         </table>
         <hr/>
-        <div className="row"><b>준비할 돈 (예산)</b><span className="spacer"></span><b className="bignum">{won(budget)}</b></div>
+        <div className="row"><b>준비한 돈 (예산)</b><span className="spacer"></span><b className="bignum">{won(budget)}</b></div>
         <div className="row"><b>예상 합계</b><span className="spacer"></span><b className="bignum" style={{color:'#c0392b'}}>{won(total)}</b></div>
-        {/* 문장을 한 줄로 두고, 지폐 그림은 그 아래에 가운데로 */}
-        <div className="budget-envelope">
-          {/* 봉투에 금액을 글자로 함께 적어요 (2026-08).
-              위에 '준비할 돈'과 '예상 합계' 두 금액이 나란히 있어서, 지폐 그림만으로는
-              어느 쪽인지 헷갈렸어요. 봉투에 담는 돈은 '예산'(가져갈 돈)이지 '산 금액'이 아닙니다 —
-              실제 문구점 가격은 앱과 다를 수 있어 딱 맞춰 가면 모자랄 수 있고,
-              여유가 있어야 학생이 가게에서 마음을 바꿔 고를 자유도 생겨요. */}
-          <b style={{display:'block'}}>💰 예산 봉투 — {won(budget)}을 지갑에 넣어 가요</b>
+        {/* 지갑 — 고른 문구를 사는 데 드는 돈(예상 합계)을 지폐로 보여 줘요 (2026-08-09 선생님 지정).
+            예전엔 '예산 봉투'라는 이름으로 예산(가져갈 돈) 전체를 그렸는데,
+            학생이 실제로 계산대에서 내야 하는 돈은 '예상 합계'라서 그 금액으로 바꿨어요.
+            금액을 글자로도 함께 적습니다 — 위에 두 금액이 나란히 있어 지폐 그림만으로는 헷갈렸어요. */}
+        <div className="wallet-box">
+          <b style={{display:'block'}}>👛 지갑 — {won(total)}</b>
           <div className="wrap" style={{gap:8, marginTop:10, justifyContent:'center'}}>
-            {billsFor(budget).map((b,i)=><MiniBill key={i} b={b} />)}
+            {billsFor(total).map((b,i)=><MiniBill key={i} b={b} />)}
           </div>
         </div>
         {/* 순서대로 하나씩 체크하도록 한 줄에 하나씩 */}
