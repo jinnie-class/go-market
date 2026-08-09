@@ -700,6 +700,8 @@ body.quiet .confetti{display:none !important;}
 .ev-exit{border:2px solid var(--line);background:#fff;border-radius:14px;padding:9px 14px;
   font:inherit;font-weight:800;box-shadow:var(--shadow);cursor:pointer;white-space:nowrap;}
 .ev-exit.stay{background:#eaf7fe;border-color:#bcd9ea;color:#0b4a63;}
+/* '계산대로 가기'는 다음 단계로 넘어가는 단추라, 층 이동 단추들과 색으로 구분해요 */
+.ev-exit.checkout{background:#fff0d6;border-color:#f0c274;color:#7a4a06;}
 @media (max-height:860px){
   .facade-scene,.elev-scene{height:clamp(380px,64vh,580px);}
   /* 건물 정면은 위쪽 예산바를 감추므로 그만큼 그림을 크게 보여 줘요 (2026-07-28).
@@ -2320,6 +2322,7 @@ function App(){
           settings={settings} products={allProducts} likes={likes} setLikes={setLikes}
           basket={basket} setBasket={setBasket} budget={budget} total={total} remaining={remaining}
           maxItems={settings.maxItems} onNext={()=>advance('choose')} celebrate={celebrate}
+          onCheckout={()=>advance('scan')}
           onAddProduct={(p)=> setCustomProducts(l=>[...l, p])}
           onChangeCharacter={()=>{ stopSpeak(); setCharFromShopping(true); setScreen('charselect'); }}
           onWalletReset={settings.budgetByStudent!==false ? ()=>{ stopSpeak(); setScreen('walletsetup'); } : null} />}
@@ -2816,7 +2819,7 @@ function BudgetBar({name, budget, total, remaining, basketCount, maxItems, walle
 /* =========================================================
    ① 구경하GO!
 ========================================================= */
-function BrowseStage({settings, products, likes, setLikes, basket, setBasket, budget, total, remaining, maxItems, onNext, celebrate, onWalletReset, onChangeCharacter, onAddProduct}){
+function BrowseStage({settings, products, likes, setLikes, basket, setBasket, budget, total, remaining, maxItems, onNext, onCheckout, celebrate, onWalletReset, onChangeCharacter, onAddProduct}){
   const [floor, setFloor] = useState(()=> lastBrowse.floor);       // null=입장 전 | 1·2·3=층 파노라마
   const [scene, setScene] = useState(()=> lastBrowse.scene);       // facade(건물 정면) | elevator(엘리베이터)
   const [evFrom, setEvFrom] = useState(()=> lastBrowse.floor||1);  // 엘리베이터 출발 층
@@ -2882,10 +2885,14 @@ function BrowseStage({settings, products, likes, setLikes, basket, setBasket, bu
         }} />
       )}
 
+      {/* onCheckout : 다 골랐으면 층을 거치지 않고 엘리베이터에서 곧장 계산대로 (2026-08-09).
+          바구니가 비어 있으면 단추 자체를 만들지 않아요(null) — 누를 수 없는 단추를
+          보여 주는 것보다, 담은 뒤에 나타나는 편이 학생에게 덜 헷갈립니다. */}
       {!corner && !showLiked && floor==null && scene==='elevator' && (
         <ElevatorScene from={evFrom}
           onExit={()=>{ setScene('facade'); speak('밖으로 나왔어요.'); }}
           onStay={()=>{ setFloor(evFrom); speak(evFrom+'층으로 다시 왔어요.'); }}
+          onCheckout={ basket.length>0 ? onCheckout : null }
           onArrive={(no)=>{
             const f = FLOORS.find(x=>x.no===no);
             setFloor(no); speak(no+'층이에요. '+f.desc+' 코너가 있어요. 화면을 밀면서 구경해 보세요.');
@@ -3111,7 +3118,7 @@ function HomeFacade({onEnter}){
 }
 
 /* ---------- 게임풍 도입 ②: 엘리베이터 — 층 버튼을 눌러 이동해요 ---------- */
-function ElevatorScene({from, onArrive, onExit, onStay}){
+function ElevatorScene({from, onArrive, onExit, onStay, onCheckout}){
   const start = from || 1;
   const [phase, setPhase] = useState('closed');   // closed | opening | open | closing | moving | arriving
   const [target, setTarget] = useState(null);
@@ -3243,6 +3250,10 @@ function ElevatorScene({from, onArrive, onExit, onStay}){
           onClick={()=>call('up')} aria-label="위로 가는 엘리베이터 부르기">▲</button>
         <button className={"ev-call-btn down"+(called==='down'?' on':'')} disabled={phase!=='closed' || start===FLOORS[0].no}
           onClick={()=>call('down')} aria-label="아래로 가는 엘리베이터 부르기">▼</button>
+        {/* 다 골랐으면 층을 다시 거치지 않고 여기서 곧장 계산대로 가요 (2026-08-09).
+            바구니가 비어 있으면 아예 안 나옵니다(BrowseStage에서 null을 넘겨요). */}
+        {onCheckout && <button className="ev-exit checkout" onClick={()=>{ stopSpeak(); onCheckout(); }}
+          disabled={phase!=='closed' && phase!=='open'}>🧾 계산대로 가기</button>}
         {/* 마음이 바뀌면 타지 않고 원래 있던 층으로 그냥 돌아갈 수 있어요 */}
         {onStay && <button className="ev-exit stay" onClick={onStay} disabled={phase!=='closed' && phase!=='open'}>↩️ {start}층으로 돌아가기</button>}
         <button className="ev-exit" onClick={onExit} disabled={phase!=='closed' && phase!=='open'}>🚪 밖으로 나가기</button>
