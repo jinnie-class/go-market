@@ -1256,116 +1256,166 @@ const { useState, useEffect, useRef, useCallback } = React;
 ========================================================= */
 
 /* ---------- 상품 데이터 (수정은 여기서!) ---------- */
+/* ─────────────────────────────────────────────────────────────
+   상품 목록 — 2026-08-09 전면 정리
+
+   ■ 코너의 경계 (이 기준으로 물건을 나눠요. 헷갈리면 여기로 돌아오세요)
+     쓰기      글씨를 '쓰는' 도구            (다이소 필기구)
+     그리기    색을 '칠하는' 도구와 종이     (다이소 미술)
+     꾸미기    이미 있는 것에 '붙여서' 예쁘게 (다이소 데코·스티커)
+     만들기    '재료'를 가지고 자유롭게       (다이소 만들기 재료)
+     키트      '완성품이 정해진' 세트         (다이소 DIY 키트)
+     놀이하기  가지고 '노는' 것               (다이소 완구)
+     모으기    '모으고 간직'하는 것           (다이소 노트·다이어리)
+     정리하기  '담고 세우고 분류'하는 것      (다이소 파일·수납)
+
+   ■ 늘어놓는 순서 = 갈래순 (가나다순 아님)
+     코너마다 6개씩 두 쪽이고, 쪽마다 갈래가 하나씩 옵니다.
+     가나다순으로 하면 가장 기본인 연필이 2쪽으로 밀리고 펜이 1·2쪽으로 찢어져요.
+     실제 다이소도 갈래로 진열하니, 앱에서 찾는 방법이 매장에서 그대로 통합니다.
+     갈래 안에서는 '익숙한 것 → 재미있는 것' 순 (볼펜 → 젤펜 → 향기 볼펜).
+     쪽 이름은 아래 CORNER_PAGES 참고.
+
+   ■ 값은 다이소처럼 1,000 / 2,000 / 3,000원
+     500원짜리는 넣지 마세요. 이 앱은 '지폐'로 계산을 배우는데 동전이 필요해집니다.
+
+   ■ 사진이 아직 없는 12개 (이름 옆 ※)
+     사진이 없으면 이모지가 대신 나와요. 다이소에서 찍어
+     이미지\상품\<이름>.png 로 넣으면 바로 바뀝니다.
+   ───────────────────────────────────────────────────────────── */
 const PRODUCTS = [
-  // 쓰기
-  { id:'w1', corner:'write', name:'무지개 색연필', price:1000, emoji:'✏️', color:'알록달록', feat:'일곱 색이 예뻐요', use:'한 자루로 무지개 색이 나와요. 그림도 그리고 색칠도 해요.' },
-  { id:'w2', corner:'write', name:'동물 지우개', price:1000, emoji:'🧸', color:'노랑·연두·분홍 형광', feat:'귀여운 동물 모양', use:'기린·악어·돼지 모양 지우개예요. 부드럽게 잘 지워져요.' },
-  { id:'w3', corner:'write', name:'파스텔 형광펜', price:2000, emoji:'🖍️', color:'파스텔', feat:'부드러운 색', use:'파스텔 6색 형광펜이에요. 중요한 곳을 부드러운 색으로 칠해요.' },
-  { id:'w4', corner:'write', name:'알록달록 젤펜', price:2000, emoji:'🖊️', color:'알록달록', feat:'여러 색이 예뻐요', use:'알록달록 색깔 젤펜이에요. 부드럽게 써져요.' },
-  { id:'w5', corner:'write', name:'만년 연필', price:1000, emoji:'✏️', color:'회색', feat:'눌러서 써요', use:'눌러서 심을 내어 쓰는 연필이에요. 깎지 않고 계속 써요.' },
-  { id:'w6', corner:'write', name:'향기 볼펜', price:2000, emoji:'🖊️', color:'5색', feat:'과일 향이 나요', use:'향기가 나는 색깔 펜 5자루예요. 향기를 맡으며 써요.' },
-  { id:'w7', corner:'write', name:'샤프 세트', price:2000, emoji:'✏️', color:'검정색', feat:'깎지 않아요', use:'깎지 않는 샤프예요. 샤프심도 같이 들어 있어요.' },
-  { id:'w8', corner:'write', name:'네임펜', price:1000, emoji:'🖋️', color:'검정색', feat:'또렷하게 써요', use:'굵고 진한 네임펜이에요. 이름을 또렷하게 써요.' },
+  // ── 쓰기 ── 1쪽 '쓰는 것' / 2쪽 '돕는 것'
   { id:'w9', corner:'write', name:'연필 세트', price:1000, emoji:'✏️', color:'알록달록', feat:'부드러워요(택1)', use:'잡기 쉽고 부드럽게 잘 써져요.' },
+  { id:'w7', corner:'write', name:'샤프 세트', price:2000, emoji:'✏️', color:'검정색', feat:'깎지 않아요', use:'깎지 않는 샤프예요. 샤프심도 같이 들어 있어요.' },
+  { id:'w13', corner:'write', name:'볼펜', price:1000, emoji:'🖊️', color:'검정·파랑·빨강', feat:'3자루', use:'검정·파랑·빨강 볼펜 세 자루예요. 또박또박 잘 써져요.' },   // ※
+  { id:'w4', corner:'write', name:'알록달록 젤펜', price:2000, emoji:'🖊️', color:'알록달록', feat:'여러 색이 예뻐요', use:'알록달록 색깔 젤펜이에요. 부드럽게 써져요.' },
+  { id:'w6', corner:'write', name:'향기 볼펜', price:2000, emoji:'🖊️', color:'5색', feat:'과일 향이 나요', use:'향기가 나는 색깔 펜 5자루예요. 향기를 맡으며 써요.' },
+  { id:'w8', corner:'write', name:'네임펜', price:1000, emoji:'🖋️', color:'검정색', feat:'또렷하게 써요', use:'굵고 진한 네임펜이에요. 이름을 또렷하게 써요.' },
+  { id:'w2', corner:'write', name:'동물 지우개', price:1000, emoji:'🧸', color:'노랑·연두·분홍 형광', feat:'귀여운 동물 모양', use:'기린·악어·돼지 모양 지우개예요. 부드럽게 잘 지워져요.' },
   /* 이모지 ⬜(흰 네모)는 꾸미기 놀이터 도장·가방 그림에서 흰 바탕에 묻혀 '빈 칸'처럼 보였어요 → 🧽 */
   { id:'w10', corner:'write', name:'미니 수정테이프', price:1000, emoji:'🧽', color:'하얀색', feat:'슥슥 덮어요', use:'틀린 글씨를 하얗게 덮어요. 슥 밀면 깨끗해져요.' },
+  { id:'w3', corner:'write', name:'파스텔 형광펜', price:2000, emoji:'🖍️', color:'파스텔', feat:'부드러운 색', use:'파스텔 6색 형광펜이에요. 중요한 곳을 부드러운 색으로 칠해요.' },
   { id:'w11', corner:'write', name:'연필깎이', price:1000, emoji:'🌀', color:'하얀색', feat:'빙글빙글 깎아요', use:'귀여운 젖소 모양 연필깎이예요. 연필을 뾰족하게 깎아요.' },
-  { id:'w12', corner:'write', name:'알록달록 볼펜 세트', price:2000, emoji:'🖊️', color:'4색', feat:'색이 네 가지', use:'한 자루에 검정·빨강·파랑·초록 4색이 들어 있어요. 색을 바꿔가며 써요.' },
-  // 그리기
-  { id:'d1', corner:'draw', name:'미니 스케치북', price:2000, emoji:'📓', color:'하늘색', feat:'작고 튼튼해요', use:'작은 스케치북이에요. 어디서나 그림을 그려요.' },
+  { id:'w14', corner:'write', name:'15cm 자', price:1000, emoji:'📏', color:'투명', feat:'곧은 줄을 그어요', use:'곧은 줄을 그을 때 써요. 길이도 재어 봐요.' },   // ※
+  { id:'w15', corner:'write', name:'스프링 노트', price:1000, emoji:'📓', color:'여러 색', feat:'줄이 그어져 있어요', use:'줄이 그어진 노트예요. 글씨를 줄 맞춰 써요.' },   // ※
+
+  // ── 그리기 ── 1쪽 '색칠하는 것' / 2쪽 '종이와 붓'
   { id:'d2', corner:'draw', name:'색연필 세트', price:2000, emoji:'🖍️', color:'12색', feat:'색이 많아요', use:'돌려서 쓰는 색연필 12색이에요. 깎지 않고 색칠해요.' },
   { id:'d3', corner:'draw', name:'사인펜 세트', price:3000, emoji:'🖊️', color:'12색', feat:'선명한 색', use:'선명한 색 수성 사인펜 12색이에요. 또렷한 그림을 그려요.' },
-  { id:'d4', corner:'draw', name:'물감 세트', price:2000, emoji:'🎨', color:'무지개', feat:'붓과 물감', use:'물만 묻혀 바로 칠하는 고체 물감이에요. 붓으로 넓게 칠해요.' },
   { id:'d5', corner:'draw', name:'크레파스', price:2000, emoji:'🖍️', color:'8색', feat:'부드러워요', use:'부드럽게 발리는 크레용이에요. 슥슥 색칠해요.' },
-  { id:'d6', corner:'draw', name:'8절 도화지', price:1000, emoji:'📄', color:'하얀색', feat:'큰 종이', use:'두꺼운 8절 도화지예요. 10장이 들어 있어요.' },
-  { id:'d7', corner:'draw', name:'수채 물감', price:3000, emoji:'🎨', color:'12색', feat:'물로 칠해요', use:'물에 섞어 칠하는 수채 물감 12색이에요. 맑게 색칠해요.' },
-  { id:'d8', corner:'draw', name:'붓펜 세트', price:2000, emoji:'🖌️', color:'검정', feat:'굵고 가늘게', use:'붓처럼 써지는 붓펜이에요. 굵고 가는 글씨와 그림을 그려요.' },
-  { id:'d9', corner:'draw', name:'스크래치 페이퍼', price:1000, emoji:'🌌', color:'검정색', feat:'긁으면 무지개', use:'막대로 긁으면 무지개색이 나와요. 긁어서 그림을 그려요.' },
-  { id:'d10', corner:'draw', name:'컬러링북', price:2000, emoji:'📖', color:'알록달록', feat:'색칠하는 책', use:'귀여운 그림에 색칠하는 책이에요. 예쁘게 칠해요.' },
   { id:'d11', corner:'draw', name:'오일파스텔', price:3000, emoji:'🖍️', color:'18색', feat:'진하고 부드러워요', use:'진하고 부드러운 오일파스텔이에요. 색을 진하게 칠해요.' },
+  { id:'d8', corner:'draw', name:'붓펜 세트', price:2000, emoji:'🖌️', color:'검정', feat:'굵고 가늘게', use:'붓처럼 써지는 붓펜이에요. 굵고 가는 글씨와 그림을 그려요.' },
+  { id:'d7', corner:'draw', name:'수채 물감', price:3000, emoji:'🎨', color:'12색', feat:'물로 칠해요', use:'물에 섞어 칠하는 수채 물감 12색이에요. 맑게 색칠해요.' },
+  { id:'d13', corner:'draw', name:'붓 세트', price:1000, emoji:'🖌️', color:'나무색', feat:'굵기 세 가지', use:'굵기가 다른 붓 세 자루예요. 물감을 칠할 때 써요.' },   // ※
   { id:'d12', corner:'draw', name:'8절 스케치북', price:2000, emoji:'📒', color:'하얀색', feat:'큰 종이', use:'큰 스케치북이에요. 크게 마음껏 그려요.' },
-  // 꾸미기
-  { id:'c1', corner:'deco', name:'별 스티커', price:1000, emoji:'⭐', color:'무지개색', feat:'크고 작은 별', use:'크고 작은 무지개 별 스티커예요. 수첩과 편지를 꾸며요.' },
+  { id:'d1', corner:'draw', name:'미니 스케치북', price:1000, emoji:'📓', color:'하늘색', feat:'작고 튼튼해요', use:'작은 스케치북이에요. 어디서나 그림을 그려요.' },
+  { id:'d6', corner:'draw', name:'8절 도화지', price:1000, emoji:'📄', color:'하얀색', feat:'큰 종이', use:'두꺼운 8절 도화지예요. 10장이 들어 있어요.' },
+  { id:'d10', corner:'draw', name:'컬러링북', price:2000, emoji:'📖', color:'알록달록', feat:'색칠하는 책', use:'귀여운 그림에 색칠하는 책이에요. 예쁘게 칠해요.' },
+  { id:'d9', corner:'draw', name:'스크래치 페이퍼', price:1000, emoji:'🌌', color:'검정색', feat:'긁으면 무지개', use:'막대로 긁으면 무지개색이 나와요. 긁어서 그림을 그려요.' },
+
+  // ── 꾸미기 ── 1쪽 '붙이는 것' / 2쪽 '테이프와 도구'
   { id:'c2', corner:'deco', name:'동물 스티커', price:1000, emoji:'🐰', color:'알록달록', feat:'귀여운 동물', use:'귀여운 동물 데코 스티커예요. 좋아하는 곳에 붙여요.' },
-  { id:'c3', corner:'deco', name:'마스킹테이프', price:2000, emoji:'🎀', color:'알록달록', feat:'캐릭터 무늬', use:'캐릭터의 다양한 모습이 있는 테이프예요. 노트를 꾸며요.' },
-  { id:'c4', corner:'deco', name:'다꾸 메모지', price:2000, emoji:'🗒️', color:'파스텔', feat:'다이어리 꾸미기', use:'티켓 모양 다꾸 메모지예요. 다이어리를 꾸미며 적어요.' },
   { id:'c5', corner:'deco', name:'반짝이 스티커', price:1000, emoji:'✨', color:'반짝이', feat:'반짝반짝', use:'반짝이는 홀로그램 스티커예요. 반짝반짝 꾸며요.' },
   { id:'c6', corner:'deco', name:'보석 스티커', price:1000, emoji:'💎', color:'분홍색', feat:'하트 모양', use:'분홍 하트 모양 보석 스티커예요. 반짝이게 꾸며요.' },
-  { id:'c7', corner:'deco', name:'하트 테이프', price:2000, emoji:'🎀', color:'분홍색', feat:'하트 무늬', use:'하트 무늬 테이프예요. 예쁘게 붙여 꾸며요.' },
-  { id:'c8', corner:'deco', name:'꾸미기 핀셋', price:1000, emoji:'📎', color:'분홍색', feat:'귀여운 집게', use:'작은 스티커를 콕 집어 정확히 붙이는 핀셋이에요.' },
   { id:'c9', corner:'deco', name:'입체 스티커', price:2000, emoji:'🌟', color:'알록달록', feat:'볼록 튀어나와요', use:'볼록 튀어나온 입체 스티커예요. 도톰하게 꾸며요.' },
   { id:'c10', corner:'deco', name:'야광 별 스티커', price:1000, emoji:'🌙', color:'연두색', feat:'밤에 빛나요', use:'밤에 빛나는 야광 스티커예요. 방을 별밤처럼 꾸며요.' },
-  { id:'c11', corner:'deco', name:'포토카드 꾸미기 세트', price:2000, emoji:'📸', color:'반짝이', feat:'카드 꾸미기', use:'좋아하는 카드를 꾸미는 세트예요. 스티커로 예쁘게 꾸며요.' },
+  { id:'c13', corner:'deco', name:'씰 스티커 세트', price:1000, emoji:'🏷️', color:'여러 색', feat:'여러 장(택1)', use:'여러 장이 들어 있는 스티커예요. 노트와 편지를 꾸며요.' },   // ※
+  { id:'c3', corner:'deco', name:'마스킹테이프', price:2000, emoji:'🎀', color:'알록달록', feat:'캐릭터 무늬', use:'캐릭터의 다양한 모습이 있는 테이프예요. 노트를 꾸며요.' },
+  { id:'c7', corner:'deco', name:'하트 테이프', price:2000, emoji:'🎀', color:'분홍색', feat:'하트 무늬', use:'하트 무늬 테이프예요. 예쁘게 붙여 꾸며요.' },
   { id:'c12', corner:'deco', name:'리본 세트', price:1000, emoji:'🎀', color:'분홍색', feat:'예쁜 리본', use:'길고 예쁜 리본이에요. 선물과 소품을 묶어 꾸며요.' },
-  // 만들기
+  { id:'c14', corner:'deco', name:'글리터 펜', price:2000, emoji:'✨', color:'반짝이', feat:'반짝이는 선', use:'반짝이가 든 펜이에요. 그림 위에 반짝이는 선을 그려 꾸며요.' },   // ※
+  { id:'c15', corner:'deco', name:'꾸미기 도장 세트', price:2000, emoji:'🔖', color:'여러 색', feat:'콕콕 찍어요', use:'모양 도장을 콕콕 찍어 꾸며요.' },   // ※
+  { id:'c11', corner:'deco', name:'포토카드 꾸미기 세트', price:2000, emoji:'📸', color:'반짝이', feat:'카드 꾸미기', use:'좋아하는 카드를 꾸미는 세트예요. 스티커로 예쁘게 꾸며요.' },
+
+  // ── 만들기 ── 1쪽 '종이와 풀' / 2쪽 '실과 비즈'  (재료만! 완성품 세트는 키트로)
   { id:'m1', corner:'make', name:'색종이 세트', price:1000, emoji:'🟪', color:'무지개', feat:'여러 색 종이', use:'여러 색 색종이예요. 접고 오려서 만들어요.' },
-  { id:'m2', corner:'make', name:'클레이 세트', price:3000, emoji:'🧱', color:'알록달록', feat:'말랑말랑', use:'말랑말랑 클레이 6색이에요. 조물조물 모양을 만들어요.' },
-  { id:'m3', corner:'make', name:'구슬 팔찌 만들기 세트', price:3000, emoji:'📿', color:'알록달록', feat:'예쁜 구슬', use:'여러 모양 구슬을 실에 꿰어 팔찌를 만들어요.' },
   { id:'m4', corner:'make', name:'종이 비행기 접기 만들기', price:2000, emoji:'✈️', color:'알록달록', feat:'선 따라 접어요', use:'멋진 종이비행기를 접는 세트예요. 접어서 날려요.' },
-  { id:'m5', corner:'make', name:'반짝이 풀', price:2000, emoji:'🌟', color:'반짝이', feat:'반짝이는 풀', use:'반짝이가 든 풀이에요. 짜서 반짝반짝 꾸며 만들어요.' },
   { id:'m6', corner:'make', name:'가위 풀 세트', price:2000, emoji:'✂️', color:'파란색', feat:'가위와 풀 묶음', use:'가위와 풀이에요. 오리고 붙여서 만들어요.' },
-  { id:'m7', corner:'make', name:'디폼 블럭 만들기 세트', price:2000, emoji:'🧶', color:'알록달록', feat:'12색 미니블럭', use:'알록달록 미니 블럭이에요. 끼워서 다양한 모양을 만들어요.' },
-  { id:'m8', corner:'make', name:'모루 인형 만들기 세트', price:3000, emoji:'🧸', color:'갈색', feat:'구부러져요', use:'뽀글뽀글 모루 털실로 나만의 인형을 만들어요.' },
-  { id:'m9', corner:'make', name:'슬라임 만들기', price:2000, emoji:'🫧', color:'투명색', feat:'말랑 슬라임', use:'쭈욱 늘어나는 슬라임을 직접 만들어요. 조물조물 놀아요.' },
-  { id:'m10', corner:'make', name:'우드스틱 세트', price:1000, emoji:'🪵', color:'나무색·무지개색', feat:'나무 막대', use:'나무 막대예요. 붙여서 집·액자 같은 걸 만들어요.' },
-  { id:'m11', corner:'make', name:'입체 종이 공작', price:2000, emoji:'🧸', color:'알록달록', feat:'접어서 세워요', use:'종이를 접고 붙여 귀여운 인형을 세워 만들어요.' },
+  { id:'m5', corner:'make', name:'반짝이 풀', price:2000, emoji:'🌟', color:'반짝이', feat:'반짝이는 풀', use:'반짝이가 든 풀이에요. 짜서 반짝반짝 꾸며 만들어요.' },
+  { id:'m2', corner:'make', name:'클레이 세트', price:3000, emoji:'🧱', color:'알록달록', feat:'말랑말랑', use:'말랑말랑 클레이 6색이에요. 조물조물 모양을 만들어요.' },
+  { id:'k12', corner:'make', name:'슈링클스 키트', price:1000, emoji:'🐥', color:'불투명', feat:'구우면 작아져요', use:'슈링클스 종이에 원하는 그림을 그려서 구워 만들어요.' },
   { id:'m12', corner:'make', name:'털실', price:1000, emoji:'🧶', color:'알록달록', feat:'보들보들 실', use:'부드러운 뜨개실이에요. 실로 가방·소품을 만들어요.' },
-  // 모으기
-  /* 모으기 코너 — 실물 사진에 맞춰 2026-07 갱신 (이미지 파일명도 같이 바꿨어요) */
+  { id:'m13', corner:'make', name:'모루', price:1000, emoji:'🧵', color:'알록달록', feat:'구부러지는 철사', use:'보들보들한 철사예요. 구부려서 모양을 만들어요.' },   // ※
+  { id:'m14', corner:'make', name:'폼폼이', price:1000, emoji:'🔴', color:'알록달록', feat:'보송보송 방울', use:'보송보송한 방울이에요. 붙여서 꾸미고 만들어요.' },   // ※
+  { id:'k3', corner:'make', name:'공예비즈 세트', price:2000, emoji:'📿', color:'여러 색', feat:'튤립·하트·별·보석 4종(택1)', use:'구슬을 꿰어 만들어요.' },
+  { id:'k2', corner:'make', name:'양말목 공예 세트', price:3000, emoji:'🧶', color:'알록달록', feat:'스마일 데이지 3종(택1)', use:'양말목을 엮어 소품을 만들어요.' },
+  { id:'m10', corner:'make', name:'우드스틱 세트', price:1000, emoji:'🪵', color:'나무색·무지개색', feat:'나무 막대', use:'나무 막대예요. 붙여서 집·액자 같은 걸 만들어요.' },
+
+  // ── 모으기 ── 1쪽 '적고 모아요' / 2쪽 '카드와 굿즈'
   { id:'g1', corner:'gather', name:'캐릭터 수첩', price:1000, emoji:'📔', color:'여러 색', feat:'5종(택1)', use:'손에 쥘 수 있는 작은 공책이에요. 적고 싶은 것을 적어요.' },
   { id:'g2', corner:'gather', name:'미니 메모지', price:1000, emoji:'📝', color:'여러 색', feat:'5종(택1) 작고 귀여워요', use:'한 장씩 떼어서 메모하고 모아요.' },
-  { id:'g3', corner:'gather', name:'캐릭터 미니 카드', price:1000, emoji:'🐻', color:'브라운·핑크', feat:'귀여운 곰과 토끼', use:'미니 카드에 나의 마음을 담아요.' },
-  { id:'g4', corner:'gather', name:'캐릭터 스티커북', price:2000, emoji:'📚', color:'여러 색', feat:'7종(택1) 10장씩', use:'좋아하는 캐릭터 스티커를 모아요.' },
-  { id:'g5', corner:'gather', name:'포토카드 슬리브', price:1000, emoji:'🖼️', color:'여러 색', feat:'다양한 무늬(택1)', use:'포토카드 슬리브를 모아 포토카드를 다양하게 꾸며요.' },
-  { id:'g6', corner:'gather', name:'핀뱃지 세트', price:1000, emoji:'📛', color:'여러 색', feat:'다양한 무늬(택1)', use:'좋아하는 핀뱃지를 모아요.' },
-  { id:'g7', corner:'gather', name:'미니 피규어', price:3000, emoji:'🧸', color:'여러 색', feat:'다양한 캐릭터(택1)', use:'좋아하는 미니 피규어를 모아요.' },
   { id:'g8', corner:'gather', name:'접착 메모지', price:1000, emoji:'📒', color:'여러 색', feat:'붙였다 떼요(택1)', use:'메모를 적어서 붙여요. 다양한 접착 메모지를 모아요.' },
+  { id:'c4', corner:'gather', name:'다꾸 메모지', price:2000, emoji:'🗒️', color:'파스텔', feat:'다이어리 꾸미기', use:'티켓 모양 다꾸 메모지예요. 다이어리를 꾸미며 적어요.' },
+  { id:'g13', corner:'gather', name:'다이어리', price:3000, emoji:'📔', color:'여러 색', feat:'날짜마다 적어요', use:'날짜마다 적는 수첩이에요. 하루하루 적어 모아요.' },   // ※
+  { id:'g4', corner:'gather', name:'캐릭터 스티커북', price:2000, emoji:'📚', color:'여러 색', feat:'7종(택1) 10장씩', use:'좋아하는 캐릭터 스티커를 모아요.' },
+  { id:'g3', corner:'gather', name:'캐릭터 미니 카드', price:1000, emoji:'🐻', color:'브라운·핑크', feat:'귀여운 곰과 토끼', use:'미니 카드에 나의 마음을 담아요.' },
+  { id:'g5', corner:'gather', name:'포토카드 슬리브', price:1000, emoji:'🖼️', color:'여러 색', feat:'다양한 무늬(택1)', use:'포토카드 슬리브를 모아 포토카드를 다양하게 꾸며요.' },
   { id:'g9', corner:'gather', name:'포토카드 앨범', price:2000, emoji:'📘', color:'여러 색', feat:'포토카드를 쏙쏙(택1)', use:'좋아하는 포토카드를 모아 보관해요.' },
-  { id:'g10', corner:'gather', name:'모양 클립 세트', price:1000, emoji:'📎', color:'여러 색', feat:'책갈피·서류 정리용(택1)', use:'클립을 꽂아 묶거나 표시해요. 다양한 모양 클립을 모아요.' },
+  { id:'g6', corner:'gather', name:'핀뱃지 세트', price:1000, emoji:'📛', color:'여러 색', feat:'다양한 무늬(택1)', use:'좋아하는 핀뱃지를 모아요.' },
   { id:'g11', corner:'gather', name:'인형 키링', price:2000, emoji:'🪆', color:'여러 색', feat:'10종(택1) 가방에 달아요', use:'마음에 드는 인형 키링을 모아요.' },
-  { id:'g12', corner:'gather', name:'비즈 세트', price:1000, emoji:'🔮', color:'알록달록', feat:'예쁜 비즈(택1)', use:'여러 가지 예쁜 비즈를 모아요. 팔찌를 만들 때도 써요.' },
-  // 정리하기
-  /* 정리하기 코너 — 실물 사진에 맞춰 2026-07 갱신 (이미지 파일명도 같이 바꿨어요) */
-  { id:'o1', corner:'organize', name:'클리어 화일', price:3000, emoji:'📁', color:'여러 색', feat:'반투명(택1)', use:'중요한 서류를 넣어서 보관해요.' },
+  { id:'g7', corner:'gather', name:'미니 피규어', price:3000, emoji:'🧸', color:'여러 색', feat:'다양한 캐릭터(택1)', use:'좋아하는 미니 피규어를 모아요.' },
+
+  // ── 정리하기 ── 1쪽 '담아요' / 2쪽 '끼우고 붙여요'
   { id:'o2', corner:'organize', name:'캐릭터 필통', price:2000, emoji:'👝', color:'여러 색', feat:'필기구 보관(택1)', use:'다양한 필기구를 보관해요.' },
-  { id:'o3', corner:'organize', name:'필름 인덱스', price:1000, emoji:'🔖', color:'알록달록', feat:'붙였다 떼요(택1)', use:'중요한 부분에 붙여 표시해요.' },
-  { id:'o4', corner:'organize', name:'다용도 보관함', price:1000, emoji:'🗃️', color:'여러 색', feat:'작은 것 보관(택1)', use:'작은 문구를 종류별로 정리해요.' },
   { id:'o5', corner:'organize', name:'지퍼 파우치', price:2000, emoji:'👛', color:'여러 색', feat:'지퍼로 열어요(택1)', use:'작은 문구류를 넣어 보관해요.' },
-  { id:'o6', corner:'organize', name:'연필꽂이', price:1000, emoji:'✏️', color:'여러 색', feat:'연필을 세워요(택1)', use:'연필을 세워서 정리해요.' },
+  { id:'o4', corner:'organize', name:'다용도 보관함', price:1000, emoji:'🗃️', color:'여러 색', feat:'작은 것 보관(택1)', use:'작은 문구를 종류별로 정리해요.' },
+  { id:'o9', corner:'organize', name:'수납 바구니', price:2000, emoji:'🧺', color:'여러 색', feat:'가볍고 튼튼(택1)', use:'물건을 담아 정리해요.' },
   { id:'o7', corner:'organize', name:'미니 서랍장', price:3000, emoji:'🗄️', color:'여러 색', feat:'다양한 칸(택1)', use:'서랍마다 문구를 나누어 정리해요.' },
-  { id:'o8', corner:'organize', name:'책꽂이', price:5000, emoji:'📚', color:'여러 색', feat:'책을 꽂아요(택1)', use:'책을 꽂아서 정리해요.' },
-  { id:'o9', corner:'organize', name:'수납 바구니', price:5000, emoji:'🧺', color:'여러 색', feat:'가볍고 튼튼(택1)', use:'물건을 담아 정리해요.' },
+  { id:'o6', corner:'organize', name:'연필꽂이', price:1000, emoji:'✏️', color:'여러 색', feat:'연필을 세워요(택1)', use:'연필을 세워서 정리해요.' },
+  { id:'o1', corner:'organize', name:'클리어 화일', price:3000, emoji:'📁', color:'여러 색', feat:'반투명(택1)', use:'중요한 서류를 넣어서 보관해요.' },
+  { id:'o13', corner:'organize', name:'파일 홀더', price:1000, emoji:'🗂️', color:'여러 색', feat:'종이를 끼워요', use:'학습지를 끼워서 정리해요.' },   // ※
+  { id:'o3', corner:'organize', name:'필름 인덱스', price:1000, emoji:'🔖', color:'알록달록', feat:'붙였다 떼요(택1)', use:'중요한 부분에 붙여 표시해요.' },
   { id:'o10', corner:'organize', name:'라벨 스티커', price:1000, emoji:'🏷️', color:'하얀색', feat:'이름을 붙여요(택1)', use:'물건에 이름표를 붙여 정리해요.' },
-  { id:'o11', corner:'organize', name:'미니 휴지통', price:1000, emoji:'🗑️', color:'여러 색', feat:'작아요(택1)', use:'책상 위에 두고 작은 쓰레기를 정리해요.' },
+  { id:'g10', corner:'organize', name:'모양 클립 세트', price:1000, emoji:'📎', color:'여러 색', feat:'책갈피·서류 정리용(택1)', use:'클립을 꽂아 묶거나 표시해요.' },
   { id:'o12', corner:'organize', name:'북스탠드', price:1000, emoji:'📖', color:'여러 색', feat:'책을 세워요(택1)', use:'책이 쓰러지지 않게 받쳐 세워요.' },
-  // 키트 (DIY)
-  /* 키트 코너 — 실물 사진에 맞춰 이름·색·특징을 2026-07 갱신 (이미지 파일명도 같이 바꿨어요) */
-  { id:'k1', corner:'kit', name:'조립블록 세트', price:3000, emoji:'🧱', color:'알록달록', feat:'4종(택1)', use:'블록을 끼워 멋지게 완성해요.' },
-  { id:'k2', corner:'kit', name:'양말목 공예 세트', price:3000, emoji:'🧶', color:'알록달록', feat:'스마일 데이지 3종(택1)', use:'양말목을 엮어 소품을 만들어요.' },
-  { id:'k3', corner:'kit', name:'공예비즈 세트', price:2000, emoji:'📿', color:'여러 색', feat:'튤립·하트·별·보석 4종(택1)', use:'구슬을 꿰어 만들어요.' },
-  { id:'k4', corner:'kit', name:'보석십자수 키트', price:3000, emoji:'🧵', color:'여러 색', feat:'보석십자수 액자', use:'번호에 맞는 비즈를 하나씩 붙여가며 완성해요.' },
-  { id:'k5', corner:'kit', name:'미니어처 하우스', price:3000, emoji:'🏠', color:'나무색', feat:'나무로 만든 작은 집', use:'비즈, 마카, 색연필 등 다양하게 나만의 집을 꾸며요.' },
-  { id:'k6', corner:'kit', name:'프라모델 조립', price:3000, emoji:'🦕', color:'여러 색', feat:'조립식 태엽 공룡', use:'태엽을 감으면 공룡이 앞으로 걸어가요.' },
-  { id:'k7', corner:'kit', name:'양모펠트 키링 키트', price:3000, emoji:'🧸', color:'다양', feat:'청사과·햄버거·푸딩 3종(택1)', use:'양모를 콕콕 찔러 디저트를 만들어요.' },
+
+  // ── 키트 ── 1쪽 '작게 시작해요'(싼 것) / 2쪽 '오래 만들어요'
+  /* 키트는 3,000원이 많아 5,000원으로는 하나밖에 못 사요. 실제 다이소도 그렇습니다.
+     값을 억지로 낮추기보다 '키트 코너에 갈 땐 지갑에 만 원'처럼 안내하세요.
+     1쪽에 싼 것을 모아 두어서, 5,000원이어도 1쪽에서는 고를 수 있습니다. */
   { id:'k8', corner:'kit', name:'볼펜 꾸미기 키트', price:1000, emoji:'🖊️', color:'여러 색', feat:'5종(택1)', use:'비즈를 꿰어 볼펜을 꾸며요.' },
+  { id:'k11', corner:'kit', name:'매듭끈 키링 키트', price:1000, emoji:'🔑', color:'여러 색', feat:'꽃 2종(택1)', use:'배배 꼬아 나만의 스트랩 키링을 만들어요.' },
+  { id:'m7', corner:'kit', name:'디폼 블럭 만들기 세트', price:2000, emoji:'🧶', color:'알록달록', feat:'12색 미니블럭', use:'알록달록 미니 블럭이에요. 끼워서 다양한 모양을 만들어요.' },
+  { id:'m3', corner:'kit', name:'구슬 팔찌 만들기 세트', price:3000, emoji:'📿', color:'알록달록', feat:'예쁜 구슬', use:'여러 모양 구슬을 실에 꿰어 팔찌를 만들어요.' },
+  { id:'k7', corner:'kit', name:'양모펠트 키링 키트', price:3000, emoji:'🧸', color:'다양', feat:'청사과·햄버거·푸딩 3종(택1)', use:'양모를 콕콕 찔러 디저트를 만들어요.' },
+  { id:'k1', corner:'kit', name:'조립블록 세트', price:3000, emoji:'🧱', color:'알록달록', feat:'4종(택1)', use:'블록을 끼워 멋지게 완성해요.' },
+  { id:'m8', corner:'kit', name:'모루 인형 만들기 세트', price:3000, emoji:'🧸', color:'갈색', feat:'구부러져요', use:'뽀글뽀글 모루 털실로 나만의 인형을 만들어요.' },
+  { id:'k4', corner:'kit', name:'보석십자수 키트', price:3000, emoji:'🧵', color:'여러 색', feat:'보석십자수 액자', use:'번호에 맞는 비즈를 하나씩 붙여가며 완성해요.' },
   { id:'k9', corner:'kit', name:'석고 방향제 키트', price:3000, emoji:'🕯️', color:'흰색', feat:'몰드 2종(택1)', use:'석고 가루로 라벤더 향이 나는 방향제를 만들어요.' },
   { id:'k10', corner:'kit', name:'무드등 만들기 키트', price:3000, emoji:'🏮', color:'여러 색', feat:'한옥 종이 초롱등', use:'한옥 모양 초롱등을 만들어요. 불을 켜면 은은하게 빛나요.' },
-  { id:'k11', corner:'kit', name:'매듭끈 키링 키트', price:1000, emoji:'🔑', color:'여러 색', feat:'꽃 2종(택1)', use:'배배 꼬아 나만의 스트랩 키링을 만들어요.' },
-  { id:'k12', corner:'kit', name:'슈링클스 키트', price:1000, emoji:'🐥', color:'불투명', feat:'구우면 작아져요', use:'슈링클스 종이에 원하는 그림을 그려서 구워 만들어요.' },
-  // 놀이하기 (완구·게임)
-  /* 놀이하기 코너 — 실물 사진에 맞춰 2026-07 갱신 (이미지 파일명도 같이 바꿨어요 · 10종) */
+  { id:'k6', corner:'kit', name:'프라모델 조립', price:3000, emoji:'🦕', color:'여러 색', feat:'조립식 태엽 공룡', use:'태엽을 감으면 공룡이 앞으로 걸어가요.' },
+  { id:'k5', corner:'kit', name:'미니어처 하우스', price:3000, emoji:'🏠', color:'나무색', feat:'나무로 만든 작은 집', use:'비즈, 마카, 색연필 등 다양하게 나만의 집을 꾸며요.' },
+
+  // ── 놀이하기 ── 1쪽 '함께 놀아요' / 2쪽 '혼자서도 놀아요'
+  /* 값을 크게 내렸어요 (2026-08-09). 예전엔 12개 중 4개가 5,000~6,000원이라
+     5,000원 예산으로는 하나만 사면 끝이라 '여러 개 골라 보기'가 안 됐습니다. */
   { id:'t1', corner:'toy', name:'미니 보드게임', price:2000, emoji:'🎲', color:'알록달록', feat:'3종(택1)', use:'고른 미니 보드게임으로 친구와 놀아요.' },
   { id:'t2', corner:'toy', name:'조각 퍼즐', price:2000, emoji:'🧩', color:'여러 색', feat:'8종(택1)', use:'마음에 드는 캐릭터 퍼즐 조각을 맞춰요.' },
-  { id:'t3', corner:'toy', name:'팽이 배틀 게임', price:5000, emoji:'🌀', color:'알록달록', feat:'줄을 당겨 발사해요', use:'줄을 당기면 팽이가 발사되는 배틀 게임이에요.' },
-  { id:'t4', corner:'toy', name:'요요', price:1000, emoji:'🪀', color:'알록달록', feat:'위아래로', use:'요요를 하며 놀아요.' },
-  { id:'t5', corner:'toy', name:'비눗방울', price:1000, emoji:'🫧', color:'투명', feat:'미니 버블스틱', use:'비눗방울을 후 불며 놀아요.' },
-  { id:'t6', corner:'toy', name:'미니 볼링 놀이 세트', price:6000, emoji:'🎳', color:'알록달록', feat:'핀 쓰러뜨리기', use:'볼링을 굴리며 놀아요.' },
-  { id:'t7', corner:'toy', name:'말랑 스퀴시', price:4000, emoji:'🧁', color:'알록달록', feat:'6종 랜덤', use:'쪼물쪼물 만질 수 있는 귀여운 모찌 인형 스퀴시예요.' },
+  { id:'t11', corner:'toy', name:'카드 게임', price:2000, emoji:'🃏', color:'여러 색', feat:'둘이서도 여럿이서도(택1)', use:'친구와 함께 카드를 내며 놀아요.' },   // ※
+  { id:'t9', corner:'toy', name:'젠가 게임', price:3000, emoji:'🗼', color:'나무색', feat:'하나씩 쌓고 빼기', use:'친구와 나무쌓기 놀이를 해요.' },
   /* ⚪(흰 동그라미)도 같은 이유로 안 보였어요 → 🔵 */
   { id:'t8', corner:'toy', name:'공기놀이', price:2000, emoji:'🔵', color:'알록달록', feat:'3세트 15알 공기', use:'공기놀이를 하며 놀아요.' },
-  { id:'t9', corner:'toy', name:'젠가 게임', price:5000, emoji:'🗼', color:'나무색', feat:'하나씩 쌓고 빼기', use:'친구와 나무쌓기 놀이를 해요.' },
   { id:'t10', corner:'toy', name:'딱지 세트', price:1000, emoji:'🎴', color:'여러 색', feat:'2종(택1)', use:'재미있는 그림 딱지로 딱지치기를 해요.' },
+  { id:'t4', corner:'toy', name:'요요', price:1000, emoji:'🪀', color:'알록달록', feat:'위아래로', use:'요요를 하며 놀아요.' },
+  { id:'t3', corner:'toy', name:'팽이 배틀 게임', price:3000, emoji:'🌀', color:'알록달록', feat:'줄을 당겨 발사해요', use:'줄을 당기면 팽이가 발사되는 배틀 게임이에요.' },
+  { id:'t6', corner:'toy', name:'미니 볼링 놀이 세트', price:3000, emoji:'🎳', color:'알록달록', feat:'핀 쓰러뜨리기', use:'볼링을 굴리며 놀아요.' },
+  { id:'t5', corner:'toy', name:'비눗방울', price:1000, emoji:'🫧', color:'투명', feat:'미니 버블스틱', use:'비눗방울을 후 불며 놀아요.' },
+  { id:'t7', corner:'toy', name:'말랑 스퀴시', price:2000, emoji:'🧁', color:'알록달록', feat:'6종 랜덤', use:'쪼물쪼물 만질 수 있는 귀여운 모찌 인형 스퀴시예요.' },
+  { id:'m9', corner:'toy', name:'슬라임 만들기', price:2000, emoji:'🫧', color:'투명색', feat:'말랑 슬라임', use:'쭈욱 늘어나는 슬라임을 직접 만들어요. 조물조물 놀아요.' },
 ];
+
+/* 코너마다 '쪽 이름' — 쪽 넘기는 곳의 '1 / 2 쪽' 자리에 대신 나와요 (2026-08-09).
+   글자를 새로 늘리지 않고, 학생이 '다음 쪽에 뭐가 있지?' 하고 보는 자리에 갈래를 알려 줍니다. */
+const CORNER_PAGES = {
+  write:    ['쓰는 것', '돕는 것'],
+  draw:     ['색칠하는 것', '종이와 붓'],
+  deco:     ['붙이는 것', '테이프와 도구'],
+  make:     ['종이와 풀', '실과 비즈'],
+  gather:   ['적고 모아요', '카드와 굿즈'],
+  organize: ['담아요', '끼우고 붙여요'],
+  kit:      ['작게 시작해요', '오래 만들어요'],
+  toy:      ['함께 놀아요', '혼자서도 놀아요'],
+};
 
 const CORNERS = [
   { id:'write',    icon:'✏️', title:'쓰기',    desc:'예쁜 글씨를 써요.' },
@@ -2939,6 +2989,7 @@ function BrowseStage({settings, products, likes, setLikes, basket, setBasket, bu
           </div>
           {list.length===0 && <div className="card muted">아직 담긴 문구가 없어요.</div>}
           <Paged items={list} per={6} resetKey={(corner||'')+'_'+(showLiked?'liked':'')}
+            pageNames={corner ? CORNER_PAGES[corner] : null}
             render={p=>(
               <ProductCard key={p.id} p={p} liked={likes.some(x=>x.id===p.id)} qty={qtyIn(p.id)}
                 soldOut={settings.soldOut && p.id==='d4'} onLike={()=>toggleLike(p)}
@@ -2969,7 +3020,11 @@ function BrowseStage({settings, products, likes, setLikes, basket, setBasket, bu
 }
 
 /* ---------- 상품 페이지 넘기기 (스크롤 대신 ◀ 이전 / 다음 ▶ 버튼) ---------- */
-function Paged({items, per, resetKey, render, cls, followLast}){
+/* pageNames : 쪽마다 붙일 이름 (예: ['쓰는 것','돕는 것']) — 2026-08-09
+   원래 '1 / 2 쪽'이라고만 적혀 있던 자리를 '쓰는 것 (1/2)'로 바꿔 씁니다.
+   글자를 새로 늘리지 않으면서, 학생이 '다음 쪽엔 뭐가 있지?' 하고 보는
+   바로 그 자리에서 갈래를 알려 줄 수 있어요. 안 넘기면 예전 그대로 나와요. */
+function Paged({items, per, resetKey, render, cls, followLast, pageNames}){
   const [page, setPage] = useState(0);
   const p = per||4;
   const pages = Math.max(1, Math.ceil(items.length/p));
@@ -2988,7 +3043,11 @@ function Paged({items, per, resetKey, render, cls, followLast}){
           <button className="btn sky" disabled={cur===0}
             onClick={()=>{ setPage(cur-1); speak('앞을 봐요.'); }}>◀ 이전</button>
           <span className="col" style={{alignItems:'center', gap:6}}>
-            <span className="pager-info">{cur+1} / {pages} 쪽</span>
+            <span className="pager-info">{
+              (pageNames && pageNames[cur])
+                ? pageNames[cur]+' ('+(cur+1)+'/'+pages+')'
+                : (cur+1)+' / '+pages+' 쪽'
+            }</span>
             <span className="pager-dots">{Array.from({length:pages}).map((_,i)=><i key={i} className={i===cur?'on':''}></i>)}</span>
           </span>
           <button className="btn primary" disabled={cur===pages-1}
