@@ -2901,7 +2901,6 @@ function BrowseStage({settings, products, likes, setLikes, basket, setBasket, bu
           보여 주는 것보다, 담은 뒤에 나타나는 편이 학생에게 덜 헷갈립니다. */}
       {!corner && !showLiked && floor==null && scene==='elevator' && (
         <ElevatorScene from={evFrom}
-          onExit={()=>{ setScene('facade'); speak('밖으로 나왔어요.'); }}
           onStay={()=>{ setFloor(evFrom); speak(evFrom+'층으로 다시 왔어요.'); }}
           onCheckout={ basket.length>0 ? onCheckout : null }
           onArrive={(no)=>{
@@ -3129,7 +3128,7 @@ function HomeFacade({onEnter}){
 }
 
 /* ---------- 게임풍 도입 ②: 엘리베이터 — 층 버튼을 눌러 이동해요 ---------- */
-function ElevatorScene({from, onArrive, onExit, onStay, onCheckout}){
+function ElevatorScene({from, onArrive, onStay, onCheckout}){
   const start = from || 1;
   const [phase, setPhase] = useState('closed');   // closed | opening | open | closing | moving | arriving
   const [target, setTarget] = useState(null);
@@ -3261,13 +3260,16 @@ function ElevatorScene({from, onArrive, onExit, onStay, onCheckout}){
           onClick={()=>call('up')} aria-label="위로 가는 엘리베이터 부르기">▲</button>
         <button className={"ev-call-btn down"+(called==='down'?' on':'')} disabled={phase!=='closed' || start===FLOORS[0].no}
           onClick={()=>call('down')} aria-label="아래로 가는 엘리베이터 부르기">▼</button>
-        {/* 다 골랐으면 층을 다시 거치지 않고 여기서 곧장 계산대로 가요 (2026-08-09).
-            바구니가 비어 있으면 아예 안 나옵니다(BrowseStage에서 null을 넘겨요). */}
+        {/* 아래 단추는 딱 두 가지 뜻만 남겼어요 — '다 샀다'와 '더 볼래' (2026-08-09).
+            예전엔 '🚪 밖으로 나가기'가 하나 더 있었는데 뺐습니다:
+            밖에는 할 일이 없고(다시 들어오려면 문을 또 눌러야 함), 잘못 누르면 흐름이 끊겼어요.
+            실제 엘리베이터에도 '밖으로 나가는 버튼'은 없습니다.
+            문 열고 들어가기를 다시 해 보려면 처음 화면에서 새로 시작하면 돼요. */}
+        {/* 다 골랐으면 층을 다시 거치지 않고 여기서 곧장 계산대로 — 바구니가 비면 안 나와요 */}
         {onCheckout && <button className="ev-exit checkout" onClick={()=>{ stopSpeak(); onCheckout(); }}
           disabled={phase!=='closed' && phase!=='open'}>🧾 계산대로 가기</button>}
         {/* 마음이 바뀌면 타지 않고 원래 있던 층으로 그냥 돌아갈 수 있어요 */}
         {onStay && <button className="ev-exit stay" onClick={onStay} disabled={phase!=='closed' && phase!=='open'}>↩️ {start}층으로 돌아가기</button>}
-        <button className="ev-exit" onClick={onExit} disabled={phase!=='closed' && phase!=='open'}>🚪 밖으로 나가기</button>
       </div>
 
       <div className="scene-hint">{msg}</div>
