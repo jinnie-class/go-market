@@ -1284,20 +1284,23 @@ const { useState, useEffect, useRef, useCallback } = React;
      이미지\상품\<이름>.png 로 넣으면 바로 바뀝니다.
    ───────────────────────────────────────────────────────────── */
 const PRODUCTS = [
-  // ── 쓰기 ── 1쪽 '쓰는 것' / 2쪽 '돕는 것'
-  { id:'w9', corner:'write', name:'연필 세트', price:1000, emoji:'✏️', color:'알록달록', feat:'부드러워요(택1)', use:'잡기 쉽고 부드럽게 잘 써져요.' },
-  { id:'w7', corner:'write', name:'샤프 세트', price:2000, emoji:'✏️', color:'검정색', feat:'깎지 않아요', use:'깎지 않는 샤프예요. 샤프심도 같이 들어 있어요.' },
-  { id:'w13', corner:'write', name:'볼펜', price:1000, emoji:'🖊️', color:'검정·파랑·빨강', feat:'3자루', use:'검정·파랑·빨강 볼펜 세 자루예요. 또박또박 잘 써져요.' },   // ※
-  { id:'w4', corner:'write', name:'알록달록 젤펜', price:2000, emoji:'🖊️', color:'알록달록', feat:'여러 색이 예뻐요', use:'알록달록 색깔 젤펜이에요. 부드럽게 써져요.' },
-  { id:'w6', corner:'write', name:'향기 볼펜', price:2000, emoji:'🖊️', color:'5색', feat:'과일 향이 나요', use:'향기가 나는 색깔 펜 5자루예요. 향기를 맡으며 써요.' },
-  { id:'w8', corner:'write', name:'네임펜', price:1000, emoji:'🖋️', color:'검정색', feat:'또렷하게 써요', use:'굵고 진한 네임펜이에요. 이름을 또렷하게 써요.' },
-  { id:'w2', corner:'write', name:'동물 지우개', price:1000, emoji:'🧸', color:'노랑·연두·분홍 형광', feat:'귀여운 동물 모양', use:'기린·악어·돼지 모양 지우개예요. 부드럽게 잘 지워져요.' },
+  /* ── 쓰기 ── 실물(다이소) 기준으로 2026-08-10 전면 교체. 사진 12장 모두 있음.
+     1쪽 '쓰는 것'  : 연필 셋(깎아 쓰는 것 → 샤프 → 안 깎는 것) + 펜 셋(볼펜 → 젤펜 → 네임펜)
+     2쪽 '돕는 것'  : 고치기 둘 → 깎기 → 표시 → 종이 → 자
+     ⚠️ 연필 셋의 feat(특징)은 서로 다르게 쓰세요. 안 그러면 학생 눈에 다 같아 보여요. */
+  { id:'w9', corner:'write', name:'연필(10자루)', price:1000, emoji:'✏️', color:'알록달록', feat:'깎아서 써요(HB·B·2B·4B 택1)', use:'부드럽게 잘 써지고 지우개로 지워져요.' },
+  { id:'w7', corner:'write', name:'샤프 세트', price:2000, emoji:'✏️', color:'검정', feat:'샤프심을 넣어서 써요', use:'샤프심도 같이 들어 있어요.' },
+  { id:'w5', corner:'write', name:'만년 연필', price:1000, emoji:'✏️', color:'회색(고양이 장식)', feat:'깎을 필요 없어요', use:'심이 잘 닳지 않아 오래 사용해요. 한 손으로 달칵 눌러 사용해요.' },
+  { id:'w13', corner:'write', name:'볼펜(3색)', price:1000, emoji:'🖊️', color:'검정·파랑·빨강', feat:'부드럽게 글씨가 써져요', use:'검정·빨강·파랑이 함께 있는 3색 볼펜이에요.' },
+  { id:'w4', corner:'write', name:'젤펜 세트', price:2000, emoji:'🖊️', color:'알록달록', feat:'젤펜 8개', use:'가볍고 여러 색으로 글씨를 써요.' },
+  { id:'w8', corner:'write', name:'네임펜', price:1000, emoji:'🖋️', color:'흑색', feat:'트윈 네임펜 3개', use:'번짐이 적고 쉽게 지워지지 않아요. 가는 심, 굵은 심을 골라서 사용해요.' },
+  { id:'w2', corner:'write', name:'지우개', price:1000, emoji:'🧼', color:'흰색', feat:'소프트 지우개 8개', use:'깨끗하게 부드럽게 지워져요.' },
   /* 이모지 ⬜(흰 네모)는 꾸미기 놀이터 도장·가방 그림에서 흰 바탕에 묻혀 '빈 칸'처럼 보였어요 → 🧽 */
-  { id:'w10', corner:'write', name:'미니 수정테이프', price:1000, emoji:'🧽', color:'하얀색', feat:'슥슥 덮어요', use:'틀린 글씨를 하얗게 덮어요. 슥 밀면 깨끗해져요.' },
-  { id:'w3', corner:'write', name:'파스텔 형광펜', price:2000, emoji:'🖍️', color:'파스텔', feat:'부드러운 색', use:'파스텔 6색 형광펜이에요. 중요한 곳을 부드러운 색으로 칠해요.' },
-  { id:'w11', corner:'write', name:'연필깎이', price:1000, emoji:'🌀', color:'하얀색', feat:'빙글빙글 깎아요', use:'귀여운 젖소 모양 연필깎이예요. 연필을 뾰족하게 깎아요.' },
-  { id:'w14', corner:'write', name:'15cm 자', price:1000, emoji:'📏', color:'투명', feat:'곧은 줄을 그어요', use:'곧은 줄을 그을 때 써요. 길이도 재어 봐요.' },   // ※
-  { id:'w15', corner:'write', name:'스프링 노트', price:1000, emoji:'📓', color:'여러 색', feat:'줄이 그어져 있어요', use:'줄이 그어진 노트예요. 글씨를 줄 맞춰 써요.' },   // ※
+  { id:'w10', corner:'write', name:'수정테이프', price:1000, emoji:'🧽', color:'흰색', feat:'한 손에 쏙 들어와요(3개)', use:'틀린 글씨를 하얗게 덮어요.' },
+  { id:'w11', corner:'write', name:'연필깎이', price:3000, emoji:'🌀', color:'베이지', feat:'2가지 타입(뭉툭·뾰족)', use:'구멍에 연필을 꽂고 손잡이를 돌려요. 뭉툭하게도, 뾰족하게도 깎아요.' },
+  { id:'w3', corner:'write', name:'형광펜', price:2000, emoji:'🖍️', color:'파스텔 6색', feat:'중요한 곳에 색을 칠해요', use:'중요한 글자에 색을 칠해 눈에 잘 띄게 해 줘요.' },
+  { id:'w15', corner:'write', name:'스프링 노트', price:2000, emoji:'📓', color:'회색 · B5 60매', feat:'스프링으로 넘기기 쉬워요', use:'적당한 줄 간격으로 깔끔하게 필기할 수 있어요.' },
+  { id:'w14', corner:'write', name:'15cm 자', price:1000, emoji:'📏', color:'알록달록', feat:'톰과 제리 캐릭터(2개입)', use:'밑줄을 그을 때 사용해요. 필통에 넣어 다니기 좋은 크기예요.' },
 
   // ── 그리기 ── 1쪽 '색칠하는 것' / 2쪽 '종이와 붓'
   { id:'d2', corner:'draw', name:'색연필 세트', price:2000, emoji:'🖍️', color:'12색', feat:'색이 많아요', use:'돌려서 쓰는 색연필 12색이에요. 깎지 않고 색칠해요.' },
