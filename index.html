@@ -1320,19 +1320,24 @@ const PRODUCTS = [
   { id:'d10', corner:'draw', name:'컬러링북', price:2000, emoji:'📖', color:'알록달록', feat:'색칠하는 책', use:'귀여운 도안에 색칠하는 책이에요. 알록달록 다양하게 색칠해요.' },
   { id:'d9', corner:'draw', name:'스크래치 페이퍼', price:1000, emoji:'🌌', color:'알록달록', feat:'긁으면 나타나는 무지개', use:'나무 막대를 긁어서 그림을 그려요.' },
 
-  // ── 꾸미기 ── 1쪽 '붙이는 것' / 2쪽 '테이프와 도구'
-  { id:'c2', corner:'deco', name:'동물 스티커', price:1000, emoji:'🐰', color:'알록달록', feat:'귀여운 동물', use:'귀여운 동물 데코 스티커예요. 좋아하는 곳에 붙여요.' },
-  { id:'c5', corner:'deco', name:'반짝이 스티커', price:1000, emoji:'✨', color:'반짝이', feat:'반짝반짝', use:'반짝이는 홀로그램 스티커예요. 반짝반짝 꾸며요.' },
-  { id:'c6', corner:'deco', name:'보석 스티커', price:1000, emoji:'💎', color:'분홍색', feat:'하트 모양', use:'분홍 하트 모양 보석 스티커예요. 반짝이게 꾸며요.' },
-  { id:'c9', corner:'deco', name:'입체 스티커', price:2000, emoji:'🌟', color:'알록달록', feat:'볼록 튀어나와요', use:'볼록 튀어나온 입체 스티커예요. 도톰하게 꾸며요.' },
-  { id:'c10', corner:'deco', name:'야광 별 스티커', price:1000, emoji:'🌙', color:'연두색', feat:'밤에 빛나요', use:'밤에 빛나는 야광 스티커예요. 방을 별밤처럼 꾸며요.' },
-  { id:'c13', corner:'deco', name:'씰 스티커 세트', price:1000, emoji:'🏷️', color:'여러 색', feat:'여러 장(택1)', use:'여러 장이 들어 있는 스티커예요. 노트와 편지를 꾸며요.' },   // ※
-  { id:'c3', corner:'deco', name:'마스킹테이프', price:2000, emoji:'🎀', color:'알록달록', feat:'캐릭터 무늬', use:'캐릭터의 다양한 모습이 있는 테이프예요. 노트를 꾸며요.' },
-  { id:'c7', corner:'deco', name:'하트 테이프', price:2000, emoji:'🎀', color:'분홍색', feat:'하트 무늬', use:'하트 무늬 테이프예요. 예쁘게 붙여 꾸며요.' },
-  { id:'c12', corner:'deco', name:'리본 세트', price:1000, emoji:'🎀', color:'분홍색', feat:'예쁜 리본', use:'길고 예쁜 리본이에요. 선물과 소품을 묶어 꾸며요.' },
-  { id:'c14', corner:'deco', name:'글리터 펜', price:2000, emoji:'✨', color:'반짝이', feat:'반짝이는 선', use:'반짝이가 든 펜이에요. 그림 위에 반짝이는 선을 그려 꾸며요.' },   // ※
-  { id:'c15', corner:'deco', name:'꾸미기 도장 세트', price:2000, emoji:'🔖', color:'여러 색', feat:'콕콕 찍어요', use:'모양 도장을 콕콕 찍어 꾸며요.' },   // ※
-  { id:'c11', corner:'deco', name:'포토카드 꾸미기 세트', price:2000, emoji:'📸', color:'반짝이', feat:'카드 꾸미기', use:'좋아하는 카드를 꾸미는 세트예요. 스티커로 예쁘게 꾸며요.' },
+  /* ── 꾸미기 ── 실물(다이소) 기준으로 2026-08-10 전면 교체. 사진 12장 모두 있음.
+     1쪽 '스티커로 꾸며요' : 스티커 다섯 + 다꾸용 핀셋
+       ※ 핀셋은 '스티커를 집는 도구'라 스티커 옆에 두어야 쓰임이 보여요.
+         따로 떼어 놓으면 "이걸 사서 뭘 하지?"가 안 떠오릅니다.
+     2쪽 '테이프와 놀이'   : 테이프 셋 → 도장 → 스티커 놀이 둘
+       ※ '스티커 옷 입히기'와 '얼굴 꾸미기'는 3,000원짜리 놀이 세트라 끝에 나란히. */
+  { id:'c2', corner:'deco', name:'동물 스티커', price:1000, emoji:'🐰', color:'알록달록 · 2종(택1)', feat:'고양이, 강아지', use:'귀여운 반려동물 스티커예요. 공책이나 다이어리를 귀엽게 꾸며요.' },
+  { id:'c10', corner:'deco', name:'야광 별 스티커', price:1000, emoji:'🌙', color:'야광색', feat:'반짝반짝!', use:'어두운 밤이 되면 밝은 야광빛으로 빛나요. 별과 달 우주 스티커를 붙여 꾸며요.' },
+  { id:'c6', corner:'deco', name:'보석 스티커', price:1000, emoji:'💎', color:'알록달록 혼합', feat:'도형·하트·꽃 모양', use:'휴대폰 케이스, 다이어리, 탑로더 등을 화려하게 꾸며요.' },
+  { id:'c9', corner:'deco', name:'3D 입체 스티커', price:1000, emoji:'🌟', color:'핑크빛', feat:'물방울이 맺힌 듯 볼록해요', use:'포토카드나 폰 케이스 등을 장식하며 꾸며요.' },
+  { id:'c13', corner:'deco', name:'모조지 스티커팩', price:1000, emoji:'📚', color:'갈색톤', feat:'독서 꾸미기', use:'읽은 책을 기록하는 스티커예요. 책 스티커로 나만의 책꽂이를 꾸며요.' },
+  { id:'c8', corner:'deco', name:'다꾸용 핀셋', price:1000, emoji:'📎', color:'핑크 · 딸기 장식', feat:'지문 없이 깔끔하게', use:'조그만 스티커도 정교하게 집어요. 다이어리를 깔끔하게 꾸밀 수 있어요.' },
+  { id:'c3', corner:'deco', name:'동물 마스킹테이프', price:1000, emoji:'🎀', color:'알록달록 · 4종 세트(택1)', feat:'넓이가 여러 가지', use:'선물 포장, 편지, 다이어리 속을 귀엽게 꾸며요.' },
+  { id:'c7', corner:'deco', name:'다이컷 테이프', price:1000, emoji:'🐬', color:'알록달록 · 반짝반짝 돌고래', feat:'톡 떼어 붙여요', use:'오려낼 필요 없이 간편하게 붙여요. 다이어리, 편지를 꾸밀 때 사용해요.' },
+  { id:'c12', corner:'deco', name:'데코 테이프', price:1000, emoji:'🖍️', color:'노랑·초록', feat:'색연필 질감', use:'글씨 위에 그어 쓰는 데코 테이프예요. 색연필로 직접 칠한 듯해요.' },
+  { id:'c15', corner:'deco', name:'모양 스탬프', price:1000, emoji:'🔖', color:'3색 · 도장 3종 세트', feat:'구름·하트·별 모양', use:'달력, 다이어리, 노트 등에 콕콕 찍어요.' },
+  { id:'c16', corner:'deco', name:'스티커 옷 입히기', price:3000, emoji:'👗', color:'알록달록', feat:'다양한 동물 그림', use:'매력 만점 코디 스티커로 패셔니스타 동물 친구들을 꾸며요.' },
+  { id:'c17', corner:'deco', name:'스티커 얼굴 꾸미기', price:3000, emoji:'😊', color:'알록달록', feat:'눈·코·입 스티커', use:'눈, 코, 입 스티커로 나만의 재미있는 얼굴을 꾸며요.' },
 
   // ── 만들기 ── 1쪽 '종이와 풀' / 2쪽 '실과 비즈'  (재료만! 완성품 세트는 키트로)
   { id:'m1', corner:'make', name:'색종이 세트', price:1000, emoji:'🟪', color:'무지개', feat:'여러 색 종이', use:'여러 색 색종이예요. 접고 오려서 만들어요.' },
@@ -1416,7 +1421,7 @@ const PRODUCTS = [
 const CORNER_PAGES = {
   write:    ['쓰는 것', '돕는 것'],
   draw:     ['색칠하는 것', '종이와 도구'],
-  deco:     ['붙이는 것', '테이프와 도구'],
+  deco:     ['스티커로 꾸며요', '테이프와 놀이'],
   make:     ['종이와 풀', '실과 비즈'],
   gather:   ['적고 모아요', '카드와 굿즈'],
   organize: ['담아요', '끼우고 붙여요'],
