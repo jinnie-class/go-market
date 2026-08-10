@@ -1356,33 +1356,37 @@ const PRODUCTS = [
   { id:'m21', corner:'make', name:'리본', price:1000, emoji:'🎀', color:'핑크 · 장식용', feat:'묶어서 꾸며요', use:'리본으로 다양한 모양을 만들어서 꾸며요.' },
   { id:'m5', corner:'make', name:'반짝이 풀', price:1000, emoji:'🌟', color:'다양 · 3개씩 3종(택1)', feat:'반짝이 입자가 들어 있어요', use:'작고 선명한 반짝이 입자가 들어 있는 풀이에요.' },
 
-  // ── 모으기 ── 1쪽 '적고 모아요' / 2쪽 '카드와 굿즈'
-  { id:'g1', corner:'gather', name:'캐릭터 수첩', price:1000, emoji:'📔', color:'여러 색', feat:'5종(택1)', use:'손에 쥘 수 있는 작은 공책이에요. 적고 싶은 것을 적어요.' },
-  { id:'g2', corner:'gather', name:'미니 메모지', price:1000, emoji:'📝', color:'여러 색', feat:'5종(택1) 작고 귀여워요', use:'한 장씩 떼어서 메모하고 모아요.' },
-  { id:'g8', corner:'gather', name:'접착 메모지', price:1000, emoji:'📒', color:'여러 색', feat:'붙였다 떼요(택1)', use:'메모를 적어서 붙여요. 다양한 접착 메모지를 모아요.' },
-  { id:'c4', corner:'gather', name:'다꾸 메모지', price:2000, emoji:'🗒️', color:'파스텔', feat:'다이어리 꾸미기', use:'티켓 모양 다꾸 메모지예요. 다이어리를 꾸미며 적어요.' },
-  { id:'g13', corner:'gather', name:'다이어리', price:3000, emoji:'📔', color:'여러 색', feat:'날짜마다 적어요', use:'날짜마다 적는 수첩이에요. 하루하루 적어 모아요.' },   // ※
-  { id:'g4', corner:'gather', name:'캐릭터 스티커북', price:2000, emoji:'📚', color:'여러 색', feat:'7종(택1) 10장씩', use:'좋아하는 캐릭터 스티커를 모아요.' },
-  { id:'g3', corner:'gather', name:'캐릭터 미니 카드', price:1000, emoji:'🐻', color:'브라운·핑크', feat:'귀여운 곰과 토끼', use:'미니 카드에 나의 마음을 담아요.' },
-  { id:'g5', corner:'gather', name:'포토카드 슬리브', price:1000, emoji:'🖼️', color:'여러 색', feat:'다양한 무늬(택1)', use:'포토카드 슬리브를 모아 포토카드를 다양하게 꾸며요.' },
-  { id:'g9', corner:'gather', name:'포토카드 앨범', price:2000, emoji:'📘', color:'여러 색', feat:'포토카드를 쏙쏙(택1)', use:'좋아하는 포토카드를 모아 보관해요.' },
-  { id:'g6', corner:'gather', name:'핀뱃지 세트', price:1000, emoji:'📛', color:'여러 색', feat:'다양한 무늬(택1)', use:'좋아하는 핀뱃지를 모아요.' },
-  { id:'g11', corner:'gather', name:'인형 키링', price:2000, emoji:'🪆', color:'여러 색', feat:'10종(택1) 가방에 달아요', use:'마음에 드는 인형 키링을 모아요.' },
-  { id:'g7', corner:'gather', name:'미니 피규어', price:3000, emoji:'🧸', color:'여러 색', feat:'다양한 캐릭터(택1)', use:'좋아하는 미니 피규어를 모아요.' },
+  /* ── 모으기 ── 실물(다이소) 기준으로 2026-08-11 전면 교체. 사진 12장 모두 있음.
+     1쪽 '적고 모아요'   : 수첩·다이어리·편지지 → 메모지 둘 → 스티커북
+     2쪽 '카드와 굿즈'   : 카드류 셋 → 책갈피 → 자석 → 키링 */
+  { id:'g1', corner:'gather', name:'캐릭터 수첩', price:1000, emoji:'📔', color:'알록달록 · 다양한 캐릭터(택1)', feat:'들고 다니며 가볍게 쓰기 좋은 크기', use:'모양과 캐릭터가 다양해요.' },
+  { id:'g13', corner:'gather', name:'다이어리', price:3000, emoji:'📔', color:'여러 색 · 다양한 모양(택1)', feat:'휴대하며 기록하기 좋아요', use:'마음에 드는 다이어리를 모아 기록해요.' },
+  { id:'g14', corner:'gather', name:'편지지 세트', price:1000, emoji:'💌', color:'알록달록 · 편지지+편지봉투+스티커 세트(택1)', feat:'마음을 담아 써요', use:'마음에 드는 편지지를 모아 두었다가, 소중한 사람에게 내 마음을 표현해요.' },
+  { id:'g8', corner:'gather', name:'점착 메모지', price:1000, emoji:'📒', color:'여러 색 · 붙였다 떼요(택1)', feat:'떼도 끈적이지 않아요', use:'메모하고 붙여요.' },
+  { id:'c4', corner:'gather', name:'다꾸 메모지', price:1000, emoji:'🗒️', color:'알록달록 · 접착제 없는 두툼한 메모지 뭉치(택1)', feat:'무늬가 예뻐요', use:'다꾸용으로 많이 써요. 다양하게 모은 후 꾸며요.' },
+  { id:'g4', corner:'gather', name:'캐릭터 스티커북', price:2000, emoji:'📚', color:'여러 색 · 7종(택1) 10장씩', feat:'좋아하는 캐릭터를 모아요', use:'좋아하는 캐릭터 스티커를 모아요.' },
+  { id:'g3', corner:'gather', name:'캐릭터 미니 카드', price:1000, emoji:'🐻', color:'브라운·핑크 · 귀여운 곰과 토끼(택1)', feat:'마음을 담아요', use:'미니 카드에 나의 마음을 담아요. 다양한 미니 카드를 모아요.' },
+  { id:'g9', corner:'gather', name:'포토카드 앨범', price:2000, emoji:'📘', color:'여러 색 · 포토카드를 쏙쏙(택1)', feat:'모아서 보관해요', use:'좋아하는 포토카드를 모아 보관해요.' },
+  { id:'g5', corner:'gather', name:'포토카드 슬리브', price:1000, emoji:'🖼️', color:'여러 색 · 다양한 무늬(택1)', feat:'무늬가 있는 슬리브', use:'포토카드를 넣은 후 그 위를 자유롭게 꾸며 보관해요.' },
+  { id:'g15', corner:'gather', name:'책갈피(북마크)', price:1000, emoji:'🔖', color:'알록달록 · 다양한 소재와 구성(택1)', feat:'읽던 곳을 표시해요', use:'원하는 페이지를 손쉽게 찾아 펼쳐요.' },
+  { id:'g16', corner:'gather', name:'캐릭터 자석', price:1000, emoji:'🧲', color:'알록달록 · 다양한 캐릭터(택1)', feat:'쉽게 떨어지지 않아요', use:'메모지나 사진을 간편하게 고정해요.' },
+  { id:'g11', corner:'gather', name:'인형 키링', price:1000, emoji:'🪆', color:'알록달록 · 다양한 캐릭터(택1)', feat:'손쉽게 걸어요', use:'자꾸만 만지고 싶은 말랑하고 폭신한 촉감의 키링! 다양한 인형 키링들을 모아요.' },
 
-  // ── 정리하기 ── 1쪽 '담아요' / 2쪽 '끼우고 붙여요'
-  { id:'o2', corner:'organize', name:'캐릭터 필통', price:2000, emoji:'👝', color:'여러 색', feat:'필기구 보관(택1)', use:'다양한 필기구를 보관해요.' },
-  { id:'o5', corner:'organize', name:'지퍼 파우치', price:2000, emoji:'👛', color:'여러 색', feat:'지퍼로 열어요(택1)', use:'작은 문구류를 넣어 보관해요.' },
-  { id:'o4', corner:'organize', name:'다용도 보관함', price:1000, emoji:'🗃️', color:'여러 색', feat:'작은 것 보관(택1)', use:'작은 문구를 종류별로 정리해요.' },
-  { id:'o9', corner:'organize', name:'수납 바구니', price:2000, emoji:'🧺', color:'여러 색', feat:'가볍고 튼튼(택1)', use:'물건을 담아 정리해요.' },
-  { id:'o7', corner:'organize', name:'미니 서랍장', price:3000, emoji:'🗄️', color:'여러 색', feat:'다양한 칸(택1)', use:'서랍마다 문구를 나누어 정리해요.' },
-  { id:'o6', corner:'organize', name:'연필꽂이', price:1000, emoji:'✏️', color:'여러 색', feat:'연필을 세워요(택1)', use:'연필을 세워서 정리해요.' },
-  { id:'o1', corner:'organize', name:'클리어 화일', price:3000, emoji:'📁', color:'여러 색', feat:'반투명(택1)', use:'중요한 서류를 넣어서 보관해요.' },
-  { id:'o13', corner:'organize', name:'파일 홀더', price:1000, emoji:'🗂️', color:'여러 색', feat:'종이를 끼워요', use:'학습지를 끼워서 정리해요.' },   // ※
-  { id:'o3', corner:'organize', name:'필름 인덱스', price:1000, emoji:'🔖', color:'알록달록', feat:'붙였다 떼요(택1)', use:'중요한 부분에 붙여 표시해요.' },
-  { id:'o10', corner:'organize', name:'라벨 스티커', price:1000, emoji:'🏷️', color:'하얀색', feat:'이름을 붙여요(택1)', use:'물건에 이름표를 붙여 정리해요.' },
-  { id:'g10', corner:'organize', name:'모양 클립 세트', price:1000, emoji:'📎', color:'여러 색', feat:'책갈피·서류 정리용(택1)', use:'클립을 꽂아 묶거나 표시해요.' },
-  { id:'o12', corner:'organize', name:'북스탠드', price:1000, emoji:'📖', color:'여러 색', feat:'책을 세워요(택1)', use:'책이 쓰러지지 않게 받쳐 세워요.' },
+  /* ── 정리하기 ── 실물(다이소) 기준으로 2026-08-11 전면 교체. 사진 12장 모두 있음.
+     1쪽 '담고 세워요'     : 담는 것 다섯(필통·파우치·연필꽂이·보관함·서랍장) → 북스탠드
+     2쪽 '끼우고 붙여요'   : 종이를 끼우는 것 둘 → 붙여 표시하는 것 둘 → 집고 묶는 것 둘 */
+  { id:'o2', corner:'organize', name:'캐릭터 필통', price:2000, emoji:'👝', color:'여러 색 · 필기구 보관(택1)', feat:'필기구를 넣어요', use:'다양한 필기구를 넣어 보관해요.' },
+  { id:'o5', corner:'organize', name:'지퍼 파우치', price:2000, emoji:'👛', color:'여러 색 · 지퍼로 열어요(택1)', feat:'지퍼로 여닫아요', use:'작은 문구류나 소지품을 넣어 보관해요.' },
+  { id:'o6', corner:'organize', name:'연필꽂이', price:1000, emoji:'✏️', color:'여러 색 · 연필을 세워요(택1)', feat:'세워서 꽂아요', use:'연필 등 필기구류를 세워서 꽂아 정리해요.' },
+  { id:'o4', corner:'organize', name:'다용도 보관함', price:1000, emoji:'🗃️', color:'여러 색 · 작은 문구 보관(택1)', feat:'종류별로 나눠요', use:'작은 문구를 넣어 종류별로 정리해요.' },
+  { id:'o7', corner:'organize', name:'미니 서랍장', price:3000, emoji:'🗄️', color:'여러 색 · 다양한 칸(택1)', feat:'서랍마다 나눠요', use:'서랍마다 문구를 나누어 정리해요.' },
+  { id:'o12', corner:'organize', name:'북스탠드', price:1000, emoji:'📖', color:'여러 색 · 책을 세워요(택1)', feat:'받쳐서 세워요', use:'책이 쓰러지지 않게 받쳐 세워요.' },
+  { id:'o1', corner:'organize', name:'클리어 파일', price:2000, emoji:'📁', color:'핑크·반투명 · 20매', feat:'여러 장을 꽂아요', use:'중요한 서류를 넣어서 보관해요. 색깔별로 다양해요.' },
+  { id:'o13', corner:'organize', name:'L홀더', price:1000, emoji:'🗂️', color:'반투명 · 알파벳 L자 모양', feat:'몇 장만 쏙 끼워요', use:'서류를 끼워서 보관해요.' },
+  { id:'o10', corner:'organize', name:'라벨 스티커', price:1000, emoji:'🏷️', color:'하얀색 · 이름을 써서 붙여요(택1)', feat:'이름표를 붙여요', use:'물건에 이름표를 붙여 정리해요.' },
+  { id:'o3', corner:'organize', name:'필름 인덱스', price:1000, emoji:'🔖', color:'알록달록 · 붙였다 떼요(택1)', feat:'붙여서 표시해요', use:'중요한 부분에 붙여 표시해요.' },
+  { id:'g10', corner:'organize', name:'모양 클립 세트', price:1000, emoji:'📎', color:'여러 색 · 서류 정리용(택1)', feat:'꽂아서 표시해요', use:'클립을 꽂아 찾기 쉽게 표시해요.' },
+  { id:'o14', corner:'organize', name:'스테이플러 세트', price:2000, emoji:'📌', color:'레드 · 스테이플러 10호+심 세트', feat:'최대 15매까지 찍어요', use:'종이를 콕 찍어 묶어요. 심에 손이 다치지 않도록 주의!' },
 
   /* ── 키트 ── 실물(다이소) 기준으로 2026-08-10 전면 교체. 사진 12장 모두 있음.
      1쪽 : 손쉬운 1,000원 셋 → 섞고 뿌려 만드는 셋(슬라임·모래질감·천사 비즈)
@@ -1434,7 +1438,7 @@ const CORNER_PAGES = {
   deco:     ['스티커로 꾸며요', '테이프와 놀이'],
   make:     ['종이와 도구', '여러 가지 재료'],
   gather:   ['적고 모아요', '카드와 굿즈'],
-  organize: ['담아요', '끼우고 붙여요'],
+  organize: ['담고 세워요', '끼우고 붙여요'],
   kit:      ['작게 시작해요', '오래 만들어요'],
   toy:      ['혼자서도 놀아요', '함께 놀아요'],
 };
