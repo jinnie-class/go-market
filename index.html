@@ -1339,18 +1339,22 @@ const PRODUCTS = [
   { id:'c16', corner:'deco', name:'스티커 옷 입히기', price:3000, emoji:'👗', color:'알록달록', feat:'다양한 동물 그림', use:'매력 만점 코디 스티커로 패셔니스타 동물 친구들을 꾸며요.' },
   { id:'c17', corner:'deco', name:'스티커 얼굴 꾸미기', price:3000, emoji:'😊', color:'알록달록', feat:'눈·코·입 스티커', use:'눈, 코, 입 스티커로 나만의 재미있는 얼굴을 꾸며요.' },
 
-  // ── 만들기 ── 1쪽 '종이와 풀' / 2쪽 '실과 비즈'  (재료만! 완성품 세트는 키트로)
-  { id:'m1', corner:'make', name:'색종이 세트', price:1000, emoji:'🟪', color:'무지개', feat:'여러 색 종이', use:'여러 색 색종이예요. 접고 오려서 만들어요.' },
-  { id:'m4', corner:'make', name:'종이 비행기 접기 만들기', price:2000, emoji:'✈️', color:'알록달록', feat:'선 따라 접어요', use:'멋진 종이비행기를 접는 세트예요. 접어서 날려요.' },
-  { id:'m6', corner:'make', name:'가위 풀 세트', price:2000, emoji:'✂️', color:'파란색', feat:'가위와 풀 묶음', use:'가위와 풀이에요. 오리고 붙여서 만들어요.' },
-  { id:'m5', corner:'make', name:'반짝이 풀', price:2000, emoji:'🌟', color:'반짝이', feat:'반짝이는 풀', use:'반짝이가 든 풀이에요. 짜서 반짝반짝 꾸며 만들어요.' },
-  { id:'m2', corner:'make', name:'클레이 세트', price:3000, emoji:'🧱', color:'알록달록', feat:'말랑말랑', use:'말랑말랑 클레이 6색이에요. 조물조물 모양을 만들어요.' },
-  { id:'m12', corner:'make', name:'털실', price:1000, emoji:'🧶', color:'알록달록', feat:'보들보들 실', use:'부드러운 뜨개실이에요. 실로 가방·소품을 만들어요.' },
-  { id:'m13', corner:'make', name:'모루', price:1000, emoji:'🧵', color:'알록달록', feat:'구부러지는 철사', use:'보들보들한 철사예요. 구부려서 모양을 만들어요.' },   // ※
-  { id:'m14', corner:'make', name:'폼폼이', price:1000, emoji:'🔴', color:'알록달록', feat:'보송보송 방울', use:'보송보송한 방울이에요. 붙여서 꾸미고 만들어요.' },   // ※
-  { id:'k3', corner:'make', name:'공예비즈 세트', price:2000, emoji:'📿', color:'여러 색', feat:'튤립·하트·별·보석 4종(택1)', use:'구슬을 꿰어 만들어요.' },
-  { id:'k2', corner:'make', name:'양말목 공예 세트', price:3000, emoji:'🧶', color:'알록달록', feat:'스마일 데이지 3종(택1)', use:'양말목을 엮어 소품을 만들어요.' },
-  { id:'m10', corner:'make', name:'우드스틱 세트', price:1000, emoji:'🪵', color:'나무색·무지개색', feat:'나무 막대', use:'나무 막대예요. 붙여서 집·액자 같은 걸 만들어요.' },
+  /* ── 만들기 ── 실물(다이소) 기준으로 2026-08-11 전면 교체. 사진 12장 모두 있음.
+     1쪽 : 종이 재료 셋(색종이·펠트지·종이컵) → 자르고 붙이는 도구 셋(가위·풀·양면테이프)
+     2쪽 : 말랑한 것 둘(클레이·플레이콘) → 부풀리는 것 → 실·끈 둘 → 마무리로 꾸미는 풀
+     ※ 여기는 '재료'만 둡니다. 완성품이 정해진 세트는 키트 코너로. */
+  { id:'m1', corner:'make', name:'양면 색종이', price:2000, emoji:'🟪', color:'20색 · 양면 150매', feat:'앞뒤 색이 달라요', use:'선명한 색채와 부드러운 질감의 양면 색종이예요.' },
+  { id:'m15', corner:'make', name:'펠트지', price:1000, emoji:'🟫', color:'아이보리 · 6매입', feat:'9색상이 더 있어요', use:'캘리그라피, 종이공예 등을 할 때 사용해요.' },
+  { id:'m16', corner:'make', name:'종이컵', price:2000, emoji:'🥤', color:'흰색 · 무지', feat:'도톰해요', use:'도톰한 종이컵으로 다양한 만들기 활동에 사용해요.' },
+  { id:'m6', corner:'make', name:'안전가위', price:2000, emoji:'✂️', color:'파랑 · 노랑', feat:'프린팅 안전가위', use:'가위 날 부분에 공룡, 기린 등의 귀여운 모양이 있어요. 종이를 자를 때 사용해요.' },
+  { id:'m17', corner:'make', name:'풀', price:1000, emoji:'🩹', color:'투명 · 딱풀 3개입', feat:'점성 있고 투명해요', use:'종이나 사진 등을 붙일 때 사용해요.' },
+  { id:'m18', corner:'make', name:'양면테이프', price:1000, emoji:'📏', color:'투명 · 4개입', feat:'앞뒷면 모두 강한 접착력', use:'쉽게 떨어지지 않게 고정해 줘요.' },
+  { id:'m2', corner:'make', name:'클레이 세트', price:2000, emoji:'🧱', color:'5색 · 말랑말랑', feat:'촉감놀이', use:'일반 점토보다 촉감이 부드럽고 마르면서 갈라지지 않는 클레이예요.' },
+  { id:'m19', corner:'make', name:'플레이콘', price:1000, emoji:'🌽', color:'7색', feat:'물에 적셔 톡!', use:'풀 없이 오직 물로 붙일 수 있어 쉽고 간단하게 놀이하며 만들어요.' },
+  { id:'m20', corner:'make', name:'풍선 세트', price:1000, emoji:'🎈', color:'레인보우 · 10개입', feat:'알록달록 무지개 색', use:'불어서 부풀리고, 여러 가지 만들기에 사용해요.' },
+  { id:'m12', corner:'make', name:'털실', price:1000, emoji:'🧶', color:'퍼플그레이', feat:'부드러워요', use:'털실을 미술 재료로 사용하여 다양하게 만들어요. 다양한 색상이 있어요.' },
+  { id:'m21', corner:'make', name:'리본', price:1000, emoji:'🎀', color:'핑크 · 장식용', feat:'묶어서 꾸며요', use:'리본으로 다양한 모양을 만들어서 꾸며요.' },
+  { id:'m5', corner:'make', name:'반짝이 풀', price:1000, emoji:'🌟', color:'다양 · 3개씩 3종(택1)', feat:'반짝이 입자가 들어 있어요', use:'작고 선명한 반짝이 입자가 들어 있는 풀이에요.' },
 
   // ── 모으기 ── 1쪽 '적고 모아요' / 2쪽 '카드와 굿즈'
   { id:'g1', corner:'gather', name:'캐릭터 수첩', price:1000, emoji:'📔', color:'여러 색', feat:'5종(택1)', use:'손에 쥘 수 있는 작은 공책이에요. 적고 싶은 것을 적어요.' },
@@ -1423,7 +1427,7 @@ const CORNER_PAGES = {
   write:    ['쓰는 것', '돕는 것'],
   draw:     ['색칠하는 것', '종이와 도구'],
   deco:     ['스티커로 꾸며요', '테이프와 놀이'],
-  make:     ['종이와 풀', '실과 비즈'],
+  make:     ['종이와 도구', '여러 가지 재료'],
   gather:   ['적고 모아요', '카드와 굿즈'],
   organize: ['담아요', '끼우고 붙여요'],
   kit:      ['작게 시작해요', '오래 만들어요'],
