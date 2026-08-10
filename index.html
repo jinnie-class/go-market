@@ -1302,19 +1302,23 @@ const PRODUCTS = [
   { id:'w15', corner:'write', name:'스프링 노트', price:2000, emoji:'📓', color:'회색 · B5 60매', feat:'스프링으로 넘기기 쉬워요', use:'적당한 줄 간격으로 깔끔하게 필기할 수 있어요.' },
   { id:'w14', corner:'write', name:'15cm 자', price:1000, emoji:'📏', color:'알록달록', feat:'톰과 제리 캐릭터(2개입)', use:'밑줄을 그을 때 사용해요. 필통에 넣어 다니기 좋은 크기예요.' },
 
-  // ── 그리기 ── 1쪽 '색칠하는 것' / 2쪽 '종이와 붓'
-  { id:'d2', corner:'draw', name:'색연필 세트', price:2000, emoji:'🖍️', color:'12색', feat:'색이 많아요', use:'돌려서 쓰는 색연필 12색이에요. 깎지 않고 색칠해요.' },
-  { id:'d3', corner:'draw', name:'사인펜 세트', price:3000, emoji:'🖊️', color:'12색', feat:'선명한 색', use:'선명한 색 수성 사인펜 12색이에요. 또렷한 그림을 그려요.' },
-  { id:'d5', corner:'draw', name:'크레파스', price:2000, emoji:'🖍️', color:'8색', feat:'부드러워요', use:'부드럽게 발리는 크레용이에요. 슥슥 색칠해요.' },
-  { id:'d11', corner:'draw', name:'오일파스텔', price:3000, emoji:'🖍️', color:'18색', feat:'진하고 부드러워요', use:'진하고 부드러운 오일파스텔이에요. 색을 진하게 칠해요.' },
-  { id:'d8', corner:'draw', name:'붓펜 세트', price:2000, emoji:'🖌️', color:'검정', feat:'굵고 가늘게', use:'붓처럼 써지는 붓펜이에요. 굵고 가는 글씨와 그림을 그려요.' },
-  { id:'d7', corner:'draw', name:'수채 물감', price:3000, emoji:'🎨', color:'12색', feat:'물로 칠해요', use:'물에 섞어 칠하는 수채 물감 12색이에요. 맑게 색칠해요.' },
-  { id:'d13', corner:'draw', name:'붓 세트', price:1000, emoji:'🖌️', color:'나무색', feat:'굵기 세 가지', use:'굵기가 다른 붓 세 자루예요. 물감을 칠할 때 써요.' },   // ※
-  { id:'d12', corner:'draw', name:'8절 스케치북', price:2000, emoji:'📒', color:'하얀색', feat:'큰 종이', use:'큰 스케치북이에요. 크게 마음껏 그려요.' },
-  { id:'d1', corner:'draw', name:'미니 스케치북', price:1000, emoji:'📓', color:'하늘색', feat:'작고 튼튼해요', use:'작은 스케치북이에요. 어디서나 그림을 그려요.' },
-  { id:'d6', corner:'draw', name:'8절 도화지', price:1000, emoji:'📄', color:'하얀색', feat:'큰 종이', use:'두꺼운 8절 도화지예요. 10장이 들어 있어요.' },
-  { id:'d10', corner:'draw', name:'컬러링북', price:2000, emoji:'📖', color:'알록달록', feat:'색칠하는 책', use:'귀여운 그림에 색칠하는 책이에요. 예쁘게 칠해요.' },
-  { id:'d9', corner:'draw', name:'스크래치 페이퍼', price:1000, emoji:'🌌', color:'검정색', feat:'긁으면 무지개', use:'막대로 긁으면 무지개색이 나와요. 긁어서 그림을 그려요.' },
+  /* ── 그리기 ── 실물(다이소) 기준으로 2026-08-10 전면 교체. 사진 12장 모두 있음.
+     1쪽 '색칠하는 것' : 마른 것(색연필→사인펜→크레파스→오일파스텔) → 물감 → 보드마카
+       ※ 크레파스와 오일파스텔은 반드시 붙여 두세요. 오일파스텔 설명이
+         "크레파스보다 더 부드러워요"라서 나란히 있어야 견주어 볼 수 있어요.
+     2쪽 '종이와 도구' : 도구 둘(붓·물통) → 종이 둘(스케치북·색상지) → 색칠 놀이 둘 */
+  { id:'d2', corner:'draw', name:'색연필', price:2000, emoji:'🖍️', color:'12색', feat:'깎지 않고 돌려서 써요', use:'다양한 색으로 부드럽게 그림을 색칠해요.' },
+  { id:'d3', corner:'draw', name:'수성 사인펜', price:2000, emoji:'🖊️', color:'30색', feat:'선명한 색', use:'수성 사인펜 30색이에요. 다양한 색으로 그림을 그리고 색칠해요.' },
+  { id:'d5', corner:'draw', name:'크레파스', price:3000, emoji:'🖍️', color:'12색', feat:'손에 묻지 않아요', use:'힘을 주지 않아도 부드럽게 스르륵 칠해져요.' },
+  { id:'d11', corner:'draw', name:'오일파스텔', price:3000, emoji:'🖍️', color:'18색', feat:'크레파스보다 더 부드러워요', use:'색을 칠하고 손가락이나 면봉으로 쓱쓱 문질러 표현해요.' },
+  { id:'d7', corner:'draw', name:'수채 물감', price:3000, emoji:'🎨', color:'12색', feat:'물과 친해요', use:'물로 녹여서 그리는 물감이에요. 물로 진하기를 조절해요.' },
+  { id:'d14', corner:'draw', name:'보드마카 지우개 세트', price:2000, emoji:'🖊️', color:'검정·파랑·빨강 3색', feat:'보드 칠판에 그려요', use:'마카 자국을 싹 지워 주는 지우개와 세트예요.' },
+  { id:'d13', corner:'draw', name:'붓 세트', price:2000, emoji:'🖌️', color:'알록달록 · 어린이 붓 6개', feat:'얇은 붓, 굵은 붓, 사각 붓', use:'붓과 같은 색상의 깍지가 있어 사용하기 편해요.' },
+  { id:'d15', corner:'draw', name:'미술용 물통', price:1000, emoji:'🪣', color:'흰색', feat:'2칸으로 사용', use:'수채화 물감으로 그림을 그릴 때 붓을 깨끗하게 씻어 줘요.' },
+  { id:'d12', corner:'draw', name:'스케치북(8절)', price:1000, emoji:'📒', color:'흰색 · 8절 15매', feat:'큰 종이', use:'마음껏 그리고 색칠 놀이를 할 수 있어요.' },
+  { id:'d16', corner:'draw', name:'양면 색상지(8절)', price:2000, emoji:'📄', color:'10색 · 8절 20매', feat:'앞뒤 색이 달라요', use:'색상지 위에 그림을 그리거나, 그린 그림을 오려서 표현해요.' },
+  { id:'d10', corner:'draw', name:'컬러링북', price:2000, emoji:'📖', color:'알록달록', feat:'색칠하는 책', use:'귀여운 도안에 색칠하는 책이에요. 알록달록 다양하게 색칠해요.' },
+  { id:'d9', corner:'draw', name:'스크래치 페이퍼', price:1000, emoji:'🌌', color:'알록달록', feat:'긁으면 나타나는 무지개', use:'나무 막대를 긁어서 그림을 그려요.' },
 
   // ── 꾸미기 ── 1쪽 '붙이는 것' / 2쪽 '테이프와 도구'
   { id:'c2', corner:'deco', name:'동물 스티커', price:1000, emoji:'🐰', color:'알록달록', feat:'귀여운 동물', use:'귀여운 동물 데코 스티커예요. 좋아하는 곳에 붙여요.' },
@@ -1411,7 +1415,7 @@ const PRODUCTS = [
    글자를 새로 늘리지 않고, 학생이 '다음 쪽에 뭐가 있지?' 하고 보는 자리에 갈래를 알려 줍니다. */
 const CORNER_PAGES = {
   write:    ['쓰는 것', '돕는 것'],
-  draw:     ['색칠하는 것', '종이와 붓'],
+  draw:     ['색칠하는 것', '종이와 도구'],
   deco:     ['붙이는 것', '테이프와 도구'],
   make:     ['종이와 풀', '실과 비즈'],
   gather:   ['적고 모아요', '카드와 굿즈'],
