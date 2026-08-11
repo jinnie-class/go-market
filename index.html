@@ -143,8 +143,6 @@ img{max-width:100%;}
   width:46px;height:46px;font-size:1.2em;display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow);}
 .heart-btn.on{background:#ffe3e3;border-color:#ffb3b3;}
 .selected-mark{border:3px solid var(--mint) !important;box-shadow:0 0 0 4px rgba(78,205,196,.22),var(--shadow) !important;}
-.soldout{position:absolute;inset:0;background:rgba(255,255,255,.72);border-radius:20px;display:flex;
-  align-items:center;justify-content:center;font-weight:900;color:#8a8a9a;font-size:1.1em;flex-direction:column;gap:6px;}
 
 /* 예산 바 */
 .budgetbar{display:inline-flex;gap:10px;flex-wrap:wrap;background:#fff;border:2px solid var(--line);border-radius:18px;
@@ -410,6 +408,15 @@ img.cicon{object-fit:contain;border-radius:.2em;}
 .plan-grid .act{width:190px;padding:12px 10px;gap:6px;}
 .plan-grid .act .ai{font-size:44px;}
 .plan-grid .act .act-thumb{width:100%;height:clamp(88px,12vh,124px);object-fit:cover;object-position:center;}
+/* 코너 대표 그림은 '사진'이 아니라 **투명 배경 아이콘**이에요 (2026-08-11).
+   활동 사진(가로 1536×1024)에 맞춘 object-fit:cover 를 그대로 쓰면 정사각 아이콘의
+   좌우가 잘립니다(가위 날, 붓 끝이 사라졌어요). contain 으로 바꾸고 조금 줄여서
+   그림 전체가 다 보이게 했습니다. 네모 그림자도 뺐어요 — 투명 여백까지 그림자가 생겨
+   아이콘이 사각형 판에 붙은 것처럼 보였거든요. */
+.act-thumb.mark{object-fit:contain;box-shadow:none;border-radius:0;}
+/* 정사각 아이콘이라 contain 을 주면 '높이 = 아이콘 크기'가 됩니다. 칸 안쪽 폭(148px)까지는
+   키워도 잘리지 않아요. 활동 사진(가로)보다는 낮게 잡아야 카드가 홀쭉해 보이지 않습니다. */
+.plan-grid .act .act-thumb.mark{height:clamp(78px,11vh,104px);}
 /* ② '무엇을 해 볼까요?' 는 카드가 3개뿐이라 그림을 훨씬 크게 보여 줄 수 있어요 */
 .plan-grid.few .act{width:clamp(230px,26vw,320px);padding:14px 12px;gap:8px;}
 .plan-grid.few .act .ai{font-size:74px;}
@@ -437,6 +444,7 @@ img.cicon{object-fit:contain;border-radius:.2em;}
   .plan-grid .act{width:168px;padding:10px 8px;}
   /* max-height 를 쓰면 그림이 눌려요 — 높이를 정하고 object-fit 으로 (위 설명 참고) */
   .plan-grid .act .act-thumb{height:clamp(76px,11vh,100px);}
+  .plan-grid .act .act-thumb.mark{height:clamp(78px,11vh,104px);}
   .plan-grid.few .act .act-thumb{height:clamp(110px,19vh,170px);}
   .plan-grid.few .act .ai{font-size:62px;}
   .supply{min-height:60px;padding:11px 14px;font-size:1em;}
@@ -2238,7 +2246,7 @@ const DEFAULT_SETTINGS = {
   /* voiceMode:'auto' — 처음부터 안내 음성이 저절로 나와요 (2026-07-28).
      글자를 못 읽는 학생이 많아, 버튼을 눌러야만 들리는 'manual'보다 이쪽이 기본에 맞아요.
      소리가 부담되는 학생은 교사 설정에서 '눌렀을 때만'으로 바꿔 주세요. */
-  difficulty:'easy', voice:true, voiceMode:'auto', studentVoice:'female', clerkGender:'male', fontSize:'big', reduceMotion:false, soldOut:false,
+  difficulty:'easy', voice:true, voiceMode:'auto', studentVoice:'female', clerkGender:'male', fontSize:'big', reduceMotion:false,
   cashierChat:true, walletView:true, switchScan:false, scanSpeed:2600,
   quietMode:false, budgetByStudent:true, sfx:true, v:5,
   /* 🎁 비밀 가게 암호 — 선생님만 아는 숫자. 선생님 설정에서 바꿀 수 있어요.
@@ -3061,16 +3069,13 @@ function TeacherSettings({settings, setSettings, onDone, onResult, students, set
           </div>
         </div>
 
+        {/* '8. 상품 품절 기능'을 뺐습니다 (2026-08-11).
+            켜도 상품 96개 중 **딱 하나**(스케치북, id 'd4')만 품절로 막혔어요. 학급마다
+            바꿀 방법도 없어서, 설정 한 줄을 차지할 만큼 하는 일이 없었습니다.
+            "사고 싶은 게 없을 수도 있다"를 가르치려면 물건을 임의로 막기보다
+            **비밀 가게**나 예산으로 다루는 편이 낫습니다. */}
         <div className="field">
-          <label>8. 상품 품절 기능</label>
-          <div className="choices">
-            <Choice on={s.soldOut} onClick={()=>set('soldOut',true)}>켜기</Choice>
-            <Choice on={!s.soldOut} onClick={()=>set('soldOut',false)}>끄기</Choice>
-          </div>
-        </div>
-
-        <div className="field">
-          <label>9. 점원과의 대화 연습 <span className="muted" style={{fontWeight:400,fontSize:'.85em'}}>계산대에서 인사·계산·감사 주고받기</span></label>
+          <label>8. 점원과의 대화 연습 <span className="muted" style={{fontWeight:400,fontSize:'.85em'}}>계산대에서 인사·계산·감사 주고받기</span></label>
           <div className="choices">
             <Choice on={s.cashierChat!==false} onClick={()=>set('cashierChat',true)}>켜기</Choice>
             <Choice on={s.cashierChat===false} onClick={()=>set('cashierChat',false)}>끄기</Choice>
@@ -3078,7 +3083,7 @@ function TeacherSettings({settings, setSettings, onDone, onResult, students, set
         </div>
 
         <div className="field">
-          <label>10. 지갑 보기 <span className="muted" style={{fontWeight:400,fontSize:'.85em'}}>남은 돈을 지폐 그림으로</span></label>
+          <label>9. 지갑 보기 <span className="muted" style={{fontWeight:400,fontSize:'.85em'}}>남은 돈을 지폐 그림으로</span></label>
           <div className="choices">
             <Choice on={s.walletView!==false} onClick={()=>set('walletView',true)}>켜기</Choice>
             <Choice on={s.walletView===false} onClick={()=>set('walletView',false)}>끄기</Choice>
@@ -3086,7 +3091,7 @@ function TeacherSettings({settings, setSettings, onDone, onResult, students, set
         </div>
 
         <div className="field">
-          <label>11. 조용한 모드 <span className="muted" style={{fontWeight:400,fontSize:'.85em'}}>소리·반짝임·진한 색 줄이기 (감각 예민 학생)</span></label>
+          <label>10. 조용한 모드 <span className="muted" style={{fontWeight:400,fontSize:'.85em'}}>소리·반짝임·진한 색 줄이기 (감각 예민 학생)</span></label>
           <div className="choices">
             <Choice on={s.quietMode} onClick={()=>set('quietMode',true)}>켜기</Choice>
             <Choice on={!s.quietMode} onClick={()=>set('quietMode',false)}>끄기</Choice>
@@ -3094,7 +3099,7 @@ function TeacherSettings({settings, setSettings, onDone, onResult, students, set
         </div>
 
         <div className="field">
-          <label>12. 우리 반 상품 더하기 <span className="muted" style={{fontWeight:400,fontSize:'.85em'}}>교실에 있는 문구를 매장에 넣어요</span></label>
+          <label>11. 우리 반 상품 더하기 <span className="muted" style={{fontWeight:400,fontSize:'.85em'}}>교실에 있는 문구를 매장에 넣어요</span></label>
 
           {customProducts.length>0 && (
             <div className="col" style={{gap:6, marginBottom:10}}>
@@ -3153,7 +3158,7 @@ function TeacherSettings({settings, setSettings, onDone, onResult, students, set
         </div>
 
         <div className="field">
-          <label>13. 계산 방식 <span className="muted" style={{fontWeight:400,fontSize:'.85em'}}>여가 중심이면 ‘간단히’를 권해요</span></label>
+          <label>12. 계산 방식 <span className="muted" style={{fontWeight:400,fontSize:'.85em'}}>여가 중심이면 ‘간단히’를 권해요</span></label>
           <div className="choices">
             <Choice on={s.moneyPractice!==true} onClick={()=>set('moneyPractice',false)}>간단히 (돈 건네기·카드 한 번)</Choice>
             <Choice on={s.moneyPractice===true} onClick={()=>set('moneyPractice',true)}>계산 연습 (지폐·거스름돈)</Choice>
@@ -3172,7 +3177,7 @@ function TeacherSettings({settings, setSettings, onDone, onResult, students, set
             ⚠️ 암호부터 아래는 12번 '우리 반 상품 더하기'와 같은 네모칸(.cprod-form)에 넣었어요.
                할 일이 '여는 방법'과 '넣을 물건' 둘로 나뉘어서, 한 칸에 몰면 다시 덩어리로 보입니다. */}
         <div className="field">
-          <label>14. 🎁 비밀 가게 <span className="muted" style={{fontWeight:400,fontSize:'.85em'}}>도장을 모은 학생에게 주는 선물 — 선생님만 여는 곳</span></label>
+          <label>13. 🎁 비밀 가게 <span className="muted" style={{fontWeight:400,fontSize:'.85em'}}>도장을 모은 학생에게 주는 선물 — 선생님만 여는 곳</span></label>
           {/* 네 가지를 한 줄씩 떨어뜨려 놓아요 — 이어 붙이면 한 덩어리로 보여 안 읽혀요 */}
           <p className="muted" style={{fontSize:'.9em', margin:'0 0 14px', lineHeight:1.5}}>
             <span style={{display:'block', marginBottom:6}}>· 매장 엘리베이터의 <b>⭐ 버튼</b>을 누르면 <b>“암호를 대시오!”</b> 창이 떠요. 암호는 선생님만 알아요.</span>
@@ -3421,7 +3426,7 @@ function BrowseStage({settings, products, likes, setLikes, basket, setBasket, bu
           <Paged items={list} per={6} resetKey={(corner||'')+'_'+(showLiked?'liked':'')}
             render={p=>(
               <ProductCard key={p.id} p={p} liked={likes.some(x=>x.id===p.id)} qty={qtyIn(p.id)}
-                soldOut={settings.soldOut && p.id==='d4'} onLike={()=>toggleLike(p)}
+                onLike={()=>toggleLike(p)}
                 onDetail={()=>setDetail(p)} onAdd={()=>addBasket(p)} onLess={()=>lessBasket(p)} />
             )} />
           <div className="row" style={{marginTop:10, justifyContent:'flex-end'}}>
@@ -4254,7 +4259,7 @@ function QtyBox({n, onMinus, onPlus, big}){
   );
 }
 
-function ProductCard({p, liked, qty, soldOut, onLike, onDetail, onAdd, onLess}){
+function ProductCard({p, liked, qty, onLike, onDetail, onAdd, onLess}){
   const inBasket = qty>0;
   return (
     <div className={"product "+(inBasket?'selected-mark':'')}>
@@ -4272,7 +4277,6 @@ function ProductCard({p, liked, qty, soldOut, onLike, onDetail, onAdd, onLess}){
           ? <QtyBox n={qty} onMinus={onLess} onPlus={onAdd} />
           : <button className="btn sm mint" onClick={onAdd}>🧺 담기</button>}
       </div>
-      {soldOut && <div className="soldout"><span>😌 품절</span><span style={{fontSize:'.7em'}}>다른 문구를 구경해요</span></div>}
     </div>
   );
 }
@@ -6090,7 +6094,7 @@ function SecretShop({items, mode, studentName, stampCount, onPick, onExit, onMod
   const [chosen, setChosen] = useState(null);
   /* 🔧 선생님 칸 — 설정 화면까지 갔다 오지 않고 여기서 바로 고쳐요 (2026-08-11).
      선물을 줄 때 "어? 이건 빼야겠다", "오늘은 구경만 보여 줘야지" 가 즉석에서 생기는데,
-     그때마다 나가서 설정 14번을 찾아 들어갔다 오는 게 번거로웠거든요.
+     그때마다 나가서 설정 13번(비밀 가게)을 찾아 들어갔다 오는 게 번거로웠거든요.
      ⚠️ 학생이 같이 보는 화면이라 **기본은 닫혀 있습니다.** */
   const [teach, setTeach] = useState(false);
   const [ni, setNi] = useState({name:'', emoji:'', photo:null});
@@ -6267,7 +6271,7 @@ function ActivityPick({name, initial, onConfirm, onHome, onBack}){
             <div className="actgrid plan-grid">
               {ACTIVITY_GROUPS.map(g=>(
                 <button key={g.id} className="act" onClick={()=>chooseGrp(g)}>
-                  <CornerBigMark id={g.id} imgCls="act-thumb" fbCls="ai" />
+                  <CornerBigMark id={g.id} imgCls="act-thumb mark" fbCls="ai" />
                   <b>{g.title}</b>
                 </button>
               ))}
@@ -6287,7 +6291,7 @@ function ActivityPick({name, initial, onConfirm, onHome, onBack}){
                 <Speak text={grp.title+' 중에서 무엇을 해 볼까요?'} />
               </div>
               <span className="spacer" style={{flex:1}}></span>
-              <span className="plan-act"><CornerBigMark id={grp.id} imgCls="act-thumb" fbCls="ai" /><b>{grp.title}</b></span>
+              <span className="plan-act"><CornerBigMark id={grp.id} imgCls="act-thumb mark" fbCls="ai" /><b>{grp.title}</b></span>
               <button className="btn ghost sm" onClick={()=>{ setGrp(null); speak('다른 것을 골라요.', true); }}>◀ 다시 고르기</button>
             </div>
             {/* few : 카드가 3개뿐이라 그림을 크게 (글을 못 읽어도 그림으로 고를 수 있게) */}
