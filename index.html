@@ -903,10 +903,15 @@ body.quiet .confetti{display:none !important;}
    이 앱은 box-sizing:border-box 라서 min-height 안에 아래 여백 4px과 선반 선 8px이
    포함돼 버리거든요. 그래서 min-height 로 맞추면 '좋아요' 진열대보다 11px 작아집니다.
    → 대표 그림·아이콘·좋아요 그림의 **높이를 셋 다 똑같이(148px)** 두는 것이 정답이에요. */
-.shelf-row.rep{align-items:center;justify-content:center;}
-.shelf-rep-img{height:148px;width:auto;max-width:100%;object-fit:contain;display:block;}
+.shelf-row.rep{flex-direction:column;align-items:center;justify-content:center;gap:0;}
+/* 그림 118 + 이름 줄 30 = 148. '좋아요' 진열대의 그림(148)과 딱 맞아요.
+   ⚠️ .shelf-row 의 gap:6px 이 살아 있으면 6px이 더해져 진열대 하나만 키가 커집니다.
+      그래서 .rep 에서는 gap 을 0으로 되돌리고, 이름 줄은 margin 없이 height 로만 자리를 잡아요. */
+.shelf-rep-img{height:118px;width:auto;max-width:100%;object-fit:contain;display:block;}
+.shelf-repname{height:30px;line-height:30px;font-size:.92em;font-weight:800;color:var(--ink-soft);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;}
 /* 대표 그림이 없을 때 쓰는 코너 아이콘 — .cicon 이 1.15em 이라 글자 크기로 키워요 */
-.shelf-bigicon{display:flex;align-items:center;justify-content:center;height:148px;font-size:118px;line-height:1;}
+.shelf-bigicon{display:flex;align-items:center;justify-content:center;height:118px;font-size:94px;line-height:1;}
 
 /* 매장 안을 걸어다니는 내 캐릭터 */
 .pano-char{position:absolute;bottom:5%;z-index:5;transform:translateX(-50%);pointer-events:none;
@@ -1217,9 +1222,10 @@ body.reduce-motion .stamp-slot.today{animation:none;}
   .shelf-item{font-size:38px;height:58px;}
   .shelf-item .prod-mini{width:54px;height:54px;}
   .shelf-liked-img{height:126px;}
-  /* 대표 그림·아이콘도 '좋아요' 그림(126px)과 똑같은 높이로 — 위 ⚠️ 설명 참고 */
-  .shelf-rep-img{height:126px;}
-  .shelf-bigicon{height:126px;font-size:100px;}
+  /* 대표 그림 + 이름 줄의 합이 '좋아요' 그림(126px)과 같아야 해요 — 위 ⚠️ 설명 참고 */
+  .shelf-rep-img{height:96px;}
+  .shelf-bigicon{height:96px;font-size:76px;}
+  .shelf-repname{font-size:.82em;}
   .shelf-sign{font-size:1.12em;padding:9px 22px;}
   .shelf-label{font-size:.92em;padding:5px 15px;}
   .pano-hint{padding:6px 12px 8px;font-size:.78em;}
@@ -1654,15 +1660,27 @@ function groupOfActivity(title){
 /* 활동에 딸린 준비물 말고도 '더 담고 싶으면' 고를 수 있는 갈래 (화면이 길어지지 않게 몇 개만) */
 const SUPPLY_EXTRAS = ['스티커','펜','종이','테이프','꾸미기 재료','수첩'];
 
+/* `rep` = 진열대 대표 그림 아래에 한 줄로 적는 **대표 물건 이름** (2026-08-11)
+   그림 한 장만으로는 "여기에 뭐가 있나"를 짐작하기 어려웠어요. 간판의 코너 이름
+   (`쓰기`)은 **하는 일**이고, 이 줄은 **파는 물건**이라 서로 겹치지 않습니다.
+
+   ⚠️ 글자 수 한계 — 실제로 재서 정한 값입니다
+     가장 좁은 진열대(`--shelfw:215px`)에서 이름 줄에 쓸 수 있는 폭은 **183px**뿐이에요.
+     · 가운뎃점을 띄우면(`연필 · 펜 · 지우개`) 2글자 낱말 셋만 써도 **189px**라 무조건 넘칩니다
+     · 그래서 **띄어쓰기 없이 `·`** 로 붙이고, 한글 **7자 이내**로 맞췄습니다 (7자 = 170px)
+     넘치면 말줄임(…)으로 잘려서 오히려 못 읽게 되니 꼭 지켜 주세요.
+
+   ⚠️ 낱말은 그 코너에 **실제로 있는 상품 이름 그대로** 씁니다. 매장에서 찾을 때 쓰는 말이라서요.
+      (꾸미기만 둘인 건 스티커·테이프가 12개 중 10개라 셋째를 억지로 넣을 필요가 없어서예요.) */
 const CORNERS = [
-  { id:'write',    icon:'✏️', title:'쓰기',    desc:'예쁜 글씨를 써요.' },
-  { id:'draw',     icon:'🎨', title:'그리기',  desc:'마음껏 그림을 그려요.' },
-  { id:'deco',     icon:'⭐', title:'꾸미기',  desc:'스티커로 예쁘게 꾸며요.' },
-  { id:'make',     icon:'✂️', title:'만들기',  desc:'손으로 재미있게 만들어요.' },
-  { id:'kit',      icon:'🧩', title:'키트',    desc:'블록·뜨개 키트로 만들어요.' },
-  { id:'toy',      icon:'🎲', title:'놀이하기',desc:'장난감·게임으로 놀아요.' },
-  { id:'gather',   icon:'💖', title:'모으기',  desc:'마음에 드는 문구를 모아요.' },
-  { id:'organize', icon:'📁', title:'정리하기',desc:'내 문구를 깔끔하게 정리해요.' },
+  { id:'write',    icon:'✏️', title:'쓰기',    desc:'예쁜 글씨를 써요.',        rep:'연필·펜·지우개' },
+  { id:'draw',     icon:'🎨', title:'그리기',  desc:'마음껏 그림을 그려요.',    rep:'색연필·물감·붓' },
+  { id:'deco',     icon:'⭐', title:'꾸미기',  desc:'스티커로 예쁘게 꾸며요.',  rep:'스티커·테이프' },
+  { id:'make',     icon:'✂️', title:'만들기',  desc:'손으로 재미있게 만들어요.',rep:'색종이·가위·풀' },
+  { id:'kit',      icon:'🧩', title:'키트',    desc:'블록·뜨개 키트로 만들어요.',rep:'블록·비즈·슬라임' },
+  { id:'toy',      icon:'🎲', title:'놀이하기',desc:'장난감·게임으로 놀아요.',  rep:'게임·퍼즐·요요' },
+  { id:'gather',   icon:'💖', title:'모으기',  desc:'마음에 드는 문구를 모아요.',rep:'수첩·카드·키링' },
+  { id:'organize', icon:'📁', title:'정리하기',desc:'내 문구를 깔끔하게 정리해요.',rep:'필통·파일·클립' },
 ];
 
 /* ---------- 3층 건물 구성 (층별 코너 배치) ---------- */
@@ -3780,8 +3798,17 @@ function ShelfUnit({shelf, items, likesCount, accent, style, innerRef, onClick, 
       aria-label={c.title+' 코너 진열대'+(here?' — 지금 여기예요. 한 번 더 누르면 들어가요':'')}>
       {/* 간판은 글자만 — 바로 아래 대표 그림과 같은 아이콘이 두 번 나오지 않게 (2026-08-09) */}
       <span className="shelf-sign" style={{background:accent}}>{c.title}</span>
+      {/* 한 줄로 '무엇을 파는 곳인지'를 적어요 (2026-08-11).
+          그림만으로는 짐작하기 어려웠고, 간판의 코너 이름은 '하는 일'이라 물건을 알려 주지 못했어요.
+          이름은 CORNERS 의 rep 에 있습니다.
+          ⚠️ 이름 줄은 그림 **위**에 둡니다. 아래에 두면 내 캐릭터가 그 진열대 앞에 섰을 때
+             정확히 그 자리를 가려요(재 봄: 이름 줄 y 513~543 / 캐릭터 470~584).
+             예전에 '눌러서 구경하기' 라벨을 뺀 이유와 같은 문제예요. 위쪽은 35px 여유가 있습니다. */}
       <span className="shelf-body">
-        <span className="shelf-row rep"><CornerBigMark id={c.id} /></span>
+        <span className="shelf-row rep">
+          <span className="shelf-repname">{c.rep}</span>
+          <CornerBigMark id={c.id} />
+        </span>
       </span>
       {/* '눌러서 구경하기' 라벨을 뺐어요 (2026-07-28).
           진열대마다 똑같은 말이 3~4번 반복되는데, 화면 아래 안내
