@@ -343,6 +343,59 @@ img.cicon{object-fit:contain;border-radius:.2em;}
 .planstrip .pill{background:#fff;border:2px solid #ffe1a8;color:#6a5200;font-weight:800;}
 @media (max-height:820px){ .planstrip{padding:4px 10px;font-size:.94em;} .planstrip .ps-act .act-thumb{max-height:28px;} }
 
+/* 🔒 "암호를 대시오!" 문지기 창 */
+.modal.gate{max-width:420px;display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center;}
+.modal.gate.shake{animation:gateShake .4s;}
+@keyframes gateShake{0%,100%{transform:translateX(0);}25%{transform:translateX(-9px);}75%{transform:translateX(9px);}}
+.gate-face{font-size:3.6em;line-height:1;}
+.gate-msg{font-weight:900;font-size:1.3em;color:#3e2e63;min-height:1.6em;}
+.gate-dots{display:flex;gap:10px;}
+.gate-dot{width:18px;height:18px;border-radius:50%;border:3px solid #c9b6ea;background:#fff;}
+.gate-dot.on{background:#b39ddb;border-color:#b39ddb;}
+.gate-pad{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;width:100%;}
+.gate-key{border:2px solid var(--line);background:#fff;border-radius:14px;padding:12px 0;
+  font:inherit;font-weight:900;font-size:1.3em;cursor:pointer;box-shadow:var(--shadow);min-height:56px;}
+.gate-key:hover{background:#f3f0fb;}
+.gate-key.wide{font-size:.95em;background:#f6f8fc;}
+/* 엘리베이터 안의 ⭐ 비밀 가게 버튼 */
+.ev-inbtn.ev-secret{background:linear-gradient(135deg,#fff2c2,#ffd23f);border-color:#e0b400;color:#6a5200;}
+
+/* ===== 🎁 비밀 가게 (옥상 편의점) — 2026-08-11 ===== */
+.secret-app{max-width:1200px;}
+.secret-top{align-items:center;gap:10px;margin-bottom:8px;flex-wrap:wrap;}
+.secret-title{font-weight:900;font-size:1.35em;color:#6a5200;}
+.pill.sec-gift{background:#eafaf1;color:#177245;border-color:#bfe9cf;}
+.pill.sec-look{background:#eaf7fe;color:#0b4a63;border-color:#cbeafb;}
+/* 매장 층처럼 넓은 배경 위에 물건을 얹어요 (배경 그림: 이미지/배경/시크릿층.png) */
+.secret-scene{position:relative;border-radius:24px;overflow:hidden;border:3px solid var(--line);
+  box-shadow:var(--shadow-lg);height:clamp(360px,calc(100vh - 190px),720px);
+  display:flex;align-items:flex-end;justify-content:center;background:#fdf6e8;}
+.secret-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 35%;}
+/* 물건은 바닥(빈 마루) 쪽에 놓아 배경의 진열대를 가리지 않아요 */
+.secret-front{position:relative;z-index:2;width:100%;padding:0 18px 20px;
+  display:flex;flex-direction:column;align-items:center;}
+.secret-grid{display:flex;flex-wrap:wrap;justify-content:center;gap:16px;max-width:100%;}
+.secret-item{background:rgba(255,255,255,.96);border:3px solid #ffd66b;border-radius:20px;
+  padding:14px 16px;font:inherit;font-weight:900;font-size:1.05em;color:var(--ink);cursor:pointer;
+  box-shadow:var(--shadow-lg);display:flex;flex-direction:column;align-items:center;gap:8px;
+  width:clamp(130px,15vw,180px);transition:transform .12s ease, box-shadow .12s ease;}
+.secret-item:hover{transform:translateY(-3px);box-shadow:0 0 0 4px rgba(255,210,63,.5), var(--shadow-lg);}
+.si-art{width:100%;height:clamp(76px,11vh,112px);display:flex;align-items:center;justify-content:center;}
+.si-art img{width:100%;height:100%;object-fit:contain;}
+.si-emoji{font-size:clamp(48px,7vh,72px);line-height:1;}
+/* 선물을 받은 뒤 축하 화면 */
+.secret-done{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:14px;
+  background:rgba(255,255,255,.94);border:3px solid #ffd66b;border-radius:26px;
+  padding:26px 34px;margin-bottom:24px;box-shadow:var(--shadow-lg);}
+.sd-item{width:clamp(110px,16vh,170px);height:clamp(110px,16vh,170px);display:flex;align-items:center;justify-content:center;}
+.sd-item img{width:100%;height:100%;object-fit:contain;}
+.sd-emoji{font-size:clamp(72px,12vh,120px);line-height:1;}
+.sd-name{font-size:1.5em;font-weight:900;}
+@media (max-height:820px){
+  .secret-scene{height:clamp(320px,calc(100vh - 170px),620px);}
+  .secret-item{padding:11px 13px;}
+}
+
 /* ===== 오늘의 활동 정하기 + 준비물 체크리스트 (2026-08-11) ===== */
 /* 활동 카드 — 글을 못 읽는 학생이 '그림만 보고' 고를 수 있어야 해서 그림을 크게.
    ⚠️ `width:100%` 에 `max-height` 를 함께 주면 세로만 눌려 그림이 찌그러져요.
@@ -1584,6 +1637,16 @@ const ACTIVITY_GROUPS = [
           {icon:'👝',title:'필통 꾸미기',desc:'필통을 꾸며요.'},
           {icon:'📦',title:'문구 종류별로 나누어 담기',desc:'종류별로 정리해요.'}] },
 ];
+/* ---------- 🎁 비밀 가게(옥상 편의점) — 도장 보상 (2026-08-11 새 기능) ----------
+   ⚠️ 여는 사람은 '선생님'이에요. 도장 개수로 자동으로 열리지 않습니다.
+      학급마다 학생 6명쯤이 제각기 다른 때에 10개를 채우는데, 개수로 잠그면
+      아직 못 채운 학생은 이런 곳이 있는 줄도 모르고(동기부여가 안 되고),
+      판을 리셋하면 누가 언제 받았는지 관리가 복잡해져요.
+      그래서 문은 늘 보이되(기대감), **길게 누르기**로만 열립니다.
+   보상 물건은 학급마다 다르니 **선생님이 직접 채워요**. 아래는 예시 하나뿐이에요. */
+const DEFAULT_SECRET_ITEMS = [
+  { id:'sec1', name:'젤리', emoji:'🍬', photo:null },
+];
 /* 활동 이름으로 그 활동이 속한 갈래를 찾아요 (마무리 화면에서 '계획 ↔ 실제' 잇기) */
 function groupOfActivity(title){
   return ACTIVITY_GROUPS.find(g=> g.acts.some(a=>a.title===title)) || null;
@@ -2131,6 +2194,9 @@ const DEFAULT_SETTINGS = {
   difficulty:'easy', voice:true, voiceMode:'auto', studentVoice:'female', clerkGender:'male', fontSize:'big', reduceMotion:false, soldOut:false,
   cashierChat:true, walletView:true, switchScan:false, scanSpeed:2600,
   quietMode:false, budgetByStudent:true, sfx:true, v:5,
+  /* 🎁 비밀 가게 암호 — 선생님만 아는 숫자. 선생님 설정에서 바꿀 수 있어요.
+     (새로 생긴 항목이라 예전 기기에서도 자동으로 이 기본값이 채워져요) */
+  secretCode:'1234',
 };
 function loadStore(key, fallback){
   try{ const v=localStorage.getItem(key); return v? JSON.parse(v): fallback; }catch(e){ return fallback; }
@@ -2272,6 +2338,13 @@ function App(){
   useEffect(()=>{ currentCharacter = character; saveStore('go_character', character); }, [character]);
 
   /* 선생님이 우리 반에 맞게 더한 상품 (기본 96개 뒤에 이어 붙어요) */
+  /* 🎁 비밀 가게 물건 (선생님이 학급에 맞게 채워요. 기본은 예시 1개) */
+  const [secretItems, setSecretItems] = useState(()=> loadStore('go_secret_items', DEFAULT_SECRET_ITEMS));
+  useEffect(()=> saveStore('go_secret_items', secretItems), [secretItems]);
+  const [secretMode, setSecretMode] = useState(null);   // 'look'(구경만) | 'gift'(선물 주기)
+  const [secretBack, setSecretBack] = useState('activity');  // 비밀 가게에서 나가면 돌아갈 화면
+  const [gateOpen, setGateOpen] = useState(false);      // '암호를 대시오!' 창
+
   const [customProducts, setCustomProducts] = useState(()=> loadStore('go_custom_products', []));
   useEffect(()=> saveStore('go_custom_products', customProducts), [customProducts]);
   const allProducts = customProducts.length ? [...PRODUCTS, ...customProducts] : PRODUCTS;
@@ -2318,6 +2391,20 @@ function App(){
     const day = (t.getMonth()+1)+'/'+t.getDate();
     setStudents(list=> list.map(s=> s.id===studentId
       ? {...s, stamps:[...(s.stamps||[]), {date:day}]} : s));
+  };
+
+  /* 🎁 비밀 가게에서 선물을 받았을 때 — 누가 언제 무엇을 받았는지 남겨요.
+     도장은 **줄이지 않아요**(그대로 쌓임). 학생마다 받는 때가 달라서
+     판을 리셋하면 오히려 관리가 어려워지거든요. 받은 날은 따로 적어 둡니다. */
+  const [rewardJust, setRewardJust] = useState(null);   // 방금 받은 선물 (마무리 화면 표시용)
+  const giveReward = (item)=>{
+    setRewardJust(item);
+    if(!studentId) return;
+    const t = new Date();
+    const day = (t.getMonth()+1)+'/'+t.getDate();
+    setStudents(list=> list.map(s=> s.id===studentId
+      ? {...s, rewards:[...(s.rewards||[]), {date:day, name:item.name, stampsThen:(s.stamps||[]).length}]}
+      : s));
   };
 
   // 그 학생의 회기 기록에 한 줄 더하기
@@ -2438,6 +2525,14 @@ function App(){
       }} />;
   }
 
+  // ---- 🎁 비밀 가게 (선생님이 열어 주는 곳) ----
+  if(screen==='secret'){
+    return <SecretShop items={secretItems} mode={secretMode}
+      studentName={settings.name} stampCount={student? (student.stamps||[]).length : null}
+      onPick={giveReward}
+      onExit={()=>{ stopSpeak(); setScreen(secretBack); }} />;
+  }
+
   // ---- 오늘의 활동 + 준비물 체크리스트 ----
   if(screen==='activitypick'){
     return <ActivityPick name={settings.name} initial={plan}
@@ -2462,6 +2557,9 @@ function App(){
     return <TeacherSettings settings={settings} setSettings={setSettings}
       students={students} setStudents={setStudents}
       customProducts={customProducts} setCustomProducts={setCustomProducts}
+      secretItems={secretItems} setSecretItems={setSecretItems}
+      /* 선생님이 설정 화면에서 바로 비밀 가게를 열 수 있어요 (암호 없이 — 이미 선생님 자리니까) */
+      onOpenSecret={(mode)=>{ stopSpeak(); setSecretMode(mode); setSecretBack('teacher'); setScreen('secret'); }}
       onDone={()=> setScreen('home')} onResult={()=> setScreen('result')} />;
   }
 
@@ -2553,6 +2651,7 @@ function App(){
         <TopBar stage={stage} maxReached={maxReached} goStage={()=>{}} onHome={()=>setScreen('home')} settings={settings} setSettings={setSettings} onHelp={askHelp} />
         <FinishScreen settings={settings} basket={basket} likes={likes} activity={activity} plan={plan}
           stamps={student? (student.stamps||[]) : null} onStamp={giveStamp}
+          rewards={student? (student.rewards||[]) : null}
           onReplay={()=>{ setScreen('activity'); setStage('browse'); }}
           onRestart={resetAll} onPrintList={()=> setScreen('printlist')} />
         {helpOpen && <HelpModal stage="finish" onClose={()=>setHelpOpen(false)} />}
@@ -2575,6 +2674,7 @@ function App(){
           maxItems={settings.maxItems} onNext={()=>advance('choose')} celebrate={celebrate} plan={plan}
           onCheckout={()=>advance('scan')}
           onAddProduct={(p)=> setCustomProducts(l=>[...l, p])}
+          onSecret={()=>{ stopSpeak(); setGateOpen(true); }}
           onChangeCharacter={()=>{ stopSpeak(); setCharFromShopping(true); setScreen('charselect'); }}
           onWalletReset={settings.budgetByStudent!==false ? ()=>{ stopSpeak(); setScreen('walletsetup'); } : null} />}
 
@@ -2602,6 +2702,11 @@ function App(){
           onGoPlay={()=>{ stopSpeak(); setScreen('play'); }} />}
       </div>
       {helpOpen && <HelpModal stage={stage} onClose={()=>setHelpOpen(false)} />}
+      {/* 🔒 비밀 가게 문지기 — 암호가 맞으면 '구경만' 모드로 열려요.
+          선물을 줄 때는 선생님 설정에서 '선물 주기'로 열어 주세요. */}
+      {gateOpen && <SecretGate code={settings.secretCode}
+        onClose={()=>setGateOpen(false)}
+        onOpen={()=>{ setGateOpen(false); setSecretMode('look'); setSecretBack('activity'); setScreen('secret'); }} />}
     </div>
   );
 }
@@ -2696,11 +2801,36 @@ function Home({settings, onEnter, onTeacher, onToggleVoice}){
 /* =========================================================
    교사 설정
 ========================================================= */
-function TeacherSettings({settings, setSettings, onDone, onResult, students, setStudents, customProducts, setCustomProducts}){
+function TeacherSettings({settings, setSettings, onDone, onResult, students, setStudents, customProducts, setCustomProducts, secretItems, setSecretItems, onOpenSecret}){
   const [s, setS] = useState(settings);
   const [custom, setCustom] = useState(String(settings.budget));
   const [markOpen, setMarkOpen] = useState(null);   // 표시 고르는 중인 학생 id
   const [soundInfo, setSoundInfo] = useState(null); // '소리 검사' 결과
+  // 🎁 비밀 가게에 넣을 새 물건 입력칸
+  const [ni, setNi] = useState({name:'', emoji:'', photo:null});
+  const secretPhotoRef = useRef(null);
+  const onSecretPhoto = (e)=>{
+    const file = e.target.files && e.target.files[0];
+    e.target.value = '';
+    if(!file) return;
+    const rd = new FileReader();
+    rd.onload = ()=>{
+      /* 사진은 320px 정사각으로 줄여 저장해요 (localStorage 용량을 아끼려고 — 상품 사진과 같은 방식) */
+      const img = new Image();
+      img.onload = ()=>{
+        const S = 320, cv = document.createElement('canvas');
+        cv.width = S; cv.height = S;
+        const ctx = cv.getContext('2d');
+        ctx.fillStyle = '#fff'; ctx.fillRect(0,0,S,S);
+        const r = Math.min(S/img.width, S/img.height);
+        const w = img.width*r, h = img.height*r;
+        ctx.drawImage(img, (S-w)/2, (S-h)/2, w, h);
+        setNi(v=>({...v, photo: cv.toDataURL('image/jpeg', 0.82)}));
+      };
+      img.src = rd.result;
+    };
+    rd.readAsDataURL(file);
+  };
   // 새 상품 입력칸
   const [np, setNp] = useState({corner:'write', name:'', price:1000, color:'', feat:'', use:'', emoji:'🛍️', photo:null});
   const npSet = (k,v)=> setNp(p=>({...p,[k]:v}));
@@ -2998,6 +3128,60 @@ function TeacherSettings({settings, setSettings, onDone, onResult, students, set
           </p>
         </div>
 
+        {/* ===== 🎁 비밀 가게 (도장 보상) ===== */}
+        <div className="setrow">
+          <label>14. 🎁 비밀 가게 <span className="muted" style={{fontWeight:400,fontSize:'.85em'}}>도장을 모은 학생에게 주는 선물 — 선생님만 여는 곳</span></label>
+          <p className="muted" style={{fontSize:'.88em', margin:'2px 0 10px'}}>
+            매장 엘리베이터의 <b>⭐ 버튼</b>을 누르면 <b>“암호를 대시오!”</b> 창이 떠요. 암호는 선생님만 알아요.<br/>
+            도장 개수로 자동으로 열리지 않아요 — <b>언제 보여 줄지·언제 선물할지는 선생님이 정합니다.</b><br/>
+            도장 10개를 채운 학생은 물론, <b>오늘 특별히 애쓴 학생에게도</b> 바로 선물할 수 있어요.
+          </p>
+
+          <div className="row" style={{gap:10, alignItems:'center', flexWrap:'wrap', marginBottom:10}}>
+            <span className="lbl">암호</span>
+            <input type="text" inputMode="numeric" value={s.secretCode||'1234'} maxLength={8}
+              onChange={e=> set('secretCode', e.target.value.replace(/[^0-9]/g,'') || '1234')}
+              style={{width:120, fontSize:'1.2em', fontWeight:900, textAlign:'center', padding:'8px 10px',
+                border:'2px solid var(--line)', borderRadius:12}} />
+            <span className="muted" style={{fontSize:'.85em'}}>숫자만, 최대 8자리</span>
+            <span className="spacer" style={{flex:1}}></span>
+            <button className="btn sm sky" onClick={()=>onOpenSecret('look')}>👀 구경만 열기</button>
+            <button className="btn sm mint" onClick={()=>onOpenSecret('gift')}>🎁 선물 주기</button>
+          </div>
+
+          <p className="muted" style={{fontSize:'.85em', margin:'0 0 8px'}}>
+            학급에서 실제로 쓰는 것으로 바꿔 주세요 (과자·스티커·칭찬 쿠폰 등). 처음엔 예시 하나만 들어 있어요.
+          </p>
+          <div className="wrap" style={{gap:8, marginBottom:10}}>
+            {secretItems.map(it=>(
+              <span key={it.id} className="pill" style={{display:'inline-flex', alignItems:'center', gap:8, padding:'8px 10px 8px 12px'}}>
+                {it.photo ? <img src={it.photo} alt="" style={{width:28, height:28, objectFit:'contain'}} /> : <span style={{fontSize:'1.3em'}}>{it.emoji||'🎁'}</span>}
+                <b>{it.name}</b>
+                <button className="btn sm ghost" style={{minHeight:32, padding:'4px 10px'}}
+                  onClick={()=>{ if(confirm(`'${it.name}'을(를) 뺄까요?`)) setSecretItems(l=>l.filter(x=>x.id!==it.id)); }}>빼기</button>
+              </span>
+            ))}
+            {secretItems.length===0 && <span className="muted">아직 물건이 없어요.</span>}
+          </div>
+          <div className="row" style={{gap:8, flexWrap:'wrap', alignItems:'center'}}>
+            <input type="text" placeholder="물건 이름 (예: 젤리)" value={ni.name}
+              onChange={e=> setNi(v=>({...v, name:e.target.value}))}
+              style={{flex:'1 1 180px', minWidth:140, padding:'10px 12px', border:'2px solid var(--line)', borderRadius:12, fontSize:'1em'}} />
+            <input type="text" placeholder="그림 (이모지)" value={ni.emoji} maxLength={4}
+              onChange={e=> setNi(v=>({...v, emoji:e.target.value}))}
+              style={{width:110, textAlign:'center', padding:'10px 8px', border:'2px solid var(--line)', borderRadius:12, fontSize:'1.2em'}} />
+            <input ref={secretPhotoRef} type="file" accept="image/*" style={{display:'none'}} onChange={onSecretPhoto} />
+            <button className="btn sm sky" onClick={()=> secretPhotoRef.current && secretPhotoRef.current.click()}>📷 사진</button>
+            {ni.photo && <img src={ni.photo} alt="" style={{width:36, height:36, objectFit:'contain', borderRadius:8, border:'2px solid var(--line)'}} />}
+            <button className="btn sm mint" onClick={()=>{
+              const nm = (ni.name||'').trim();
+              if(!nm){ alert('물건 이름을 적어 주세요.'); return; }
+              setSecretItems(l=>[...l, {id:'sec'+Date.now(), name:nm, emoji:(ni.emoji||'🎁'), photo:ni.photo||null}]);
+              setNi({name:'', emoji:'', photo:null});
+            }}>+ 더하기</button>
+          </div>
+        </div>
+
         <button className="btn primary big" style={{width:'100%'}} onClick={save}>설정 완료</button>
       </div>
     </div>
@@ -3070,7 +3254,7 @@ function BudgetBar({name, budget, total, remaining, basketCount, maxItems, walle
 /* =========================================================
    ① 구경하GO!
 ========================================================= */
-function BrowseStage({settings, products, likes, setLikes, basket, setBasket, budget, total, remaining, maxItems, onNext, onCheckout, celebrate, onWalletReset, onChangeCharacter, onAddProduct, plan}){
+function BrowseStage({settings, products, likes, setLikes, basket, setBasket, budget, total, remaining, maxItems, onNext, onCheckout, celebrate, onWalletReset, onChangeCharacter, onAddProduct, plan, onSecret}){
   const [floor, setFloor] = useState(()=> lastBrowse.floor);       // null=입장 전 | 1·2·3=층 파노라마
   const [scene, setScene] = useState(()=> lastBrowse.scene);       // facade(건물 정면) | elevator(엘리베이터)
   const [evFrom, setEvFrom] = useState(()=> lastBrowse.floor||1);  // 엘리베이터 출발 층
@@ -3143,6 +3327,7 @@ function BrowseStage({settings, products, likes, setLikes, basket, setBasket, bu
       {!corner && !showLiked && floor==null && scene==='elevator' && (
         <ElevatorScene from={evFrom}
           onStay={()=>{ setFloor(evFrom); speak(evFrom+'층으로 다시 왔어요.'); }}
+          onSecret={onSecret}
           onCheckout={ basket.length>0 ? onCheckout : null }
           onArrive={(no)=>{
             const f = FLOORS.find(x=>x.no===no);
@@ -3374,7 +3559,7 @@ function HomeFacade({onEnter}){
 }
 
 /* ---------- 게임풍 도입 ②: 엘리베이터 — 층 버튼을 눌러 이동해요 ---------- */
-function ElevatorScene({from, onArrive, onStay, onCheckout}){
+function ElevatorScene({from, onArrive, onStay, onCheckout, onSecret}){
   const start = from || 1;
   const [phase, setPhase] = useState('closed');   // closed | opening | open | closing | moving | arriving
   const [target, setTarget] = useState(null);
@@ -3486,6 +3671,12 @@ function ElevatorScene({from, onArrive, onStay, onCheckout}){
                           </button>
                         );
                       })}
+                      {/* ⭐ 비밀 가게 — 누르면 '암호를 대시오!' 창이 떠요.
+                          학생 눈에는 보여서 궁금하고 기대되지만, 암호는 선생님만 알아요. */}
+                      {onSecret && (
+                        <button className="ev-inbtn ev-secret" onClick={onSecret}
+                          aria-label="비밀 가게 — 암호가 필요해요">⭐</button>
+                      )}
                     </span>
                   </div>
                 )}
@@ -5268,7 +5459,7 @@ function StampMark(){
   return <img className="stamp-mark-img" src={srcs[i]} alt=""
     onError={()=>{ if(i<srcs.length-1) setI(i+1); else setFailed(true); }} />;
 }
-function StampBoard({stamps}){
+function StampBoard({stamps, rewards}){
   const PER = 10;
   const total = stamps.length;
   const page = Math.floor(Math.max(0,total-1) / PER);      // 지금 채우는 중인 판
@@ -5280,6 +5471,13 @@ function StampBoard({stamps}){
       <div className="stamp-head">
         <b className="stamp-title"><StampMark /> 즐겁게 다녀온 날</b>
         <span className="stamp-count">도장 {total}개</span>
+        {/* 🎁 선물 받은 기록 — 도장은 줄지 않고 그대로 쌓여요 (받은 날만 적어 둠) */}
+        {rewards && rewards.length>0 && (
+          <span className="stamp-count" style={{background:'#eafaf1', color:'#177245'}}>
+            🎁 {rewards[rewards.length-1].name} ({rewards[rewards.length-1].date})
+            {rewards.length>1 && ' 외 '+(rewards.length-1)+'번'}
+          </span>
+        )}
         <span className="spacer" style={{flex:1}}></span>
         {page>0 && <span className="muted" style={{fontSize:'.85em'}}>{page+1}번째 도장판</span>}
       </div>
@@ -5303,7 +5501,7 @@ function StampBoard({stamps}){
   );
 }
 
-function FinishScreen({settings, basket, likes, activity, onReplay, onRestart, onPrintList, stamps, onStamp, plan}){
+function FinishScreen({settings, basket, likes, activity, onReplay, onRestart, onPrintList, stamps, onStamp, plan, rewards}){
   useEffect(()=>{ onStamp && onStamp(); }, []);   // 다녀온 기념 도장 1개 (같은 회기엔 한 번만)
   /* 산 문구를 두 개까지 적고, 더 있으면 '등 ○가지'로 묶어요. (여러 개 산 날과 맞게)
      (예전엔 맨 처음 담은 것 하나만 적어서, 여러 개 산 날과 맞지 않았어요) */
@@ -5357,7 +5555,7 @@ function FinishScreen({settings, basket, likes, activity, onReplay, onRestart, o
             )}
           </div>
         )}
-        {stamps && <StampBoard stamps={stamps} />}
+        {stamps && <StampBoard stamps={stamps} rewards={rewards} />}
 
         <p style={{fontWeight:800, marginTop:22}}>🎨 내가 산 문구로 이런 활동을 할 수 있어요</p>
         {/* 활동 고르기 화면과 같은 4개. 내가 고른 활동이 빠지지 않도록 맨 앞에 놓아요. */}
@@ -5767,6 +5965,129 @@ function WalletKidImg(){
   return <img className="wallet-kid" src={srcs[i]} alt="지갑에 돈을 넣는 학생 그림"
     onError={()=>{ if(i<srcs.length-1) setI(i+1); else setFailed(true); }} />;
 }
+/* ---- 🔒 비밀 가게 문지기 : "암호를 대시오!" ----
+   길게 누르기만으로 막으면 눈치 빠른 학생은 금방 알아채요.
+   암호는 선생님만 알고, 학생에게는 '재미있는 관문'이 됩니다.
+   틀려도 혼내는 말은 절대 쓰지 않아요 — 놀이처럼 넘어가요. */
+function SecretGate({code, onOpen, onClose}){
+  const [buf, setBuf] = useState('');
+  const [shake, setShake] = useState(false);
+  const [msg, setMsg] = useState('암호를 대시오!');
+  useEffect(()=>{ sayBtn('암호를 대시오!'); }, []);
+
+  const press = (d)=>{
+    const next = (buf + d).slice(0, 8);
+    setBuf(next); playSfx('drop');
+    if(next === String(code||'1234')){
+      setMsg('문이 열린다…!'); sayBtn('문이 열린다!'); playSfx('done');
+      window.setTimeout(onOpen, 700);
+    } else if(next.length >= String(code||'1234').length){
+      setShake(true); setMsg('음… 그 암호가 아닌걸?');
+      sayBtn('음, 그 암호가 아닌걸?');
+      window.setTimeout(()=>{ setShake(false); setBuf(''); setMsg('다시 대 보시오!'); }, 900);
+    }
+  };
+
+  return (
+    <div className="overlay" onClick={onClose}>
+      <div className={"modal gate"+(shake?' shake':'')} onClick={e=>e.stopPropagation()}>
+        <div className="gate-face">🧙</div>
+        <div className="gate-msg">{msg}</div>
+        <div className="gate-dots">
+          {Array.from({length: String(code||'1234').length}).map((_,i)=>(
+            <span key={i} className={"gate-dot"+(i<buf.length?' on':'')}></span>
+          ))}
+        </div>
+        <div className="gate-pad">
+          {[1,2,3,4,5,6,7,8,9].map(n=>(
+            <button key={n} className="gate-key" onClick={()=>press(String(n))}>{n}</button>
+          ))}
+          <button className="gate-key wide" onClick={()=>{ setBuf(''); setMsg('암호를 대시오!'); }}>다시</button>
+          <button className="gate-key" onClick={()=>press('0')}>0</button>
+          <button className="gate-key wide" onClick={onClose}>닫기</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ---- 🎁 비밀 가게 (옥상 편의점) ----
+   mode 'look' : 구경만 — "이런 게 있어! 도장 모으면 받을 수 있어" (동기부여)
+   mode 'gift' : 선물 주기 — 하나 고르면 기록에 남아요.
+   배경은 `이미지/배경/시크릿층.png` (매장 층 그림과 같은 넓은 파노라마). */
+function SecretShop({items, mode, studentName, stampCount, onPick, onExit}){
+  const [chosen, setChosen] = useState(null);
+  const gift = mode==='gift';
+  useEffect(()=>{
+    speak(gift ? '비밀 가게예요! 갖고 싶은 것을 하나 골라 보세요.'
+               : '비밀 가게예요. 어떤 것이 있는지 구경해 볼까요?');
+  }, []);
+
+  if(chosen){
+    return (
+      <div className="app secret-app">
+        <div className="secret-scene">
+          <BgImg name="시크릿층" className="secret-bg" dim={0.35} />
+          <div className="secret-done">
+            <div className="sd-item">{chosen.photo ? <img src={chosen.photo} alt="" /> : <span className="sd-emoji">{chosen.emoji||'🎁'}</span>}</div>
+            <div className="sd-name">{chosen.name}</div>
+            <Hint kind="fit" style={{fontSize:'1.15em'}}
+              text={(studentName? studentName+'! ':'')+chosen.name+josa(chosen.name,'을','를')+' 받았어요. 도장을 모아 줘서 고마워요!'}>
+              🎉 <b>{chosen.name}</b>{josa(chosen.name,'을','를')} 받았어요!
+            </Hint>
+            <button className="btn primary big" onClick={onExit}>돌아가기</button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="app secret-app">
+      <div className="row secret-top">
+        <span className="secret-title">🎁 비밀 가게</span>
+        <span className="spacer" style={{flex:1}}></span>
+        {stampCount!=null && <span className="pill">도장 {stampCount}개</span>}
+        <span className={"pill "+(gift?'sec-gift':'sec-look')}>{gift? '🎁 선물 주기' : '👀 구경만'}</span>
+        <button className="btn ghost sm" onClick={onExit}>◀ 나가기</button>
+      </div>
+
+      <div className="secret-scene">
+        <BgImg name="시크릿층" className="secret-bg" />
+        <div className="secret-front">
+          <Hint kind="fit" style={{margin:'0 0 10px'}}
+            /* ⚠️ '도장 10개를 채워야만'이라고 쓰지 않아요 — 열심히 한 날에도 선생님이 줄 수 있게
+                   열어 두었거든요(문을 여는 사람은 도장이 아니라 선생님). */
+            text={gift ? '갖고 싶은 것을 하나 골라 보세요.' : '어떤 것이 있는지 구경해 보세요. 열심히 하면 선물을 받을 수 있어요.'}>
+            {gift ? '갖고 싶은 것을 하나 골라 보세요.'
+                  : <span>구경해 보세요. <b>열심히 하면 선물을 받을 수 있어요!</b></span>}
+          </Hint>
+
+          {items.length===0 ? (
+            <div className="card muted" style={{textAlign:'center'}}>
+              아직 물건이 없어요. 선생님 설정에서 넣어 주세요.
+            </div>
+          ) : (
+            <div className="secret-grid">
+              {items.map(it=>(
+                <button key={it.id} className="secret-item" onClick={()=>{
+                  sayBtn(it.name);
+                  if(gift){ setChosen(it); playSfx('done'); onPick && onPick(it); }
+                }}>
+                  <span className="si-art">
+                    {it.photo ? <img src={it.photo} alt="" /> : <span className="si-emoji">{it.emoji||'🎁'}</span>}
+                  </span>
+                  <b>{it.name}</b>
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 /* ---- 오늘의 활동 정하기 + 준비물 체크리스트 (캐릭터 고른 뒤 → 지갑 앞) ----
    학습지와 같은 흐름: 무엇을 할지 정하고 → 무엇이 필요한지 떠올리고 → 사러 가요.
    ⚠️ 여기서 고른 준비물은 **안내일 뿐**이에요. 매장에서 다르게 사도 되고,
