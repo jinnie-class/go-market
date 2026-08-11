@@ -340,6 +340,36 @@ img.cicon{object-fit:contain;border-radius:.2em;}
 .planstrip .ps-list{display:flex;gap:6px;flex-wrap:wrap;}
 .planstrip .pill{background:#fff;border:2px solid #ffe1a8;color:#6a5200;font-weight:800;}
 @media (max-height:820px){ .planstrip{padding:4px 10px;font-size:.94em;} .planstrip .ps-act .act-thumb{max-height:28px;} }
+/* 층 안내판(검정 바)·코너 제목 줄 **안에** 얹히는 모양 (2026-08-11).
+   줄을 따로 만들지 않으려고 옮겼으므로, 흰 카드가 아니라 '바에 붙은 칩'처럼 보여야 해요.
+   ⚠️ `flex-wrap:nowrap` 이 중요합니다. 감싸면 바가 두 줄이 되어 옮긴 보람이 없어져요.
+      대신 준비물이 많으면 `overflow:hidden` 으로 잘리게 두었습니다 (안내일 뿐이라 괜찮아요). */
+.planstrip.in-bar{background:rgba(255,255,255,.14);border:2px solid rgba(255,255,255,.3);
+  border-radius:999px;padding:3px 10px;gap:8px;flex-wrap:nowrap;min-width:0;overflow:hidden;font-size:.92em;}
+.planstrip.in-bar .ps-act{color:#fff;}
+.planstrip.in-bar .ps-act .act-thumb{max-height:26px;border-radius:7px;}
+.planstrip.in-bar .ps-act .ai{font-size:19px;}
+.planstrip.in-bar .ps-div{background:rgba(255,255,255,.35);height:18px;}
+.planstrip.in-bar .ps-list{flex-wrap:nowrap;min-width:0;}
+.planstrip.in-bar .pill{background:rgba(255,255,255,.9);border-color:transparent;color:#3b3b4a;
+  font-size:.9em;padding:2px 9px;white-space:nowrap;}
+/* 코너 제목 줄은 바탕이 밝아서 글자를 어둡게 되돌려요.
+   ⚠️ 여기서는 **준비물을 감춥니다**. 돌아가기 단추·코너 이름·＋우리 반 문구까지 이미 들어 있어
+      준비물까지 넣으면 줄이 꺾여(130px) 스크롤이 29px 생겼어요. 활동 이름만으로 충분합니다. */
+.corner-head .planstrip.in-bar .ps-div,
+.corner-head .planstrip.in-bar .ps-list{display:none;}
+.corner-head .planstrip.in-bar{background:#fffdf5;border-color:#ffe1a8;}
+.corner-head .planstrip.in-bar .ps-act{color:#6a5200;}
+.corner-head .planstrip.in-bar .ps-div{background:#ffe1a8;}
+.corner-head .planstrip.in-bar .pill{background:#fff;border:2px solid #ffe1a8;color:#6a5200;}
+.pano-floorname{white-space:nowrap;}
+/* 좁은 화면에서는 검정 바에서도 준비물을 감춰요 (2026-08-11).
+   1024×768에서 준비물까지 넣으면 바가 76 → 89px로 두꺼워져 스크롤이 10px 남았습니다.
+   활동 이름만 남겨도 "오늘 뭐 하려고 했지?"는 충분히 떠올라요. */
+@media (max-width:1200px){
+  .pano-top .planstrip.in-bar .ps-div,
+  .pano-top .planstrip.in-bar .ps-list{display:none;}
+}
 
 /* 🔒 "암호를 대시오!" 문지기 창 */
 .modal.gate{max-width:420px;display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center;}
@@ -451,6 +481,17 @@ img.cicon{object-fit:contain;border-radius:.2em;}
   .plan-grid.few .act .act-thumb{height:clamp(110px,19vh,170px);}
   .plan-grid.few .act .ai{font-size:62px;}
   .supply{min-height:60px;padding:11px 14px;font-size:1em;}
+}
+/* 즐기GO 활동 고르기 (2026-08-11).
+   그림을 넣으면서 카드 크기를 정해 줘야 했어요 — `.act .act-thumb` 의 기본값이
+   `height:auto` 라, 3:2 그림이 들어오면 카드가 세로로 늘어져 스크롤이 생깁니다.
+   ⚠️ 이 그림들은 풍경처럼 그린 삽화라 `cover` 가 맞아요 (코너 아이콘의 `.mark` 와 다릅니다). */
+.playpick .act{width:210px;padding:14px 12px;gap:6px;}
+.playpick .act .act-thumb{width:100%;height:clamp(84px,11vh,116px);object-fit:cover;object-position:center;}
+.playpick .act .ai{font-size:44px;}
+@media (max-height:820px){
+  .playpick .act{width:190px;padding:11px 9px;}
+  .playpick .act .act-thumb{height:clamp(72px,10vh,98px);}
 }
 .actgrid.compact{gap:14px;}
 .actgrid.compact .act{width:200px;padding:12px;gap:5px;}
@@ -876,7 +917,9 @@ body.quiet .confetti{display:none !important;}
    가운데 기준으로 펼쳐서 큰 화면에서는 진열대 3개가 온전히 보입니다.
    ⚠️ 매장(파노라마)에만 적용 — 다른 화면은 글이 너무 넓게 퍼지면 읽기 어려워 1060px 유지. */
 .pano-frame{width:min(1700px, calc(100vw - 32px));margin-left:50%;transform:translateX(-50%);}
-.pano-top{display:flex;align-items:center;gap:8px;padding:10px 16px;color:#fff;font-weight:800;flex-wrap:wrap;}
+/* ⚠️ nowrap 입니다 (2026-08-11). 계획 칩이 여기 얹히는데, wrap 이면 바가 두 줄이 되어
+   '줄을 하나 줄이려고 옮긴' 뜻이 사라져요. 좁으면 계획 칩이 줄어들며 잘립니다. */
+.pano-top{display:flex;align-items:center;gap:8px;padding:10px 16px;color:#fff;font-weight:800;flex-wrap:nowrap;}
 .pano-top .elev{display:flex;gap:6px;align-items:center;flex-wrap:wrap;}
 .elev-btn{border:2px solid #4a5270;background:#2e3550;color:#fff;border-radius:12px;padding:8px 14px;
   font:inherit;font-weight:900;min-height:44px;}
@@ -1593,13 +1636,15 @@ const PRODUCTS = [
    Paged 에 pageNames 를 넘기면 됩니다 (git 이력 참고).
    ────────────────────────────────────────────────────────────────── */
 
-/* 매장에서 '오늘 무엇을 하려고 했는지' 떠올리는 띠 (안내일 뿐, 아무것도 강제하지 않아요) */
-function PlanStrip({plan}){
+/* 매장에서 '오늘 무엇을 하려고 했는지' 떠올리는 띠 (안내일 뿐, 아무것도 강제하지 않아요)
+   inBar : 매장 층 안내판(검정 바) 안에 넣는 모양. 흰 카드가 아니라 **바에 얹힌 칩**으로 나와요.
+           띠를 한 줄 따로 깔면 예산 바·지갑 바까지 세 겹이 되어 스크롤이 생겼거든요. */
+function PlanStrip({plan, inBar}){
   if(!plan || !plan.title) return null;
   const say = plan.title + (plan.supplies && plan.supplies.length
     ? '을 하려고 해요. ' + plan.supplies.join(', ') + '이 필요해요.' : '을 하려고 해요.');
   return (
-    <div className="planstrip">
+    <div className={"planstrip"+(inBar?' in-bar':'')}>
       <span className="ps-act"><ActivityThumb activity={plan.title} icon={plan.icon} /><b>{plan.title}</b></span>
       {plan.supplies && plan.supplies.length>0 && (
         <React.Fragment>
@@ -1607,7 +1652,7 @@ function PlanStrip({plan}){
           <span className="ps-list">{plan.supplies.map(s=><span key={s} className="pill">{s}</span>)}</span>
         </React.Fragment>
       )}
-      <span className="spacer" style={{flex:1}}></span>
+      {!inBar && <span className="spacer" style={{flex:1}}></span>}
       <Speak text={say} />
     </div>
   );
@@ -3359,10 +3404,13 @@ function BrowseStage({settings, products, likes, setLikes, basket, setBasket, bu
     : corner ? products.filter(p=>p.corner===corner)
     : [];
 
-  /* 건물 정면(문을 열기 전)에는 위쪽 예산바를 아예 감춰요 (2026-07-28).
-     아직 아무것도 안 샀으니 예산·합계·바구니가 할 일이 없고, 지갑은 바로 앞 화면에서 봤어요.
-     대신 '문구점 앞에 도착했다'는 그림을 온전히 크게 보여 줍니다. */
-  const onFacade = !corner && !showLiked && floor==null && scene==='facade';
+  /* 건물 정면과 **엘리베이터 안**에서는 위쪽 바(예산·지갑)를 아예 감춰요.
+     · 건물 정면 (2026-07-28) : 아직 아무것도 안 샀으니 예산·합계·바구니가 할 일이 없고,
+       지갑은 바로 앞 화면에서 봤어요. '문구점 앞에 도착했다'는 그림을 크게 보여 줍니다.
+     · 엘리베이터 안 (2026-08-11) : **층을 옮기기만 하는 곳**이라 여기서 살 것도, 낼 돈도 없어요.
+       바를 두 줄이나 얹어 두면 정작 눌러야 할 층 단추가 밀려 내려갑니다.
+     두 곳 모두 `floor==null` 이라 한 줄로 판단합니다. */
+  const onFacade = !corner && !showLiked && floor==null;
 
   return (
     <div className="col" style={{gap:9}}>
@@ -3370,7 +3418,9 @@ function BrowseStage({settings, products, likes, setLikes, basket, setBasket, bu
         <BudgetBar name={settings.name} budget={budget} total={total} remaining={remaining} basketCount={countOf(basket)} maxItems={maxItems} wallet={settings.walletView!==false} onWalletReset={onWalletReset} onBasket={onNext}
           caption="문구점을 구경해요" onChangeCharacter={onChangeCharacter} />
       )}
-      {!onFacade && <PlanStrip plan={plan} />}
+      {/* 계획 띠를 따로 한 줄 깔지 않아요 (2026-08-11).
+          예산 바 + 지갑 바 + 계획 띠로 세 겹이 쌓여 1280×800에서 스크롤이 36px 생겼습니다.
+          이제 층 안내판(검정 바)과 코너 제목 줄 **안에** 얹습니다 — 줄이 하나 줄어요. */}
 
       {!corner && !showLiked && floor==null && scene==='facade' && (
         <StoreFacade onEnter={()=>{
@@ -3396,7 +3446,7 @@ function BrowseStage({settings, products, likes, setLikes, basket, setBasket, bu
       )}
 
       {!corner && !showLiked && floor!=null && (
-        <FloorPanorama floorNo={floor} products={products} likesCount={likes.length}
+        <FloorPanorama floorNo={floor} products={products} likesCount={likes.length} plan={plan}
           onCorner={(id)=>{
             const c = CORNERS.find(x=>x.id===id);
             setCorner(id); speak(c.title+' 코너예요. '+c.desc);
@@ -3409,7 +3459,7 @@ function BrowseStage({settings, products, likes, setLikes, basket, setBasket, bu
         <div>
           <div className="corner-head">
             {corner && <BgImg name={'코너_'+CORNERS.find(c=>c.id===corner).title} />}
-            <div className="row" style={{margin:0, position:'relative', zIndex:1}}>
+            <div className="row corner-head" style={{margin:0, position:'relative', zIndex:1}}>
               <button className="btn ghost" onClick={()=>{setCorner(null); setShowLiked(false);}}>⬅️ 매장으로 돌아가기</button>
               {/* 제목에도 코너 아이콘을 넣지 않아요 (2026-08-11).
                   이미 그 코너에 들어와 있어서 아이콘이 새로 알려 줄 게 없고,
@@ -3423,6 +3473,10 @@ function BrowseStage({settings, products, likes, setLikes, basket, setBasket, bu
                 <button className="btn ghost sm add-here" title="이 코너에 우리 반 문구 넣기"
                   onClick={()=>{ stopSpeak(); setQuickAdd(true); }}>＋ 우리 반 문구</button>
               )}
+              {/* 코너에도 '오늘 하려던 것'을 남겨요 — 물건을 실제로 고르는 자리가 여기라서요.
+                  층 안내판과 마찬가지로 줄을 새로 만들지 않고 제목 줄에 얹습니다. */}
+              <span className="spacer" style={{flex:1}}></span>
+              <PlanStrip plan={plan} inBar />
             </div>
           </div>
           {list.length===0 && <div className="card muted">아직 담긴 문구가 없어요.</div>}
@@ -3864,7 +3918,7 @@ function ShelfUnit({shelf, items, likesCount, accent, style, innerRef, onClick, 
   );
 }
 
-function FloorPanorama({floorNo, products, likesCount, onCorner, onElevator, onLiked}){
+function FloorPanorama({floorNo, products, likesCount, onCorner, onElevator, onLiked, plan}){
   const floor = FLOORS.find(f=>f.no===floorNo);
   const viewRef = useRef(null);
   const stripRef = useRef(null);
@@ -3992,8 +4046,14 @@ function FloorPanorama({floorNo, products, likesCount, onCorner, onElevator, onL
 
   return (
     <div className="pano-frame">
+      {/* 검정 바 가운데가 비어 있어서 '오늘 하려던 것'을 여기로 옮겼어요 (2026-08-11).
+          예전엔 매장 위에 띠를 한 줄 더 깔았는데, 예산 바·지갑 바까지 세 겹이 쌓여
+          1280×800에서 세로 스크롤이 36px 생겼습니다. 이 자리로 옮기니 한 줄이 통째로
+          없어져요. 계획을 세우지 않았으면 아무것도 안 나오고 가운데는 그냥 빕니다. */}
       <div className="pano-top">
-        <span>🏬 {floor.title} · {floor.desc}</span>
+        <span className="pano-floorname">🏬 {floor.title} · {floor.desc}</span>
+        <span className="spacer" style={{flex:1}}></span>
+        <PlanStrip plan={plan} inBar />
         <span className="spacer" style={{flex:1}}></span>
         <span className="elev">
           <button className="elev-btn" onClick={onElevator} disabled={walking}>🛗 엘리베이터 타기 (다른 층 가기)</button>
@@ -4361,7 +4421,10 @@ function ChooseStage({settings, likes, basket, setBasket, budget, total, remaini
         <div className="section-title" style={{fontSize:'1.1em', margin:'0 0 6px'}}>🧺 지금 바구니 <Speak text={'바구니에 '+countOf(basket)+'개, 합계 '+won(total)+'이에요.'} /></div>
         {basket.length===0 && <div className="muted">아직 담은 문구가 없어요. 아래에서 골라 담아 보세요.</div>}
         {/* 좋아한 문구 칸이 옆에 함께 나오면 바구니는 3개씩, 없으면 8개씩 (측정으로 정한 값) */}
-        <Paged items={basket} per={likes.length>0 ? 3 : 8} resetKey={'basket'+basket.length+'-'+(likes.length>0)} cls="choose-list" render={p=>(
+        {/* ⚠️ 한 쪽에 8줄은 넘칩니다 (2026-08-11 재측정).
+            5만 원을 넣고 잔뜩 담으면(48개) 8줄짜리 쪽에서 세로 스크롤이 71px 생겼어요.
+            줄마다 수량 단추(➖ 1개 ➕)가 있어 한 줄이 두꺼워졌거든요. 6줄로 줄였습니다. */}
+        <Paged items={basket} per={likes.length>0 ? 3 : 6} resetKey={'basket'+basket.length+'-'+(likes.length>0)} cls="choose-list" render={p=>(
             <div key={p.id} className="list-item">
               <span><b>{p.name}</b> · {won(p.price)}</span>
               <QtyBox n={qtyOf(p)} onMinus={()=>lessBasket(p)} onPlus={()=>addBasket(p)} />
@@ -5225,9 +5288,12 @@ function PlayPage({settings, basket, activity, setActivity, onBack, onFinish, on
 
       <div className="col" style={{gap:16}}>
         {!activity && (
-          <Paged items={acts} per={4} resetKey="acts" cls="actgrid" render={a=>(
+          <Paged items={acts} per={4} resetKey="acts" cls="actgrid playpick" render={a=>(
+            /* 여기만 이모지를 직접 쓰고 있었어요 (2026-08-11 고침).
+               계획 화면·마무리 화면은 `ActivityThumb` 로 그림이 나오는데 이 화면만 이모지라,
+               같은 활동이 화면마다 다르게 보였습니다. 이제 세 곳이 같은 그림을 씁니다. */
             <button key={a.title} className="act" onClick={()=>{setActivity(a.title); setHowMode(null); speak(a.title, true);}}>
-              <span className="ai">{a.icon}</span>
+              <ActivityThumb activity={a.title} icon={a.icon} />
               <b>{a.title}</b>
               <span className="muted">{a.desc}</span>
             </button>
@@ -5654,7 +5720,9 @@ function FinishScreen({settings, basket, likes, activity, onReplay, onRestart, o
 
         <div className="col center" style={{marginTop:24, gap:14}}>
           <div className="row center" style={{gap:12}}>
-            <button className="btn ghost" onClick={onReplay}>🔁 오늘 활동 다시 보기</button>
+            {/* 이 단추는 매장(구경하GO)으로 돌아갑니다. 예전 이름 '오늘 활동 다시 보기'는
+                활동 화면으로 가는 것처럼 읽혀서 이름을 동작에 맞췄어요 (2026-08-11). */}
+            <button className="btn ghost" onClick={onReplay}>🔁 다시 쇼핑하기</button>
             <button className="btn ghost" onClick={()=>{ if(confirm('처음부터 다시 할까요? 기록이 지워져요.')) onRestart(); }}>🆕 처음부터 다시 하기</button>
             <button className="btn sky" onClick={onPrintList}>🖨️ 실제 문구점 쇼핑 리스트</button>
           </div>
@@ -6251,7 +6319,16 @@ function ActivityPick({name, initial, onConfirm, onHome, onBack}){
     sayBtn(k);
   };
   // 고른 갈래의 준비물 + 더 고를 수 있는 것 (겹치면 한 번만, 최대 8개)
-  const kinds = grp ? Array.from(new Set([...grp.needs, ...SUPPLY_EXTRAS])).slice(0,8) : [];
+  /* 공통 준비물(SUPPLY_EXTRAS) 중 **이미 위에 체크된 것과 겹치는 말**은 빼요 (2026-08-11).
+     예전엔 `쓰기` 에서 `✓ 연필·펜` 이 체크돼 있는데 아래에 `펜` 이 또 나왔습니다.
+     학생 눈에는 같은 말이 두 번 보여서 "어느 걸 눌러야 하지?" 가 됩니다.
+     `연필·펜` 이 `펜` 을 품고 있으면 `펜` 을 빼는 식이에요 (수첩·카드 ↔ 수첩 도 마찬가지). */
+  const kinds = grp
+    ? Array.from(new Set([
+        ...grp.needs,
+        ...SUPPLY_EXTRAS.filter(x=> !grp.needs.some(n=> n.includes(x) || x.includes(n)))
+      ])).slice(0,8)
+    : [];
 
   return (
     <div className="app" style={{paddingTop:10, maxWidth:1020}}>
