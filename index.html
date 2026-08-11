@@ -478,7 +478,10 @@ img.cicon{object-fit:contain;border-radius:.2em;}
   /* max-height 를 쓰면 그림이 눌려요 — 높이를 정하고 object-fit 으로 (위 설명 참고) */
   .plan-grid .act .act-thumb{height:clamp(76px,11vh,100px);}
   .plan-grid .act .act-thumb.mark{height:clamp(66px,9.5vh,88px);padding:4px;}
-  .plan-grid.few .act .act-thumb{height:clamp(110px,19vh,170px);}
+  /* 그림 상자를 원본과 같은 **3:2**에 가깝게 (2026-08-11).
+     예전엔 296×152(1.95:1)라 3:2 그림의 위아래를 잘라 넣었고, 그만큼 더 줄여 그리느라
+     잔 무늬가 점처럼 깨졌어요. 카드 폭 320 → 그림 폭 296 → 3:2면 세로 197이 맞습니다. */
+  .plan-grid.few .act .act-thumb{height:clamp(132px,24vh,197px);}
   .plan-grid.few .act .ai{font-size:62px;}
   .supply{min-height:60px;padding:11px 14px;font-size:1em;}
 }
@@ -486,12 +489,19 @@ img.cicon{object-fit:contain;border-radius:.2em;}
    그림을 넣으면서 카드 크기를 정해 줘야 했어요 — `.act .act-thumb` 의 기본값이
    `height:auto` 라, 3:2 그림이 들어오면 카드가 세로로 늘어져 스크롤이 생깁니다.
    ⚠️ 이 그림들은 풍경처럼 그린 삽화라 `cover` 가 맞아요 (코너 아이콘의 `.mark` 와 다릅니다). */
-.playpick .act{width:210px;padding:14px 12px;gap:6px;}
-.playpick .act .act-thumb{width:100%;height:clamp(84px,11vh,116px);object-fit:cover;object-position:center;}
-.playpick .act .ai{font-size:44px;}
+/* ⚠️ 카드를 작게 만들면 **그림이 점처럼 깨져 보입니다** (2026-08-11 재측정).
+   예전엔 카드 210px·그림 186×80 이었는데, 원본이 1536×1024라 **세로를 12.8배 줄여** 그렸어요.
+   브라우저가 이만큼 줄이면 색연필 줄·무늬 같은 잔 무늬가 뭉개지며 점이 됩니다.
+   해상도가 모자라서가 아니라 **너무 작게 그려서** 생기는 계단 현상이에요.
+   그림 상자를 원본과 같은 **3:2에 가깝게** 두고 크게 잡아 줄이는 배율을 5~6배로 낮췄습니다.
+   → 활동 그림을 다시 그릴 필요는 없습니다. 1536×1024 그대로 두세요. */
+.playpick .act{width:clamp(230px,22vw,300px);padding:14px 12px;gap:6px;}
+.playpick .act .act-thumb{width:100%;height:clamp(120px,17vh,176px);object-fit:cover;object-position:center;}
+.playpick .act .ai{font-size:56px;}
 @media (max-height:820px){
-  .playpick .act{width:190px;padding:11px 9px;}
-  .playpick .act .act-thumb{height:clamp(72px,10vh,98px);}
+  /* 여기도 3:2에 맞춰요 — 카드 폭 282 → 그림 폭 258 → 3:2면 세로 172 */
+  .playpick .act{width:clamp(210px,20vw,268px);padding:11px 10px;}
+  .playpick .act .act-thumb{height:clamp(118px,21vh,172px);}
 }
 .actgrid.compact{gap:14px;}
 .actgrid.compact .act{width:200px;padding:12px;gap:5px;}
