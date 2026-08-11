@@ -391,6 +391,13 @@ img.cicon{object-fit:contain;border-radius:.2em;}
 .sd-item img{width:100%;height:100%;object-fit:contain;}
 .sd-emoji{font-size:clamp(72px,12vh,120px);line-height:1;}
 .sd-name{font-size:1.5em;font-weight:900;}
+/* 🔧 선생님 칸 — 비밀 가게를 나가지 않고 여기서 바로 모드를 바꾸고 물건을 넣고 뺍니다 (2026-08-11).
+   ⚠️ 학생도 보고 있는 화면이라 **기본은 접혀 있어요**. 🔧 를 눌러야 열립니다.
+      회색 바탕에 점선 테두리로 '진열장이 아니라 선생님 도구'임을 한눈에 구분되게 했어요. */
+.secret-teach{background:#f4f6fa;border:2px dashed #b9c3d6;border-radius:16px;padding:12px 14px;margin-bottom:10px;}
+.secret-teach .st-h{font-weight:900;color:#42506b;margin-bottom:8px;display:block;}
+.secret-teach .st-sep{height:1px;background:#dfe5ef;margin:10px 0;}
+.secret-teach .st-in{padding:9px 11px;border:2px solid var(--line);border-radius:12px;font-size:1em;}
 @media (max-height:820px){
   .secret-scene{height:clamp(320px,calc(100vh - 170px),620px);}
   .secret-item{padding:11px 13px;}
@@ -2556,6 +2563,8 @@ function App(){
     return <SecretShop items={secretItems} mode={secretMode}
       studentName={settings.name} stampCount={student? (student.stamps||[]).length : null}
       onPick={giveReward}
+      /* 🔧 선생님 칸 — 나갔다 오지 않고 여기서 바로 모드를 바꾸고 물건을 넣고 뺍니다 */
+      onMode={setSecretMode} setItems={setSecretItems}
       onExit={()=>{ stopSpeak(); setScreen(secretBack); }} />;
   }
 
@@ -2834,29 +2843,9 @@ function TeacherSettings({settings, setSettings, onDone, onResult, students, set
   const [soundInfo, setSoundInfo] = useState(null); // '소리 검사' 결과
   // 🎁 비밀 가게에 넣을 새 물건 입력칸
   const [ni, setNi] = useState({name:'', emoji:'', photo:null});
+  /* 사진은 `readProductPhoto` 를 같이 써요 — 320px 정사각으로 줄여 저장합니다
+     (localStorage 용량을 아끼려고). 예전엔 여기에 똑같은 코드가 한 벌 더 있었어요. */
   const secretPhotoRef = useRef(null);
-  const onSecretPhoto = (e)=>{
-    const file = e.target.files && e.target.files[0];
-    e.target.value = '';
-    if(!file) return;
-    const rd = new FileReader();
-    rd.onload = ()=>{
-      /* 사진은 320px 정사각으로 줄여 저장해요 (localStorage 용량을 아끼려고 — 상품 사진과 같은 방식) */
-      const img = new Image();
-      img.onload = ()=>{
-        const S = 320, cv = document.createElement('canvas');
-        cv.width = S; cv.height = S;
-        const ctx = cv.getContext('2d');
-        ctx.fillStyle = '#fff'; ctx.fillRect(0,0,S,S);
-        const r = Math.min(S/img.width, S/img.height);
-        const w = img.width*r, h = img.height*r;
-        ctx.drawImage(img, (S-w)/2, (S-h)/2, w, h);
-        setNi(v=>({...v, photo: cv.toDataURL('image/jpeg', 0.82)}));
-      };
-      img.src = rd.result;
-    };
-    rd.readAsDataURL(file);
-  };
   // 새 상품 입력칸
   const [np, setNp] = useState({corner:'write', name:'', price:1000, color:'', feat:'', use:'', emoji:'🛍️', photo:null});
   const npSet = (k,v)=> setNp(p=>({...p,[k]:v}));
@@ -3154,61 +3143,76 @@ function TeacherSettings({settings, setSettings, onDone, onResult, students, set
           </p>
         </div>
 
-        {/* ===== 🎁 비밀 가게 (도장 보상) ===== */}
-        <div className="setrow">
+        {/* ===== 🎁 비밀 가게 (도장 보상) =====
+            ⚠️ 예전엔 이 칸만 className="setrow" 였는데 **그런 CSS 클래스가 없습니다**.
+               다른 번호는 모두 `field` 라서 제목 크기(1.05em·굵게)와 아래 여백(20px)이 붙는데
+               14번만 아무 규칙도 안 걸려 글씨가 작고 다닥다닥 붙어 보였어요. `field` 로 맞췄습니다.
+            ⚠️ 암호부터 아래는 12번 '우리 반 상품 더하기'와 같은 네모칸(.cprod-form)에 넣었어요.
+               할 일이 '여는 방법'과 '넣을 물건' 둘로 나뉘어서, 한 칸에 몰면 다시 덩어리로 보입니다. */}
+        <div className="field">
           <label>14. 🎁 비밀 가게 <span className="muted" style={{fontWeight:400,fontSize:'.85em'}}>도장을 모은 학생에게 주는 선물 — 선생님만 여는 곳</span></label>
-          <p className="muted" style={{fontSize:'.88em', margin:'2px 0 10px'}}>
-            매장 엘리베이터의 <b>⭐ 버튼</b>을 누르면 <b>“암호를 대시오!”</b> 창이 떠요. 암호는 선생님만 알아요.<br/>
-            도장 개수로 자동으로 열리지 않아요 — <b>언제 보여 줄지·언제 선물할지는 선생님이 정합니다.</b><br/>
-            도장 10개를 채운 학생은 물론, <b>오늘 특별히 애쓴 학생에게도</b> 바로 선물할 수 있어요.
+          {/* 네 가지를 한 줄씩 떨어뜨려 놓아요 — 이어 붙이면 한 덩어리로 보여 안 읽혀요 */}
+          <p className="muted" style={{fontSize:'.9em', margin:'0 0 14px', lineHeight:1.5}}>
+            <span style={{display:'block', marginBottom:6}}>· 매장 엘리베이터의 <b>⭐ 버튼</b>을 누르면 <b>“암호를 대시오!”</b> 창이 떠요. 암호는 선생님만 알아요.</span>
+            <span style={{display:'block', marginBottom:6}}>· 도장 개수로 자동으로 열리지 않아요 — <b>언제 보여 줄지·언제 선물할지는 선생님이 정합니다.</b></span>
+            <span style={{display:'block', marginBottom:6}}>· 도장 <b>10개를 채우면</b> 선물을 주고 <b>도장판이 비워져요</b> (넘친 도장은 다음 판으로 넘어가요).</span>
+            <span style={{display:'block'}}>· 10개가 안 되어도 <b>오늘 특별히 애쓴 학생에게</b> 선생님 재량으로 줄 수 있어요 (이때는 도장이 그대로 남아요).</span>
           </p>
 
-          <div className="row" style={{gap:10, alignItems:'center', flexWrap:'wrap', marginBottom:10}}>
-            <span className="lbl">암호</span>
-            <input type="text" inputMode="numeric" value={s.secretCode||'1234'} maxLength={8}
-              onChange={e=> set('secretCode', e.target.value.replace(/[^0-9]/g,'') || '1234')}
-              style={{width:120, fontSize:'1.2em', fontWeight:900, textAlign:'center', padding:'8px 10px',
-                border:'2px solid var(--line)', borderRadius:12}} />
-            <span className="muted" style={{fontSize:'.85em'}}>숫자만, 최대 8자리</span>
-            <span className="spacer" style={{flex:1}}></span>
-            <button className="btn sm sky" onClick={()=>onOpenSecret('look')}>👀 구경만 열기</button>
-            <button className="btn sm mint" onClick={()=>onOpenSecret('gift')}>🎁 선물 주기</button>
+          <div className="cprod-form">
+            <b style={{display:'block', marginBottom:10, fontSize:'1.02em'}}>🔑 여는 방법</b>
+            <div className="row" style={{margin:0, gap:10, alignItems:'center', flexWrap:'wrap'}}>
+              <span className="lbl">암호</span>
+              <input type="text" inputMode="numeric" value={s.secretCode||'1234'} maxLength={8}
+                onChange={e=> set('secretCode', e.target.value.replace(/[^0-9]/g,'') || '1234')}
+                style={{width:120, fontSize:'1.2em', fontWeight:900, textAlign:'center', padding:'8px 10px',
+                  border:'2px solid var(--line)', borderRadius:12}} />
+              <span className="muted" style={{fontSize:'.85em'}}>숫자만, 최대 8자리</span>
+              <span className="spacer" style={{flex:1}}></span>
+              <button className="btn sm sky" onClick={()=>onOpenSecret('look')}>👀 구경만 열기</button>
+              <button className="btn sm mint" onClick={()=>onOpenSecret('gift')}>🎁 선물 주기</button>
+            </div>
           </div>
 
-          <p className="muted" style={{fontSize:'.85em', margin:'0 0 8px'}}>
-            학급에서 실제로 쓰는 것으로 바꿔 주세요 (과자·스티커·칭찬 쿠폰 등). 처음엔 예시 하나만 들어 있어요.
-          </p>
-          <div className="wrap" style={{gap:8, marginBottom:10}}>
-            {secretItems.map(it=>(
-              <span key={it.id} className="pill" style={{display:'inline-flex', alignItems:'center', gap:8, padding:'8px 10px 8px 12px'}}>
-                {it.photo ? <img src={it.photo} alt="" style={{width:28, height:28, objectFit:'contain'}} /> : <span style={{fontSize:'1.3em'}}>{it.emoji||'🎁'}</span>}
-                <b>{it.name}</b>
-                <button className="btn sm ghost" style={{minHeight:32, padding:'4px 10px'}}
-                  onClick={()=>{ if(confirm(`'${it.name}'을(를) 뺄까요?`)) setSecretItems(l=>l.filter(x=>x.id!==it.id)); }}>빼기</button>
-              </span>
-            ))}
-            {secretItems.length===0 && <span className="muted">아직 물건이 없어요.</span>}
-          </div>
-          <div className="row" style={{gap:8, flexWrap:'wrap', alignItems:'center'}}>
-            <input type="text" placeholder="물건 이름 (예: 젤리)" value={ni.name}
-              onChange={e=> setNi(v=>({...v, name:e.target.value}))}
-              style={{flex:'1 1 180px', minWidth:140, padding:'10px 12px', border:'2px solid var(--line)', borderRadius:12, fontSize:'1em'}} />
-            <input type="text" placeholder="그림 (이모지)" value={ni.emoji} maxLength={4}
-              onChange={e=> setNi(v=>({...v, emoji:e.target.value}))}
-              style={{width:110, textAlign:'center', padding:'10px 8px', border:'2px solid var(--line)', borderRadius:12, fontSize:'1.2em'}} />
-            <input ref={secretPhotoRef} type="file" accept="image/*" style={{display:'none'}} onChange={onSecretPhoto} />
-            <button className="btn sm sky" onClick={()=> secretPhotoRef.current && secretPhotoRef.current.click()}>📷 사진</button>
-            {ni.photo && <img src={ni.photo} alt="" style={{width:36, height:36, objectFit:'contain', borderRadius:8, border:'2px solid var(--line)'}} />}
-            <button className="btn sm mint" onClick={()=>{
-              const nm = (ni.name||'').trim();
-              if(!nm){ alert('물건 이름을 적어 주세요.'); return; }
-              setSecretItems(l=>[...l, {id:'sec'+Date.now(), name:nm, emoji:(ni.emoji||'🎁'), photo:ni.photo||null}]);
-              setNi({name:'', emoji:'', photo:null});
-            }}>+ 더하기</button>
+          <div className="cprod-form" style={{marginTop:12}}>
+            <b style={{display:'block', marginBottom:4, fontSize:'1.02em'}}>🎁 넣을 물건</b>
+            <p className="muted" style={{fontSize:'.85em', margin:'0 0 10px'}}>
+              학급에서 실제로 쓰는 것으로 바꿔 주세요 (과자·스티커·칭찬 쿠폰 등). 처음엔 예시 하나만 들어 있어요.
+            </p>
+            <div className="wrap" style={{gap:8, marginBottom:10}}>
+              {secretItems.map(it=>(
+                <span key={it.id} className="pill" style={{display:'inline-flex', alignItems:'center', gap:8, padding:'8px 10px 8px 12px'}}>
+                  {it.photo ? <img src={it.photo} alt="" style={{width:28, height:28, objectFit:'contain'}} /> : <span style={{fontSize:'1.3em'}}>{it.emoji||'🎁'}</span>}
+                  <b>{it.name}</b>
+                  <button className="btn sm ghost" style={{minHeight:32, padding:'4px 10px'}}
+                    onClick={()=>{ if(confirm(`'${it.name}'을(를) 뺄까요?`)) setSecretItems(l=>l.filter(x=>x.id!==it.id)); }}>빼기</button>
+                </span>
+              ))}
+              {secretItems.length===0 && <span className="muted">아직 물건이 없어요.</span>}
+            </div>
+            <div className="row" style={{margin:0, gap:8, flexWrap:'wrap', alignItems:'center'}}>
+              <input type="text" placeholder="물건 이름 (예: 젤리)" value={ni.name}
+                onChange={e=> setNi(v=>({...v, name:e.target.value}))}
+                style={{flex:'1 1 180px', minWidth:140, padding:'10px 12px', border:'2px solid var(--line)', borderRadius:12, fontSize:'1em'}} />
+              <input type="text" placeholder="그림 (이모지)" value={ni.emoji} maxLength={4}
+                onChange={e=> setNi(v=>({...v, emoji:e.target.value}))}
+                style={{width:110, textAlign:'center', padding:'10px 8px', border:'2px solid var(--line)', borderRadius:12, fontSize:'1.2em'}} />
+              <input ref={secretPhotoRef} type="file" accept="image/*" style={{display:'none'}}
+                onChange={e=> readProductPhoto(e, url=> setNi(v=>({...v, photo:url})))} />
+              <button className="btn sm sky" onClick={()=> secretPhotoRef.current && secretPhotoRef.current.click()}>📷 사진</button>
+              {ni.photo && <img src={ni.photo} alt="" style={{width:36, height:36, objectFit:'contain', borderRadius:8, border:'2px solid var(--line)'}} />}
+              <button className="btn sm mint" onClick={()=>{
+                const nm = (ni.name||'').trim();
+                if(!nm){ alert('물건 이름을 적어 주세요.'); return; }
+                setSecretItems(l=>[...l, {id:'sec'+Date.now(), name:nm, emoji:(ni.emoji||'🎁'), photo:ni.photo||null}]);
+                setNi({name:'', emoji:'', photo:null});
+              }}>＋ 더하기</button>
+            </div>
           </div>
         </div>
 
-        <button className="btn primary big" style={{width:'100%'}} onClick={save}>설정 완료</button>
+        {/* 바로 위 '＋ 더하기' 줄과 붙어 있으면 잘못 누르기 쉬워요 */}
+        <button className="btn primary big" style={{width:'100%', marginTop:22}} onClick={save}>설정 완료</button>
       </div>
     </div>
   );
@@ -6050,8 +6054,15 @@ function SecretGate({code, onOpen, onClose}){
    mode 'look' : 구경만 — "이런 게 있어! 도장 모으면 받을 수 있어" (동기부여)
    mode 'gift' : 선물 주기 — 하나 고르면 기록에 남아요.
    배경은 `이미지/배경/시크릿층.png` (매장 층 그림과 같은 넓은 파노라마). */
-function SecretShop({items, mode, studentName, stampCount, onPick, onExit}){
+function SecretShop({items, mode, studentName, stampCount, onPick, onExit, onMode, setItems}){
   const [chosen, setChosen] = useState(null);
+  /* 🔧 선생님 칸 — 설정 화면까지 갔다 오지 않고 여기서 바로 고쳐요 (2026-08-11).
+     선물을 줄 때 "어? 이건 빼야겠다", "오늘은 구경만 보여 줘야지" 가 즉석에서 생기는데,
+     그때마다 나가서 설정 14번을 찾아 들어갔다 오는 게 번거로웠거든요.
+     ⚠️ 학생이 같이 보는 화면이라 **기본은 닫혀 있습니다.** */
+  const [teach, setTeach] = useState(false);
+  const [ni, setNi] = useState({name:'', emoji:'', photo:null});
+  const photoRef = useRef(null);
   const gift = mode==='gift';
   useEffect(()=>{
     speak(gift ? '비밀 가게예요! 갖고 싶은 것을 하나 골라 보세요.'
@@ -6084,8 +6095,58 @@ function SecretShop({items, mode, studentName, stampCount, onPick, onExit}){
         <span className="spacer" style={{flex:1}}></span>
         {stampCount!=null && <span className="pill">도장 {stampCount}개</span>}
         <span className={"pill "+(gift?'sec-gift':'sec-look')}>{gift? '🎁 선물 주기' : '👀 구경만'}</span>
+        {setItems && <button className={"btn sm "+(teach?'mint':'ghost')} onClick={()=>setTeach(t=>!t)}
+          aria-label={teach? '선생님 칸 닫기':'선생님 칸 열기'}>🔧 선생님</button>}
         <button className="btn ghost sm" onClick={onExit}>◀ 나가기</button>
       </div>
+
+      {teach && setItems && (
+        <div className="secret-teach">
+          <div className="row" style={{margin:0, gap:8, alignItems:'center', flexWrap:'wrap'}}>
+            <span className="st-h" style={{marginBottom:0}}>지금 모드</span>
+            <button className={"btn sm "+(gift?'ghost':'sky')} onClick={()=> onMode && onMode('look')}>👀 구경만</button>
+            <button className={"btn sm "+(gift?'mint':'ghost')} onClick={()=> onMode && onMode('gift')}>🎁 선물 주기</button>
+            <span className="spacer" style={{flex:1}}></span>
+            <span className="muted" style={{fontSize:'.85em'}}>학생도 같이 보는 화면이에요. 다 하시면 🔧를 눌러 닫아 주세요.</span>
+          </div>
+
+          <div className="st-sep"></div>
+
+          <span className="st-h">넣을 물건</span>
+          <div className="wrap" style={{gap:8, marginBottom:10}}>
+            {items.map(it=>(
+              <span key={it.id} className="pill" style={{display:'inline-flex', alignItems:'center', gap:8, padding:'8px 10px 8px 12px'}}>
+                {it.photo ? <img src={it.photo} alt="" style={{width:26, height:26, objectFit:'contain'}} /> : <span style={{fontSize:'1.25em'}}>{it.emoji||'🎁'}</span>}
+                <b>{it.name}</b>
+                <button className="btn sm ghost" style={{minHeight:30, padding:'3px 9px'}}
+                  onClick={()=>{ if(confirm(`'${it.name}'을(를) 뺄까요?`)) setItems(l=>l.filter(x=>x.id!==it.id)); }}>빼기</button>
+              </span>
+            ))}
+            {items.length===0 && <span className="muted">아직 물건이 없어요. 아래에서 바로 넣을 수 있어요.</span>}
+          </div>
+
+          <div className="row" style={{margin:0, gap:8, flexWrap:'wrap', alignItems:'center'}}>
+            <input type="text" className="st-in" placeholder="물건 이름 (예: 젤리)" value={ni.name}
+              onChange={e=> setNi(v=>({...v, name:e.target.value}))}
+              style={{flex:'1 1 180px', minWidth:140}} />
+            <input type="text" className="st-in" placeholder="그림 (이모지)" value={ni.emoji} maxLength={4}
+              onChange={e=> setNi(v=>({...v, emoji:e.target.value}))}
+              style={{width:110, textAlign:'center', fontSize:'1.2em'}} />
+            <input ref={photoRef} type="file" accept="image/*" style={{display:'none'}}
+              onChange={e=> readProductPhoto(e, url=> setNi(v=>({...v, photo:url})))} />
+            <button className="btn sm sky" onClick={()=> photoRef.current && photoRef.current.click()}>📷 사진</button>
+            {ni.photo && <img src={ni.photo} alt="" style={{width:34, height:34, objectFit:'contain', borderRadius:8, border:'2px solid var(--line)'}} />}
+            {ni.photo && <button className="btn sm ghost" onClick={()=> setNi(v=>({...v, photo:null}))}>사진 지우기</button>}
+            <button className="btn sm mint" onClick={()=>{
+              const nm = (ni.name||'').trim();
+              if(!nm){ alert('물건 이름을 적어 주세요.'); return; }
+              setItems(l=>[...l, {id:'sec'+Date.now(), name:nm, emoji:(ni.emoji||'🎁'), photo:ni.photo||null}]);
+              setNi({name:'', emoji:'', photo:null});
+              playSfx('drop');
+            }}>＋ 더하기</button>
+          </div>
+        </div>
+      )}
 
       <div className="secret-scene">
         <BgImg name="시크릿층" className="secret-bg" />
