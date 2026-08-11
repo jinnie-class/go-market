@@ -3499,10 +3499,14 @@ function BrowseStage({settings, products, likes, setLikes, basket, setBasket, bu
     <div className="col" style={{gap:9}}>
       {!onFacade && (
         /* 구경·고르는 동안에는 숫자를 걷어낸 간단한 줄만 씁니다 (2026-08-11).
-           코너 안에 있을 땐 '매장으로 돌아가기'도 이 줄로 올려, 코너 제목 줄이 짧아지게 했어요. */
+           코너 안에 있을 땐 '매장으로 돌아가기'도 이 줄로 올려, 코너 제목 줄이 짧아지게 했어요.
+           ⚠️ caption('문구점을 구경해요')은 뺐어요 (2026-08-11) — 준비물을 여러 개 고른 날엔
+              계획 띠가 길어져 이 칩이 둘째 줄로 밀려났고, 위 단계띠에 이미 '1 👀 구경하GO!'가
+              노랗게 켜져 있어 같은 말을 두 번 하고 있었어요.
+           ⚠️ JSX 여는 태그 '안'에는 주석을 넣을 수 없어요(문법 오류). 설명은 여기처럼 태그 위에 둘 것. */
         <BudgetBar name={settings.name} budget={budget} total={total} remaining={remaining} basketCount={countOf(basket)} maxItems={maxItems} wallet={settings.walletView!==false} onWalletReset={onWalletReset} onBasket={onNext}
           simple plan={plan} onBack={(corner||showLiked) ? ()=>{ setCorner(null); setShowLiked(false); } : null}
-          caption="문구점을 구경해요" onChangeCharacter={onChangeCharacter} />
+          onChangeCharacter={onChangeCharacter} />
       )}
       {/* 계획 띠를 따로 한 줄 깔지 않아요 (2026-08-11).
           예산 바 + 지갑 바 + 계획 띠로 세 겹이 쌓여 1280×800에서 스크롤이 36px 생겼습니다.
