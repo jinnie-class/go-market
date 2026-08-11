@@ -451,9 +451,14 @@ img.cicon{object-fit:contain;border-radius:.2em;}
    칸 안쪽(148px)보다 작게 두고 `padding` 으로 사방 여백을 줘서 답답하지 않게 했어요. */
 .plan-grid .act .act-thumb.mark{object-fit:contain;height:clamp(76px,10.5vh,96px);padding:4px;}
 /* ② '무엇을 해 볼까요?' 는 카드가 3개뿐이라 그림을 훨씬 크게 보여 줄 수 있어요 */
-.plan-grid.few .act{width:clamp(230px,26vw,320px);padding:14px 12px;gap:8px;}
+/* 최대 폭을 320 → 420 으로 (2026-08-11). 전자칠판처럼 넓은 화면에서 그림을 크게 그려야
+   1536px 원본을 덜 줄이게 되고, 그래야 거칠어 보이지 않아요. */
+.plan-grid.few .act{width:clamp(230px,26vw,420px);padding:14px 12px;gap:8px;}
 .plan-grid.few .act .ai{font-size:74px;}
-.plan-grid.few .act .act-thumb{height:clamp(130px,22vh,210px);}
+/* 카드 폭 420 → 그림 폭 396 → 원본과 같은 3:2면 세로 264 (2026-08-11).
+   여기서 210으로 막아 두면 세로가 눌려 그림을 위아래로 잘라 넣게 되고,
+   그만큼 더 줄여 그리느라 거칠어집니다. */
+.plan-grid.few .act .act-thumb{height:clamp(130px,22vh,264px);}
 /* 지금 고른 활동을 작게 보여 주는 칩 */
 .plan-act{display:inline-flex;align-items:center;gap:8px;background:#fff6e6;border:2px solid #ffe1a8;
   border-radius:999px;padding:6px 16px 6px 8px;font-weight:900;color:#6a5200;}
@@ -481,7 +486,7 @@ img.cicon{object-fit:contain;border-radius:.2em;}
   /* 그림 상자를 원본과 같은 **3:2**에 가깝게 (2026-08-11).
      예전엔 296×152(1.95:1)라 3:2 그림의 위아래를 잘라 넣었고, 그만큼 더 줄여 그리느라
      잔 무늬가 점처럼 깨졌어요. 카드 폭 320 → 그림 폭 296 → 3:2면 세로 197이 맞습니다. */
-  .plan-grid.few .act .act-thumb{height:clamp(132px,24vh,197px);}
+  .plan-grid.few .act .act-thumb{height:clamp(132px,24vh,264px);}
   .plan-grid.few .act .ai{font-size:62px;}
   .supply{min-height:60px;padding:11px 14px;font-size:1em;}
 }
@@ -6341,7 +6346,10 @@ function ActivityPick({name, initial, onConfirm, onHome, onBack}){
     : [];
 
   return (
-    <div className="app" style={{paddingTop:10, maxWidth:1020}}>
+    /* ⚠️ 폭을 1020px 로 묶어 두면 **전자칠판에서도 그림이 안 커집니다** (2026-08-11).
+       1920 화면인데도 카드가 320px에서 멈춰, 1536px 그림을 5배 넘게 줄여 그리느라
+       거칠어 보였어요. 화면이 넓으면 넓은 만큼 그림도 커지도록 풀었습니다. */
+    <div className="app" style={{paddingTop:10, maxWidth:'min(1500px, 96vw)'}}>
       <BgImg name="벽지" className="wallpaper" />
       <div className="row" style={{marginBottom:8}}>
         <button className="brand step-btn" onClick={onHome} title="처음 화면으로"><BrandLogo /></button>
