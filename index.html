@@ -642,8 +642,10 @@ body.quiet .confetti{display:none !important;}
 .ev-board-title{font-weight:900;text-align:center;background:#3e2e63;color:#fff;border-radius:10px;padding:5px;}
 .ev-board-row{display:flex;align-items:center;gap:9px;border:2px solid rgba(0,0,0,.08);border-radius:12px;padding:6px 10px;}
 .ev-board-no{font-weight:900;background:rgba(255,255,255,.9);border-radius:9px;padding:2px 8px;flex:0 0 auto;font-size:.92em;}
-.ev-board-desc{display:flex;flex-direction:column;line-height:1.25;min-width:0;font-size:.82em;}
-.ev-board-icons{font-size:1.15em;display:inline-flex;gap:5px;align-items:center;vertical-align:middle;}
+/* 아이콘을 뺀 만큼 코너 이름을 키웠어요 (.82em → 1em, 2026-08-11).
+   21px 아이콘은 글자 옆에서 알아볼 수 없어 정보를 못 줬는데,
+   그 자리를 글자에 주니 오히려 또렷해졌습니다. */
+.ev-board-desc{display:flex;flex-direction:column;line-height:1.3;min-width:0;font-size:1em;font-weight:800;}
 @media (max-width:760px){ .ev-board{display:none;} }
 .ev-panel{position:relative;z-index:1;display:flex;flex-direction:column;gap:12px;align-items:center;}
 .ev-lbl{font-weight:900;color:#3e2e63;background:rgba(255,255,255,.85);border-radius:999px;padding:4px 14px;font-size:.9em;}
@@ -3016,9 +3018,11 @@ function BrowseStage({settings, products, likes, setLikes, basket, setBasket, bu
             {corner && <BgImg name={'코너_'+CORNERS.find(c=>c.id===corner).title} />}
             <div className="row" style={{margin:0, position:'relative', zIndex:1}}>
               <button className="btn ghost" onClick={()=>{setCorner(null); setShowLiked(false);}}>⬅️ 매장으로 돌아가기</button>
+              {/* 제목에도 코너 아이콘을 넣지 않아요 (2026-08-11).
+                  이미 그 코너에 들어와 있어서 아이콘이 새로 알려 줄 게 없고,
+                  21px라 알아보기도 어려웠습니다. 글자만 두어 화면을 가볍게 했어요. */}
               <div className="section-title corner-title" style={{margin:0}}>
-                {showLiked? '💗 좋아요'
-                  : <React.Fragment><CornerIcon id={corner} /> {CORNERS.find(c=>c.id===corner).title} 코너</React.Fragment>}
+                {showLiked? '💗 좋아요' : CORNERS.find(c=>c.id===corner).title+' 코너'}
               </div>
               {/* 선생님이 진열된 문구를 보면서 그 자리에서 우리 반 문구를 넣을 수 있어요.
                   설정 화면(12번)까지 가지 않아도 되고, 코너는 이미 정해져 있습니다. (2026-08-09) */}
@@ -3294,8 +3298,12 @@ function ElevatorScene({from, onArrive, onStay, onCheckout}){
         {[...FLOORS].reverse().map(f=>(
           <div key={f.no} className="ev-board-row" style={{background:f.wall}}>
             <span className="ev-board-no">{f.no}층</span>
+            {/* 여기엔 코너 아이콘을 넣지 않아요 (2026-08-11).
+                코너 이름 글자가 바로 옆에 있는데 아이콘이 21px밖에 안 돼서,
+                읽는 학생은 글자를 보고 못 읽는 학생은 아이콘을 못 알아봤어요.
+                양쪽 다 도움이 안 되는 크기라 빼고, 그 자리에 글자를 키웠습니다.
+                아이콘이 정말 필요한 곳은 '건물 창문'(글자가 없는 자리)과 진열대예요. */}
             <span className="ev-board-desc">
-              <span className="ev-board-icons">{f.corners.map(id=><CornerIcon key={id} id={id} />)}</span>
               <b>{f.desc}</b>
             </span>
           </div>
