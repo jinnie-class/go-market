@@ -746,15 +746,22 @@ body.quiet .confetti{display:none !important;}
   gap:8px;z-index:1;font-weight:900;font-size:1.15em;text-align:center;
   background:linear-gradient(#f6f2ff,#e8e1f6);}
 /* 엘리베이터 옆 층별 안내판 */
+/* ⚠️ 폭은 재서 정한 값입니다 (2026-08-11).
+   한 층에 코너 3개를 칸으로 늘어놓으려면, 판 안쪽에서 테두리·안여백·칸 여백·`2층` 칩을
+   모두 뺀 나머지를 셋으로 나눠야 해요. 230px에서는 한 칸이 47px밖에 안 나와
+   `놀이하기` 네 글자(52px)가 안 들어갑니다. 280px이면 한 칸 57px로 들어가요.
+   엘리베이터 무대에 좌우 여유가 39px씩 있어(962px 화면 기준) 넓혀도 부딪히지 않습니다. */
 .ev-board{position:relative;z-index:1;background:#fff;border:4px solid #9c8fc0;border-radius:16px;
-  padding:10px;display:flex;flex-direction:column;gap:7px;box-shadow:var(--shadow-lg);width:min(230px,26vw);}
+  padding:10px;display:flex;flex-direction:column;gap:7px;box-shadow:var(--shadow-lg);width:min(280px,30vw);}
 .ev-board-title{font-weight:900;text-align:center;background:#3e2e63;color:#fff;border-radius:10px;padding:5px;}
-.ev-board-row{display:flex;align-items:center;gap:9px;border:2px solid rgba(0,0,0,.08);border-radius:12px;padding:6px 10px;}
-.ev-board-no{font-weight:900;background:rgba(255,255,255,.9);border-radius:9px;padding:2px 8px;flex:0 0 auto;font-size:.92em;}
-/* 아이콘을 뺀 만큼 코너 이름을 키웠어요 (.82em → 1em, 2026-08-11).
-   21px 아이콘은 글자 옆에서 알아볼 수 없어 정보를 못 줬는데,
-   그 자리를 글자에 주니 오히려 또렷해졌습니다. */
-.ev-board-desc{display:flex;flex-direction:column;line-height:1.3;min-width:0;font-size:1em;font-weight:800;}
+.ev-board-row{display:flex;align-items:center;gap:8px;border:2px solid rgba(0,0,0,.08);border-radius:12px;padding:6px 8px;}
+.ev-board-no{font-weight:900;background:rgba(255,255,255,.9);border-radius:9px;padding:2px 6px;flex:0 0 auto;font-size:.82em;}
+/* 코너마다 자기 칸을 가져요 — 이래야 이름이 줄바꿈되지 않습니다 */
+.ev-board-cells{display:flex;flex:1;min-width:0;gap:5px;justify-content:space-around;}
+.ev-board-cell{display:flex;flex-direction:column;align-items:center;gap:3px;min-width:0;}
+.ev-board-img{height:38px;width:auto;max-width:100%;object-fit:contain;display:block;}
+.ev-board-fb{height:38px;display:flex;align-items:center;justify-content:center;font-size:30px;line-height:1;}
+.ev-board-cname{font-size:13px;font-weight:800;line-height:1.1;white-space:nowrap;}
 @media (max-width:760px){ .ev-board{display:none;} }
 .ev-panel{position:relative;z-index:1;display:flex;flex-direction:column;gap:12px;align-items:center;}
 .ev-lbl{font-weight:900;color:#3e2e63;background:rgba(255,255,255,.85);border-radius:999px;padding:4px 14px;font-size:.9em;}
@@ -1607,45 +1614,60 @@ function PlanStrip({plan}){
    '하려던 것'과 '실제로 한 것'을 이을 수 없었어요.
    이제 두 화면 모두 이 표를 쓰고, `suggestActivities`도 여기서 뽑아 씁니다.
    · needs  : 그 갈래에 필요한 준비물 (큰 갈래로만 — '동물 스티커'가 아니라 '스티커')
-   · match  : 바구니에 이런 물건이 있으면 이 갈래를 추천 (상품 이름 일부 또는 코너 id) */
+   · match  : 바구니에 이런 물건이 있으면 이 갈래를 추천 (상품 이름 일부 또는 코너 id)
+
+   ⚠️ **`id` 와 순서를 `CORNERS` 와 똑같이 맞춰 두었습니다 (2026-08-11).**
+      갈래 = 코너 1:1 이라서, 갈래 그림은 따로 그리지 않고 **코너 대표 그림을 그대로 씁니다**
+      (`이미지\코너대표\`). 갈래를 더하거나 이름을 바꾸면 코너와 어긋나 그림이 사라지니,
+      `CORNERS` 를 먼저 고치고 여기를 맞추세요.
+
+      예전엔 갈래가 코너와 달랐어요 — `종이접기`·`만들기(클레이)` 가 따로 있고 `모으기` 는 없었습니다.
+      · 종이접기 + 클레이 → **만들기** 하나로 합쳤습니다 (실제로 한 코너에서 다 사는 물건이에요).
+        접기·클레이는 그 안의 활동으로 내려갔습니다
+      · `키트 만들기` → **키트** (코너 이름과 같게)
+      · **모으기** 갈래를 새로 넣었습니다 (수첩·카드·키링으로 할 일이 분명히 있어요)
+
+   ⚠️ 활동 24개의 작은 그림은 **이모지 그대로** 둡니다. 갈래 화면은 8개가 한꺼번에 보여
+      그림이 필요하지만, 활동 화면은 한 번에 3개만 보여서 이모지로 충분해요. 두 화면은
+      나란히 놓이지 않아 그림체가 섞여 보이지도 않습니다. */
 const ACTIVITY_GROUPS = [
-  { id:'deco', icon:'⭐', title:'꾸미기',
-    needs:['스티커','테이프','수첩'], match:['스티커','테이프','deco'],
-    acts:[{icon:'📔',title:'나만의 수첩 꾸미기',desc:'스티커로 예쁘게 꾸며요.'},
-          {icon:'🏷️',title:'이름표 꾸미기',desc:'내 이름표를 만들어요.'},
-          {icon:'💌',title:'친구에게 줄 카드 꾸미기',desc:'카드를 예쁘게 꾸며요.'}] },
-  { id:'draw', icon:'🎨', title:'그리기',
-    needs:['종이','색칠 도구'], match:['색연필','사인펜','스케치북','물감','draw'],
-    acts:[{icon:'🎨',title:'자유롭게 그림 그리기',desc:'마음껏 그려요.'},
-          {icon:'😊',title:'오늘의 기분 그리기',desc:'지금 기분을 그려요.'},
-          {icon:'⭐',title:'좋아하는 것 그리기',desc:'좋아하는 걸 그려요.'}] },
   { id:'write', icon:'✉️', title:'쓰기',
-    needs:['편지지·카드','펜','수첩'], match:['젤펜','연필','형광펜','메모','수첩','편지','write','gather'],
+    needs:['연필·펜','편지지·카드','공책'], match:['연필','펜','지우개','수정','노트','편지','write'],
     acts:[{icon:'✉️',title:'친구에게 짧은 편지 쓰기',desc:'마음을 전해요.'},
           {icon:'💗',title:'가족에게 감사 카드 쓰기',desc:'고마움을 적어요.'},
           {icon:'🔮',title:'미래의 나에게 편지 쓰기',desc:'나에게 편지를 써요.'}] },
-  { id:'fold', icon:'🦢', title:'종이접기',
-    needs:['색종이','풀·가위'], match:['색종이'],
+  { id:'draw', icon:'🎨', title:'그리기',
+    needs:['종이','색칠 도구'], match:['색연필','사인펜','크레파스','파스텔','물감','붓','스케치북','색상지','draw'],
+    acts:[{icon:'🎨',title:'자유롭게 그림 그리기',desc:'마음껏 그려요.'},
+          {icon:'😊',title:'오늘의 기분 그리기',desc:'지금 기분을 그려요.'},
+          {icon:'⭐',title:'좋아하는 것 그리기',desc:'좋아하는 걸 그려요.'}] },
+  { id:'deco', icon:'⭐', title:'꾸미기',
+    needs:['스티커','테이프','공책'], match:['스티커','테이프','스탬프','핀셋','deco'],
+    acts:[{icon:'📔',title:'나만의 수첩 꾸미기',desc:'스티커로 예쁘게 꾸며요.'},
+          {icon:'🏷️',title:'이름표 꾸미기',desc:'내 이름표를 만들어요.'},
+          {icon:'💌',title:'친구에게 줄 카드 꾸미기',desc:'카드를 예쁘게 꾸며요.'}] },
+  { id:'make', icon:'✂️', title:'만들기',
+    needs:['색종이','클레이','풀·가위'], match:['색종이','클레이','가위','풀','펠트','털실','플레이콘','리본','make'],
     acts:[{icon:'🦢',title:'자유 종이접기',desc:'접고 싶은 걸 접어요.'},
-          {icon:'🎩',title:'종이 모자 만들기',desc:'모자를 만들어요.'},
-          {icon:'🧑‍🤝‍🧑',title:'친구와 함께 꾸미기',desc:'같이 만들어요.'}] },
-  { id:'clay', icon:'🍩', title:'만들기',
-    needs:['클레이','꾸미기 재료'], match:['클레이'],
-    acts:[{icon:'🍩',title:'좋아하는 음식 만들기',desc:'맛있는 걸 만들어요.'},
-          {icon:'🐶',title:'동물 만들기',desc:'귀여운 동물을 만들어요.'},
-          {icon:'✨',title:'자유롭게 모양 만들기',desc:'원하는 모양을 만들어요.'}] },
-  { id:'kit', icon:'🧩', title:'키트 만들기',
-    needs:['키트'], match:['블록','뜨개','비즈','십자수','프라모델','펠트','미니어처','다이아몬드','kit'],
+          {icon:'🍩',title:'좋아하는 음식 만들기',desc:'클레이로 맛있는 걸 만들어요.'},
+          {icon:'🐶',title:'동물 만들기',desc:'귀여운 동물을 만들어요.'}] },
+  { id:'kit', icon:'🧩', title:'키트',
+    needs:['키트'], match:['키트','블록','비즈','십자수','모루','슬라임','kit'],
     acts:[{icon:'🧩',title:'키트로 만들어 완성하기',desc:'차근차근 완성해요.'},
           {icon:'🏆',title:'완성한 작품 전시하기',desc:'만든 작품을 자랑해요.'},
           {icon:'🧶',title:'천천히 손으로 만들기',desc:'하나씩 만들어요.'}] },
   { id:'toy', icon:'🎲', title:'놀이하기',
-    needs:['놀잇감'], match:['보드게임','퍼즐','팽이','요요','비눗방울','카드','볼링','스퀴시','toy'],
+    needs:['놀잇감'], match:['퍼즐','게임','요요','큐브','버블','팽이','낚시','toy'],
     acts:[{icon:'🎲',title:'친구와 게임하기',desc:'같이 놀이해요.'},
           {icon:'🧩',title:'퍼즐 맞추기',desc:'조각을 맞춰요.'},
           {icon:'🎉',title:'혼자서도 재미있게 놀기',desc:'좋아하는 놀이를 해요.'}] },
-  { id:'organize', icon:'🗂️', title:'정리하기',
-    needs:['정리함','이름표'], match:['필통','보관함','파일','organize'],
+  { id:'gather', icon:'💖', title:'모으기',
+    needs:['수첩·카드','앨범·슬리브','스티커'], match:['수첩','다이어리','카드','키링','책갈피','메모','자석','앨범','슬리브','gather'],
+    acts:[{icon:'🐻',title:'좋아하는 카드 모으기',desc:'마음에 드는 카드를 모아요.'},
+          {icon:'🖼️',title:'포토카드 꾸며 보관하기',desc:'슬리브에 넣어 꾸며요.'},
+          {icon:'📔',title:'나만의 수첩에 모아 붙이기',desc:'모은 것을 수첩에 붙여요.'}] },
+  { id:'organize', icon:'📁', title:'정리하기',
+    needs:['정리함','이름표'], match:['필통','파우치','연필꽂이','보관함','서랍','파일','홀더','라벨','인덱스','클립','organize'],
     acts:[{icon:'🗂️',title:'내가 좋아하는 문구 정리하기',desc:'깔끔하게 정리해요.'},
           {icon:'👝',title:'필통 꾸미기',desc:'필통을 꾸며요.'},
           {icon:'📦',title:'문구 종류별로 나누어 담기',desc:'종류별로 정리해요.'}] },
@@ -3659,15 +3681,23 @@ function ElevatorScene({from, onArrive, onStay, onCheckout, onSecret}){
       <div className="ev-board">
         <div className="ev-board-title">🏬 층별 안내</div>
         {[...FLOORS].reverse().map(f=>(
+          /* 한 층을 '층 칩 + 칸 2~3개'로 나눠요 (2026-08-11).
+             예전엔 `쓰기 · 그리기 · 꾸미기` 를 글자 한 덩어리로 넣었는데, 글자에 남는 폭이
+             127px뿐이라 두세 줄로 꺾였습니다. 이제 이름마다 자기 칸이 있어 **줄바꿈이 없어요**.
+             그림도 다시 넣되 **38px** 로 키웠습니다 — 예전 21px은 글자 옆에 붙어 있어
+             아무에게도 도움이 안 됐지만, 이 크기로 이름 위에 놓으니 글을 모르는 학생도 알아봅니다. */
           <div key={f.no} className="ev-board-row" style={{background:f.wall}}>
             <span className="ev-board-no">{f.no}층</span>
-            {/* 여기엔 코너 아이콘을 넣지 않아요 (2026-08-11).
-                코너 이름 글자가 바로 옆에 있는데 아이콘이 21px밖에 안 돼서,
-                읽는 학생은 글자를 보고 못 읽는 학생은 아이콘을 못 알아봤어요.
-                양쪽 다 도움이 안 되는 크기라 빼고, 그 자리에 글자를 키웠습니다.
-                아이콘이 정말 필요한 곳은 '건물 창문'(글자가 없는 자리)과 진열대예요. */}
-            <span className="ev-board-desc">
-              <b>{f.desc}</b>
+            <span className="ev-board-cells">
+              {f.corners.map(id=>{
+                const c = CORNERS.find(x=>x.id===id);
+                return (
+                  <span key={id} className="ev-board-cell">
+                    <CornerBigMark id={id} imgCls="ev-board-img" fbCls="ev-board-fb" />
+                    <span className="ev-board-cname">{c? c.title : id}</span>
+                  </span>
+                );
+              })}
             </span>
           </div>
         ))}
@@ -3775,13 +3805,15 @@ function LikedMark(){
 
    그림 자리: 이미지\코너대표\쓰기.png · 그리기.png · 꾸미기.png … (코너 이름 그대로)
    그림이 없으면 이미 있는 코너 아이콘(SVG)을 크게 그려요 — 그래서 아무것도 안 넣어도 됩니다. */
-function CornerBigMark({id}){
+function CornerBigMark({id, imgCls, fbCls}){
   const c = CORNERS.find(x=>x.id===id);
   const srcs = imgList('이미지/코너대표/'+(c? c.title : id));
   const [i, setI] = useState(0);
   const [failed, setFailed] = useState(false);
-  if(failed) return <span className="shelf-bigicon"><CornerIcon id={id} /></span>;
-  return <img className="shelf-rep-img" src={srcs[i]} alt=""
+  /* 진열대(큰 그림)와 엘리베이터 안내판(38px)이 **같은 그림**을 씁니다.
+     크기만 다르니 클래스만 갈아 끼워요 — 그림을 두 벌 두면 한쪽만 바뀌는 사고가 납니다. */
+  if(failed) return <span className={fbCls||'shelf-bigicon'}><CornerIcon id={id} /></span>;
+  return <img className={imgCls||'shelf-rep-img'} src={srcs[i]} alt=""
     onError={()=>{ if(i<srcs.length-1) setI(i+1); else setFailed(true); }} />;
 }
 function ShelfUnit({shelf, items, likesCount, accent, style, innerRef, onClick, here}){
@@ -6229,10 +6261,13 @@ function ActivityPick({name, initial, onConfirm, onHome, onBack}){
               🎨 오늘 무엇을 하고 놀까요?
               <Speak text="오늘 무엇을 하고 놀까요? 하고 싶은 것을 골라 보세요." />
             </div>
+            {/* 갈래 그림 = 그 코너의 대표 그림 (2026-08-11).
+                갈래와 코너가 1:1이라, 매장 진열대에서 본 그림을 여기서 그대로 다시 봅니다.
+                "이 그림 = 이 코너 = 이 활동"이 한 줄로 이어져요. */}
             <div className="actgrid plan-grid">
               {ACTIVITY_GROUPS.map(g=>(
                 <button key={g.id} className="act" onClick={()=>chooseGrp(g)}>
-                  <ActivityThumb activity={g.title} icon={g.icon} />
+                  <CornerBigMark id={g.id} imgCls="act-thumb" fbCls="ai" />
                   <b>{g.title}</b>
                 </button>
               ))}
@@ -6252,7 +6287,7 @@ function ActivityPick({name, initial, onConfirm, onHome, onBack}){
                 <Speak text={grp.title+' 중에서 무엇을 해 볼까요?'} />
               </div>
               <span className="spacer" style={{flex:1}}></span>
-              <span className="plan-act"><ActivityThumb activity={grp.title} icon={grp.icon} /><b>{grp.title}</b></span>
+              <span className="plan-act"><CornerBigMark id={grp.id} imgCls="act-thumb" fbCls="ai" /><b>{grp.title}</b></span>
               <button className="btn ghost sm" onClick={()=>{ setGrp(null); speak('다른 것을 골라요.', true); }}>◀ 다시 고르기</button>
             </div>
             {/* few : 카드가 3개뿐이라 그림을 크게 (글을 못 읽어도 그림으로 고를 수 있게) */}
