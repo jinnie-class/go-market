@@ -344,10 +344,16 @@ img.cicon{object-fit:contain;border-radius:.2em;}
 @media (max-height:820px){ .planstrip{padding:4px 10px;font-size:.94em;} .planstrip .ps-act .act-thumb{max-height:28px;} }
 
 /* ===== 오늘의 활동 정하기 + 준비물 체크리스트 (2026-08-11) ===== */
-/* 활동 카드는 한 화면에 7개가 들어오도록 조금 작게 */
+/* 활동 카드 — 글을 못 읽는 학생이 '그림만 보고' 고를 수 있어야 해서 그림을 크게.
+   ⚠️ `width:100%` 에 `max-height` 를 함께 주면 세로만 눌려 그림이 찌그러져요.
+      반드시 **높이를 정하고 `object-fit:cover`** 로 비율을 지킬 것. (2026-08-11) */
 .plan-grid .act{width:190px;padding:12px 10px;gap:6px;}
-.plan-grid .act .ai{font-size:40px;}
-.plan-grid .act .act-thumb{max-height:84px;}
+.plan-grid .act .ai{font-size:44px;}
+.plan-grid .act .act-thumb{width:100%;height:clamp(88px,12vh,124px);object-fit:cover;object-position:center;}
+/* ② '무엇을 해 볼까요?' 는 카드가 3개뿐이라 그림을 훨씬 크게 보여 줄 수 있어요 */
+.plan-grid.few .act{width:clamp(230px,26vw,320px);padding:14px 12px;gap:8px;}
+.plan-grid.few .act .ai{font-size:74px;}
+.plan-grid.few .act .act-thumb{height:clamp(130px,22vh,210px);}
 /* 지금 고른 활동을 작게 보여 주는 칩 */
 .plan-act{display:inline-flex;align-items:center;gap:8px;background:#fff6e6;border:2px solid #ffe1a8;
   border-radius:999px;padding:6px 16px 6px 8px;font-weight:900;color:#6a5200;}
@@ -369,7 +375,10 @@ img.cicon{object-fit:contain;border-radius:.2em;}
 @media (max-width:640px){ .supply-grid{grid-template-columns:repeat(2,1fr);} }
 @media (max-height:820px){
   .plan-grid .act{width:168px;padding:10px 8px;}
-  .plan-grid .act .act-thumb{max-height:70px;}
+  /* max-height 를 쓰면 그림이 눌려요 — 높이를 정하고 object-fit 으로 (위 설명 참고) */
+  .plan-grid .act .act-thumb{height:clamp(76px,11vh,100px);}
+  .plan-grid.few .act .act-thumb{height:clamp(110px,19vh,170px);}
+  .plan-grid.few .act .ai{font-size:62px;}
   .supply{min-height:60px;padding:11px 14px;font-size:1em;}
 }
 .actgrid.compact{gap:14px;}
@@ -5829,7 +5838,8 @@ function ActivityPick({name, initial, onConfirm, onHome, onBack}){
               <span className="plan-act"><ActivityThumb activity={grp.title} icon={grp.icon} /><b>{grp.title}</b></span>
               <button className="btn ghost sm" onClick={()=>{ setGrp(null); speak('다른 것을 골라요.', true); }}>◀ 다시 고르기</button>
             </div>
-            <div className="actgrid plan-grid">
+            {/* few : 카드가 3개뿐이라 그림을 크게 (글을 못 읽어도 그림으로 고를 수 있게) */}
+            <div className="actgrid plan-grid few">
               {grp.acts.map(a=>(
                 <button key={a.title} className="act" onClick={()=>chooseAct(a)}>
                   <ActivityThumb activity={a.title} icon={a.icon} />
