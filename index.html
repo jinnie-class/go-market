@@ -1273,8 +1273,8 @@ const { useState, useEffect, useRef, useCallback } = React;
      코너마다 6개씩 두 쪽이고, 쪽마다 갈래가 하나씩 옵니다.
      가나다순으로 하면 가장 기본인 연필이 2쪽으로 밀리고 펜이 1·2쪽으로 찢어져요.
      실제 다이소도 갈래로 진열하니, 앱에서 찾는 방법이 매장에서 그대로 통합니다.
-     갈래 안에서는 '익숙한 것 → 재미있는 것' 순 (볼펜 → 젤펜 → 향기 볼펜).
-     쪽 이름은 아래 CORNER_PAGES 참고.
+     갈래 안에서는 '익숙한 것 → 재미있는 것' 순 (볼펜 → 젤펜 → 만년 연필).
+     어느 쪽이 무슨 갈래인지는 이 목록 바로 아래 표에 적어 두었어요 (화면에는 안 나옴).
 
    ■ 값은 다이소처럼 1,000 / 2,000 / 3,000원
      500원짜리는 넣지 마세요. 이 앱은 '지폐'로 계산을 배우는데 동전이 필요해집니다.
@@ -1430,18 +1430,33 @@ const PRODUCTS = [
   { id:'t3', corner:'toy', name:'팽이배틀 게임', price:5000, emoji:'🌀', color:'여러 색 · 2~4인용', feat:'끝까지 남으면 이겨요', use:'줄을 당기면 팽이가 발사되는 슈팅 팽이 배틀 게임이에요.' },
 ];
 
-/* 코너마다 '쪽 이름' — 쪽 넘기는 곳의 '1 / 2 쪽' 자리에 대신 나와요 (2026-08-09).
-   글자를 새로 늘리지 않고, 학생이 '다음 쪽에 뭐가 있지?' 하고 보는 자리에 갈래를 알려 줍니다. */
-const CORNER_PAGES = {
-  write:    ['쓰는 것', '돕는 것'],
-  draw:     ['색칠하는 것', '종이와 도구'],
-  deco:     ['스티커로 꾸며요', '테이프와 놀이'],
-  make:     ['종이와 도구', '여러 가지 재료'],
-  gather:   ['적고 모아요', '카드와 굿즈'],
-  organize: ['담고 세워요', '끼우고 붙여요'],
-  kit:      ['작게 시작해요', '오래 만들어요'],
-  toy:      ['혼자서도 놀아요', '함께 놀아요'],
-};
+/* ── 코너마다 1쪽·2쪽이 무슨 갈래인지 (2026-08-11) ─────────────────────
+   ★ 화면에는 안 나옵니다. 상품을 왜 이 순서로 늘어놓았는지 적어 둔 기록이에요.
+
+   한때 쪽 넘기는 곳의 '1 / 2 쪽' 자리에 이 이름을 띄웠지만, 선생님 결정으로 뺐습니다
+   ("갈래는 나누되 이름은 적지 않기"). 갈래는 글자가 아니라 배치로 남아요 —
+   학생은 이름을 안 읽어도 "첫 쪽은 쓰는 것들, 다음 쪽은 다른 것들"을 느끼고,
+   필요할 때 선생님이 말로 짚어 주시면 됩니다. 학습지에 쓰셔도 좋고요.
+
+     코너       1쪽                 2쪽
+     ────────────────────────────────────────────
+     쓰기       쓰는 것              돕는 것
+     그리기     색칠하는 것          종이와 도구
+     꾸미기     스티커로 꾸며요      테이프와 놀이
+     만들기     종이와 도구          여러 가지 재료
+     모으기     적고 모아요          카드와 굿즈
+     정리하기   담고 세워요          끼우고 붙여요
+     키트       작게 시작해요        오래 만들어요   (싼 것이 앞쪽)
+     놀이하기   혼자서도 놀아요      함께 놀아요     (인원수 순)
+
+   ⚠️ 상품을 넣고 뺄 때 이 갈래를 깨지 않게 해 주세요. 특히
+     · 그리기 : 크레파스와 오일파스텔은 반드시 붙여 둘 것
+       (오일파스텔 설명이 "크레파스보다 더 부드러워요"라 견주어 봐야 해요)
+     · 꾸미기 : 다꾸용 핀셋은 스티커 옆에 둘 것 (스티커를 집는 도구라 쓰임이 보여요)
+     · 놀이하기 : 밸런스 게임(1~4인)이 1쪽 끝 — 혼자에서 함께로 넘어가는 다리
+   다시 화면에 이름을 띄우고 싶으면 이 표를 상수로 되살리고
+   Paged 에 pageNames 를 넘기면 됩니다 (git 이력 참고).
+   ────────────────────────────────────────────────────────────────── */
 
 const CORNERS = [
   { id:'write',    icon:'✏️', title:'쓰기',    desc:'예쁜 글씨를 써요.' },
@@ -3015,7 +3030,6 @@ function BrowseStage({settings, products, likes, setLikes, basket, setBasket, bu
           </div>
           {list.length===0 && <div className="card muted">아직 담긴 문구가 없어요.</div>}
           <Paged items={list} per={6} resetKey={(corner||'')+'_'+(showLiked?'liked':'')}
-            pageNames={corner ? CORNER_PAGES[corner] : null}
             render={p=>(
               <ProductCard key={p.id} p={p} liked={likes.some(x=>x.id===p.id)} qty={qtyIn(p.id)}
                 soldOut={settings.soldOut && p.id==='d4'} onLike={()=>toggleLike(p)}
@@ -3046,11 +3060,10 @@ function BrowseStage({settings, products, likes, setLikes, basket, setBasket, bu
 }
 
 /* ---------- 상품 페이지 넘기기 (스크롤 대신 ◀ 이전 / 다음 ▶ 버튼) ---------- */
-/* pageNames : 쪽마다 붙일 이름 (예: ['쓰는 것','돕는 것']) — 2026-08-09
-   원래 '1 / 2 쪽'이라고만 적혀 있던 자리를 '쓰는 것 (1/2)'로 바꿔 씁니다.
-   글자를 새로 늘리지 않으면서, 학생이 '다음 쪽엔 뭐가 있지?' 하고 보는
-   바로 그 자리에서 갈래를 알려 줄 수 있어요. 안 넘기면 예전 그대로 나와요. */
-function Paged({items, per, resetKey, render, cls, followLast, pageNames}){
+/* 쪽 표시는 '1 / 2 쪽'입니다 — 갈래 이름은 일부러 안 띄워요 (2026-08-11).
+   한때 여기에 '쓰는 것 (1/2)'처럼 갈래를 띄웠지만, 화면을 간결하게 두기로 해서
+   뺐습니다. 갈래는 상품을 늘어놓은 '순서'로 남아 있어요 (PRODUCTS 위 표 참고). */
+function Paged({items, per, resetKey, render, cls, followLast}){
   const [page, setPage] = useState(0);
   const p = per||4;
   const pages = Math.max(1, Math.ceil(items.length/p));
@@ -3069,11 +3082,7 @@ function Paged({items, per, resetKey, render, cls, followLast, pageNames}){
           <button className="btn sky" disabled={cur===0}
             onClick={()=>{ setPage(cur-1); speak('앞을 봐요.'); }}>◀ 이전</button>
           <span className="col" style={{alignItems:'center', gap:6}}>
-            <span className="pager-info">{
-              (pageNames && pageNames[cur])
-                ? pageNames[cur]+' ('+(cur+1)+'/'+pages+')'
-                : (cur+1)+' / '+pages+' 쪽'
-            }</span>
+            <span className="pager-info">{cur+1} / {pages} 쪽</span>
             <span className="pager-dots">{Array.from({length:pages}).map((_,i)=><i key={i} className={i===cur?'on':''}></i>)}</span>
           </span>
           <button className="btn primary" disabled={cur===pages-1}
