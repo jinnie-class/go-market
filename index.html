@@ -1526,15 +1526,59 @@ function PlanStrip({plan}){
    ⚠️ 준비물은 '동물 스티커'처럼 낱개가 아니라 '스티커'처럼 **큰 갈래**로만 보여 줘요.
       매장에서 고르는 재미를 뺏지 않으려고요. 체크리스트는 **안내일 뿐**이라
       다르게 사도 되고, 하나도 안 골라도 넘어갑니다(평가가 아니에요). */
-const ACTIVITY_PLANS = [
-  { id:'note',     icon:'📔', title:'수첩 꾸미기',   needs:['수첩','스티커','펜'] },
-  { id:'draw',     icon:'🎨', title:'그림 그리기',   needs:['종이','색칠 도구'] },
-  { id:'letter',   icon:'💌', title:'편지 쓰기',     needs:['편지지·카드','펜','스티커'] },
-  { id:'make',     icon:'✂️', title:'만들기',        needs:['색종이','풀·가위','꾸미기 재료'] },
-  { id:'kit',      icon:'🧩', title:'키트 만들기',   needs:['키트'] },
-  { id:'play',     icon:'🎲', title:'놀이하기',      needs:['놀잇감'] },
-  { id:'organize', icon:'🗂️', title:'정리하기',      needs:['정리함','이름표'] },
+/* ⚠️ 활동 목록은 여기 '한 곳'에만 둡니다 (2026-08-11).
+   예전엔 처음 계획 화면(7개)과 마지막 활동 화면(24개)이 **따로** 있어서
+   이름이 미묘하게 달라("수첩 꾸미기" vs "나만의 수첩 꾸미기")
+   '하려던 것'과 '실제로 한 것'을 이을 수 없었어요.
+   이제 두 화면 모두 이 표를 쓰고, `suggestActivities`도 여기서 뽑아 씁니다.
+   · needs  : 그 갈래에 필요한 준비물 (큰 갈래로만 — '동물 스티커'가 아니라 '스티커')
+   · match  : 바구니에 이런 물건이 있으면 이 갈래를 추천 (상품 이름 일부 또는 코너 id) */
+const ACTIVITY_GROUPS = [
+  { id:'deco', icon:'⭐', title:'꾸미기',
+    needs:['스티커','테이프','수첩'], match:['스티커','테이프','deco'],
+    acts:[{icon:'📔',title:'나만의 수첩 꾸미기',desc:'스티커로 예쁘게 꾸며요.'},
+          {icon:'🏷️',title:'이름표 꾸미기',desc:'내 이름표를 만들어요.'},
+          {icon:'💌',title:'친구에게 줄 카드 꾸미기',desc:'카드를 예쁘게 꾸며요.'}] },
+  { id:'draw', icon:'🎨', title:'그리기',
+    needs:['종이','색칠 도구'], match:['색연필','사인펜','스케치북','물감','draw'],
+    acts:[{icon:'🎨',title:'자유롭게 그림 그리기',desc:'마음껏 그려요.'},
+          {icon:'😊',title:'오늘의 기분 그리기',desc:'지금 기분을 그려요.'},
+          {icon:'⭐',title:'좋아하는 것 그리기',desc:'좋아하는 걸 그려요.'}] },
+  { id:'write', icon:'✉️', title:'쓰기',
+    needs:['편지지·카드','펜','수첩'], match:['젤펜','연필','형광펜','메모','수첩','편지','write','gather'],
+    acts:[{icon:'✉️',title:'친구에게 짧은 편지 쓰기',desc:'마음을 전해요.'},
+          {icon:'💗',title:'가족에게 감사 카드 쓰기',desc:'고마움을 적어요.'},
+          {icon:'🔮',title:'미래의 나에게 편지 쓰기',desc:'나에게 편지를 써요.'}] },
+  { id:'fold', icon:'🦢', title:'종이접기',
+    needs:['색종이','풀·가위'], match:['색종이'],
+    acts:[{icon:'🦢',title:'자유 종이접기',desc:'접고 싶은 걸 접어요.'},
+          {icon:'🎩',title:'종이 모자 만들기',desc:'모자를 만들어요.'},
+          {icon:'🧑‍🤝‍🧑',title:'친구와 함께 꾸미기',desc:'같이 만들어요.'}] },
+  { id:'clay', icon:'🍩', title:'만들기',
+    needs:['클레이','꾸미기 재료'], match:['클레이'],
+    acts:[{icon:'🍩',title:'좋아하는 음식 만들기',desc:'맛있는 걸 만들어요.'},
+          {icon:'🐶',title:'동물 만들기',desc:'귀여운 동물을 만들어요.'},
+          {icon:'✨',title:'자유롭게 모양 만들기',desc:'원하는 모양을 만들어요.'}] },
+  { id:'kit', icon:'🧩', title:'키트 만들기',
+    needs:['키트'], match:['블록','뜨개','비즈','십자수','프라모델','펠트','미니어처','다이아몬드','kit'],
+    acts:[{icon:'🧩',title:'키트로 만들어 완성하기',desc:'차근차근 완성해요.'},
+          {icon:'🏆',title:'완성한 작품 전시하기',desc:'만든 작품을 자랑해요.'},
+          {icon:'🧶',title:'천천히 손으로 만들기',desc:'하나씩 만들어요.'}] },
+  { id:'toy', icon:'🎲', title:'놀이하기',
+    needs:['놀잇감'], match:['보드게임','퍼즐','팽이','요요','비눗방울','카드','볼링','스퀴시','toy'],
+    acts:[{icon:'🎲',title:'친구와 게임하기',desc:'같이 놀이해요.'},
+          {icon:'🧩',title:'퍼즐 맞추기',desc:'조각을 맞춰요.'},
+          {icon:'🎉',title:'혼자서도 재미있게 놀기',desc:'좋아하는 놀이를 해요.'}] },
+  { id:'organize', icon:'🗂️', title:'정리하기',
+    needs:['정리함','이름표'], match:['필통','보관함','파일','organize'],
+    acts:[{icon:'🗂️',title:'내가 좋아하는 문구 정리하기',desc:'깔끔하게 정리해요.'},
+          {icon:'👝',title:'필통 꾸미기',desc:'필통을 꾸며요.'},
+          {icon:'📦',title:'문구 종류별로 나누어 담기',desc:'종류별로 정리해요.'}] },
 ];
+/* 활동 이름으로 그 활동이 속한 갈래를 찾아요 (마무리 화면에서 '계획 ↔ 실제' 잇기) */
+function groupOfActivity(title){
+  return ACTIVITY_GROUPS.find(g=> g.acts.some(a=>a.title===title)) || null;
+}
 /* 활동에 딸린 준비물 말고도 '더 담고 싶으면' 고를 수 있는 갈래 (화면이 길어지지 않게 몇 개만) */
 const SUPPLY_EXTRAS = ['스티커','펜','종이','테이프','꾸미기 재료','수첩'];
 
@@ -5186,40 +5230,13 @@ function Receipt({settings, receipt}){
 }
 
 function suggestActivities(basket){
+  /* 활동 목록은 ACTIVITY_GROUPS 한 곳에서만 가져와요 (2026-08-11).
+     바구니에 그 갈래에 맞는 물건이 있으면 그 갈래의 활동 3개를 제안합니다.
+     예전엔 이 함수 안에 목록이 따로 적혀 있어서, 처음 계획 화면의 활동 이름과
+     달라지는 문제가 있었어요. */
   const has=(kw)=> basket.some(p=> kw.some(k=> p.name.includes(k) || p.corner===k));
   const acts=[];
-  if(has(['스티커','테이프','deco']))
-    acts.push({icon:'📔',title:'나만의 수첩 꾸미기',desc:'스티커로 예쁘게 꾸며요.'},
-              {icon:'🏷️',title:'이름표 꾸미기',desc:'내 이름표를 만들어요.'},
-              {icon:'💌',title:'친구에게 줄 카드 꾸미기',desc:'카드를 예쁘게 꾸며요.'});
-  if(has(['색연필','사인펜','스케치북','물감','draw']))
-    acts.push({icon:'🎨',title:'자유롭게 그림 그리기',desc:'마음껏 그려요.'},
-              {icon:'😊',title:'오늘의 기분 그리기',desc:'지금 기분을 그려요.'},
-              {icon:'⭐',title:'좋아하는 것 그리기',desc:'좋아하는 걸 그려요.'});
-  if(has(['색종이']))
-    acts.push({icon:'🦢',title:'자유 종이접기',desc:'접고 싶은 걸 접어요.'},
-              {icon:'🎩',title:'종이 모자 만들기',desc:'모자를 만들어요.'},
-              {icon:'🧑‍🤝‍🧑',title:'친구와 함께 꾸미기',desc:'같이 만들어요.'});
-  if(has(['클레이']))
-    acts.push({icon:'🍩',title:'좋아하는 음식 만들기',desc:'맛있는 걸 만들어요.'},
-              {icon:'🐶',title:'동물 만들기',desc:'귀여운 동물을 만들어요.'},
-              {icon:'✨',title:'자유롭게 모양 만들기',desc:'원하는 모양을 만들어요.'});
-  if(has(['젤펜','연필','형광펜','메모','수첩','편지','write','gather']))
-    acts.push({icon:'✉️',title:'친구에게 짧은 편지 쓰기',desc:'마음을 전해요.'},
-              {icon:'💗',title:'가족에게 감사 카드 쓰기',desc:'고마움을 적어요.'},
-              {icon:'🔮',title:'미래의 나에게 편지 쓰기',desc:'나에게 편지를 써요.'});
-  if(has(['필통','보관함','파일','organize']))
-    acts.push({icon:'🗂️',title:'내가 좋아하는 문구 정리하기',desc:'깔끔하게 정리해요.'},
-              {icon:'👝',title:'필통 꾸미기',desc:'필통을 꾸며요.'},
-              {icon:'📦',title:'문구 종류별로 나누어 담기',desc:'종류별로 정리해요.'});
-  if(has(['블록','뜨개','비즈','십자수','프라모델','펠트','미니어처','다이아몬드','kit']))
-    acts.push({icon:'🧩',title:'키트로 만들어 완성하기',desc:'차근차근 완성해요.'},
-              {icon:'🏆',title:'완성한 작품 전시하기',desc:'만든 작품을 자랑해요.'},
-              {icon:'🧶',title:'천천히 손으로 만들기',desc:'하나씩 만들어요.'});
-  if(has(['보드게임','퍼즐','팽이','요요','비눗방울','카드','볼링','스퀴시','toy']))
-    acts.push({icon:'🎲',title:'친구와 게임하기',desc:'같이 놀이해요.'},
-              {icon:'🧩',title:'퍼즐 맞추기',desc:'조각을 맞춰요.'},
-              {icon:'🎉',title:'혼자서도 재미있게 놀기',desc:'좋아하는 놀이를 해요.'});
+  ACTIVITY_GROUPS.forEach(g=>{ if(has(g.match)) g.acts.forEach(a=> acts.push(a)); });
   if(acts.length===0)
     acts.push({icon:'🎨',title:'자유롭게 그림 그리기',desc:'마음껏 그려요.'},
               {icon:'✂️',title:'자유롭게 만들기',desc:'재미있게 만들어요.'});
@@ -5320,6 +5337,15 @@ function FinishScreen({settings, basket, likes, activity, onReplay, onRestart, o
           <div className="planstrip" style={{marginTop:14}}>
             <span className="muted" style={{fontWeight:800}}>오늘 하려던 것</span>
             <span className="ps-act"><ActivityThumb activity={plan.title} icon={plan.icon} /><b>{plan.title}</b></span>
+            {/* 계획한 활동을 그대로 했으면 살짝 알려 줘요 (잘함/못함이 아니라 '이어졌다'는 표시) */}
+            {activity===plan.title && <span className="pill" style={{background:'#eafaf1', color:'#177245', borderColor:'#bfe9cf'}}>생각한 대로 했어요 ✨</span>}
+            {activity && activity!==plan.title && (
+              <React.Fragment>
+                <span className="ps-div"></span>
+                <span className="muted" style={{fontWeight:800}}>실제로 한 것</span>
+                <span className="ps-act"><ActivityThumb activity={activity} icon="🎉" /><b>{activity}</b></span>
+              </React.Fragment>
+            )}
           </div>
         )}
         {stamps && <StampBoard stamps={stamps} />}
@@ -5737,13 +5763,21 @@ function WalletKidImg(){
    ⚠️ 여기서 고른 준비물은 **안내일 뿐**이에요. 매장에서 다르게 사도 되고,
       하나도 안 골라도 넘어갑니다. 맞고 틀리고를 따지지 않아요. */
 function ActivityPick({name, initial, onConfirm, onHome, onBack}){
-  const [act, setAct] = useState(()=> initial ? (ACTIVITY_PLANS.find(a=>a.id===initial.actId) || null) : null);
+  /* 3단계 : ① 큰 갈래(8개) → ② 그 안의 활동(3개) → ③ 준비물 체크
+     한 화면에 24개를 늘어놓으면 고르기 힘들어서 두 번에 나눠 물어요. */
+  const [grp, setGrp] = useState(()=> initial ? (ACTIVITY_GROUPS.find(g=>g.id===initial.groupId) || null) : null);
+  const [act, setAct] = useState(()=> (initial && initial.title) ? {title:initial.title, icon:initial.icon} : null);
   const [picked, setPicked] = useState(()=> (initial && initial.supplies) ? initial.supplies.slice() : []);
   useEffect(()=>{ speak('오늘 무엇을 하고 놀까요? 하고 싶은 것을 골라 보세요.'); }, []);
 
+  const chooseGrp = (g)=>{
+    setGrp(g); setAct(null);
+    sayBtnThen(g.title+josa(g.title,'을','를')+' 골랐어요.', null,
+      ()=> speak('무엇을 해 볼까요?'), 1400);
+  };
   const chooseAct = (a)=>{
     setAct(a);
-    setPicked(a.needs.slice());          // 필요한 것에 미리 체크해 둬요 (빼도 괜찮아요)
+    setPicked(grp.needs.slice());        // 필요한 것에 미리 체크해 둬요 (빼도 괜찮아요)
     sayBtnThen(a.title+josa(a.title,'을','를')+' 골랐어요.', null,
       ()=> speak('그러려면 무엇이 필요할까요?'), 1400);
   };
@@ -5751,8 +5785,8 @@ function ActivityPick({name, initial, onConfirm, onHome, onBack}){
     setPicked(p=> p.indexOf(k)>=0 ? p.filter(x=>x!==k) : [...p, k]);
     sayBtn(k);
   };
-  // 고른 활동의 준비물 + 더 고를 수 있는 갈래 (겹치면 한 번만, 최대 8개)
-  const kinds = act ? Array.from(new Set([...act.needs, ...SUPPLY_EXTRAS])).slice(0,8) : [];
+  // 고른 갈래의 준비물 + 더 고를 수 있는 것 (겹치면 한 번만, 최대 8개)
+  const kinds = grp ? Array.from(new Set([...grp.needs, ...SUPPLY_EXTRAS])).slice(0,8) : [];
 
   return (
     <div className="app" style={{paddingTop:10, maxWidth:1020}}>
@@ -5762,17 +5796,18 @@ function ActivityPick({name, initial, onConfirm, onHome, onBack}){
       </div>
 
       <div className="panel" style={{paddingTop:16, paddingBottom:16}}>
-        {!act ? (
+        {!grp ? (
+          /* ① 큰 갈래 고르기 */
           <React.Fragment>
             <div className="section-title" style={{margin:'0 0 10px'}}>
               🎨 오늘 무엇을 하고 놀까요?
               <Speak text="오늘 무엇을 하고 놀까요? 하고 싶은 것을 골라 보세요." />
             </div>
             <div className="actgrid plan-grid">
-              {ACTIVITY_PLANS.map(a=>(
-                <button key={a.id} className="act" onClick={()=>chooseAct(a)}>
-                  <ActivityThumb activity={a.title} icon={a.icon} />
-                  <b>{a.title}</b>
+              {ACTIVITY_GROUPS.map(g=>(
+                <button key={g.id} className="act" onClick={()=>chooseGrp(g)}>
+                  <ActivityThumb activity={g.title} icon={g.icon} />
+                  <b>{g.title}</b>
                 </button>
               ))}
             </div>
@@ -5782,12 +5817,34 @@ function ActivityPick({name, initial, onConfirm, onHome, onBack}){
               </div>
             )}
           </React.Fragment>
+        ) : !act ? (
+          /* ② 그 갈래 안에서 무엇을 할지 고르기 */
+          <React.Fragment>
+            <div className="row" style={{gap:12, alignItems:'center', flexWrap:'wrap', marginBottom:10}}>
+              <div className="section-title" style={{margin:0}}>
+                🙌 무엇을 해 볼까요?
+                <Speak text={grp.title+' 중에서 무엇을 해 볼까요?'} />
+              </div>
+              <span className="spacer" style={{flex:1}}></span>
+              <span className="plan-act"><ActivityThumb activity={grp.title} icon={grp.icon} /><b>{grp.title}</b></span>
+              <button className="btn ghost sm" onClick={()=>{ setGrp(null); speak('다른 것을 골라요.', true); }}>◀ 다시 고르기</button>
+            </div>
+            <div className="actgrid plan-grid">
+              {grp.acts.map(a=>(
+                <button key={a.title} className="act" onClick={()=>chooseAct(a)}>
+                  <ActivityThumb activity={a.title} icon={a.icon} />
+                  <b>{a.title}</b>
+                  <span className="muted">{a.desc}</span>
+                </button>
+              ))}
+            </div>
+          </React.Fragment>
         ) : (
           <React.Fragment>
             <div className="row" style={{gap:12, alignItems:'center', flexWrap:'wrap', marginBottom:10}}>
               <div className="section-title" style={{margin:0}}>
                 🧾 무엇이 필요할까요?
-                <Speak text={act.title+'을 하려면 무엇이 필요할까요? 필요한 것을 골라 보세요.'} />
+                <Speak text={act.title+josa(act.title,'을','를')+' 하려면 무엇이 필요할까요? 필요한 것을 골라 보세요.'} />
               </div>
               <span className="spacer" style={{flex:1}}></span>
               <span className="plan-act"><ActivityThumb activity={act.title} icon={act.icon} /><b>{act.title}</b></span>
@@ -5814,7 +5871,9 @@ function ActivityPick({name, initial, onConfirm, onHome, onBack}){
             <button className="btn primary big" style={{width:'100%', marginTop:14}}
               onClick={()=>{
                 speak('이제 지갑에 돈을 넣으러 가요.');
-                onConfirm({ actId:act.id, title:act.title, icon:act.icon, supplies:picked });
+                /* title 은 '구체 활동 이름' — 마지막 활동 화면의 이름과 똑같아서
+                   마무리 화면에서 '하려던 것 ↔ 실제로 한 것'을 이을 수 있어요. */
+                onConfirm({ groupId:grp.id, groupTitle:grp.title, title:act.title, icon:act.icon, supplies:picked });
               }}>
               👛 좋아요! 지갑에 돈을 넣으러 가기
             </button>
