@@ -340,6 +340,11 @@ img.cicon{object-fit:contain;border-radius:.2em;}
 .planstrip .ps-list{display:flex;gap:6px;flex-wrap:wrap;}
 .planstrip .pill{background:#fff;border:2px solid #ffe1a8;color:#6a5200;font-weight:800;}
 @media (max-height:820px){ .planstrip{padding:4px 10px;font-size:.94em;} .planstrip .ps-act .act-thumb{max-height:28px;} }
+/* 맨 윗줄(밝은 배경) 안에 들어가는 모양 — 늘어나지 않고 딱 글자만큼만 (2026-08-11) */
+.planstrip.compact{padding:6px 14px;gap:8px;flex-wrap:nowrap;flex:0 0 auto;}
+.planstrip.compact .ps-list{flex-wrap:nowrap;}
+.planstrip.compact .ps-act .act-thumb{max-height:30px;}
+@media (max-width:1100px){ .planstrip.compact .ps-list, .planstrip.compact .ps-div{display:none;} }
 /* 층 안내판(검정 바)·코너 제목 줄 **안에** 얹히는 모양 (2026-08-11).
    줄을 따로 만들지 않으려고 옮겼으므로, 흰 카드가 아니라 '바에 붙은 칩'처럼 보여야 해요.
    ⚠️ `flex-wrap:nowrap` 이 중요합니다. 감싸면 바가 두 줄이 되어 옮긴 보람이 없어져요.
@@ -435,6 +440,11 @@ img.cicon{object-fit:contain;border-radius:.2em;}
 /* 활동 카드 — 글을 못 읽는 학생이 '그림만 보고' 고를 수 있어야 해서 그림을 크게.
    ⚠️ `width:100%` 에 `max-height` 를 함께 주면 세로만 눌려 그림이 찌그러져요.
       반드시 **높이를 정하고 `object-fit:cover`** 로 비율을 지킬 것. (2026-08-11) */
+/* 갈래 8개는 **4개씩 두 줄** 로 (2026-08-11). 그냥 흘려 놓으면 폭에 따라 6+2로 갈려
+   아래 줄이 허전해 보였어요. 4+4로 고정하면 어느 화면에서나 반듯합니다. */
+.plan-grid:not(.few){display:grid;grid-template-columns:repeat(4,1fr);justify-items:center;
+  max-width:1000px;margin:0 auto;}
+.plan-grid:not(.few) .act{width:100%;max-width:240px;}
 .plan-grid .act{width:190px;padding:12px 10px;gap:6px;}
 .plan-grid .act .ai{font-size:44px;}
 .plan-grid .act .act-thumb{width:100%;height:clamp(88px,12vh,124px);object-fit:cover;object-position:center;}
@@ -655,6 +665,14 @@ img.cicon{object-fit:contain;border-radius:.2em;}
 
 /* 지갑은 늘 '자기 줄'을 차지해 가로 폭을 다 써요 — 지폐를 한 장씩 더 많이 보여 주려고 */
 .topbar-left .wallet{flex:1 0 100%;max-width:100%;}
+/* 간단한 줄 — [⬅️] [나 캐릭터] [지금 무엇을 하는지] 만 가운데로 (2026-08-11).
+   숫자(예산·합계·남은 돈·바구니 개수)는 다 걷어냈어요. 남은 돈은 아래 지갑 바가
+   지폐 그림으로 보여 주고, 담은 개수는 화면 아래 '이제 골라볼래요 (○개)'에 있습니다. */
+.topbar-row.simple .topbar-left{gap:12px;}
+.topbar-row.simple .topbar-cap{display:inline-flex;align-items:center;gap:8px;
+  background:#fff;border:2px solid var(--line);border-radius:18px;padding:9px 18px;
+  font-size:1.08em;box-shadow:var(--shadow);}
+.topbar-back{min-height:44px;padding:6px 14px;font-size:1.15em;}
 .topbar-art{flex:0 0 auto;}
 .topbar-art .stepbar{margin:0;padding:5px 12px;gap:10px;flex-wrap:nowrap;}
 .topbar-art .stepbar .stage-scene{height:clamp(44px,7.4vh,86px);}
@@ -1654,12 +1672,14 @@ const PRODUCTS = [
 /* 매장에서 '오늘 무엇을 하려고 했는지' 떠올리는 띠 (안내일 뿐, 아무것도 강제하지 않아요)
    inBar : 매장 층 안내판(검정 바) 안에 넣는 모양. 흰 카드가 아니라 **바에 얹힌 칩**으로 나와요.
            띠를 한 줄 따로 깔면 예산 바·지갑 바까지 세 겹이 되어 스크롤이 생겼거든요. */
-function PlanStrip({plan, inBar}){
+/* inBar   : 검정 층 안내판 안 (흰 글자)
+   compact : 밝은 맨 윗줄 안 (기본 크림색, 늘어나지 않음) — 2026-08-11 */
+function PlanStrip({plan, inBar, compact}){
   if(!plan || !plan.title) return null;
   const say = plan.title + (plan.supplies && plan.supplies.length
     ? '을 하려고 해요. ' + plan.supplies.join(', ') + '이 필요해요.' : '을 하려고 해요.');
   return (
-    <div className={"planstrip"+(inBar?' in-bar':'')}>
+    <div className={"planstrip"+(inBar?' in-bar':'')+(compact?' compact':'')}>
       <span className="ps-act"><ActivityThumb activity={plan.title} icon={plan.icon} /><b>{plan.title}</b></span>
       {plan.supplies && plan.supplies.length>0 && (
         <React.Fragment>
@@ -1667,7 +1687,7 @@ function PlanStrip({plan, inBar}){
           <span className="ps-list">{plan.supplies.map(s=><span key={s} className="pill">{s}</span>)}</span>
         </React.Fragment>
       )}
-      {!inBar && <span className="spacer" style={{flex:1}}></span>}
+      {!inBar && !compact && <span className="spacer" style={{flex:1}}></span>}
       <Speak text={say} />
     </div>
   );
@@ -3311,7 +3331,12 @@ function TeacherSettings({settings, setSettings, onDone, onResult, students, set
 /* =========================================================
    예산 바
 ========================================================= */
-function BudgetBar({name, budget, total, remaining, basketCount, maxItems, wallet, onWalletReset, onBasket, art, caption, onChangeCharacter}){
+/* simple : 구경·고르는 동안에는 **숫자를 다 걷어냅니다** (2026-08-11 선생님 제안).
+   예산·현재 합계·남은 돈·내 바구니가 한 줄에 몰려 있어 "무엇을 보라는 건지" 알기 어려웠어요.
+   남은 돈은 바로 아래 **지갑 바가 지폐 그림으로** 보여 주므로 숫자를 두 번 쓸 이유가 없고,
+   담은 개수는 화면 아래 `이제 골라볼래요 (3개)` 단추에 이미 적혀 있습니다.
+   → 이 줄에는 [뒤로] [나 캐릭터] [지금 무엇을 하는지] 만 남기고 가운데로 모읍니다. */
+function BudgetBar({name, budget, total, remaining, basketCount, maxItems, wallet, onWalletReset, onBasket, art, caption, onChangeCharacter, simple, onBack, plan}){
   const pct = Math.min(100, Math.round((total/Math.max(1,budget))*100));
   const over = total>budget;
   const [askReset, setAskReset] = useState(false);
@@ -3324,6 +3349,38 @@ function BudgetBar({name, budget, total, remaining, basketCount, maxItems, walle
     <span className="lbl">내 바구니</span>
     <b>🧺 {basketCount}개{maxItems<99?` / ${maxItems}개`:''}{onBasket && basketCount>0 ? ' ›' : ''}</b>
   </React.Fragment>);
+  if(simple){
+    return (
+      <div className="topbar-row simple">
+        <div className="topbar-left">
+          {/* 화살표만 있으면 어디로 가는지 알 수 없어서 글자를 다시 붙였어요.
+              다른 돌아가기 단추와 같은 말투("◀ 🧺 고르기로")로 맞춥니다. (2026-08-11) */}
+          {onBack && <button className="btn ghost sm topbar-back" onClick={onBack} title="매장으로 돌아가기">⬅️ 매장으로</button>}
+          <ShopperChip onChange={onChangeCharacter} />
+          {/* '오늘 하려던 것'을 맨 윗줄 가운데 — 나(캐릭터)와 '지금 무엇을 하는지' 사이에 둬요.
+              층 안내판(검정 바)·코너 제목 줄에 있을 땐 배경 그림에 묻혀 잘 안 보였어요. (2026-08-11) */}
+          <PlanStrip plan={plan} compact />
+          {caption && <span className="topbar-cap"><b>{caption}</b><Speak text={caption} /></span>}
+          {wallet && <Wallet amount={remaining} over={over}
+            onReset={onWalletReset ? ()=>{ sayBtn('지갑을 다시 정할까요?'); setAskReset(true); } : null} />}
+        </div>
+        {askReset && (
+          <div className="overlay" onClick={()=>setAskReset(false)}>
+            <div className="modal center" style={{flexDirection:'column', gap:18, maxWidth:440}} onClick={e=>e.stopPropagation()}>
+              <div style={{fontSize:'3.4em'}}>👛</div>
+              <div className="section-title" style={{margin:0, justifyContent:'center'}}>지갑을 다시 정할까요? <Speak text="지갑을 다시 정할까요?" /></div>
+              <p className="muted center" style={{margin:0}}>지금 담은 문구는 그대로 있어요.</p>
+              <div className="row center" style={{gap:12}}>
+                <button className="btn ghost big" onClick={()=>setAskReset(false)}>아니요, 계속 쇼핑할래요</button>
+                <button className="btn primary big" onClick={()=>{ setAskReset(false); onWalletReset && onWalletReset(); }}>네, 다시 정할래요</button>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  }
+
   return (
     <div className={"topbar-row"+(art?' has-art':'')}>
       <div className="topbar-left">
@@ -3430,7 +3487,10 @@ function BrowseStage({settings, products, likes, setLikes, basket, setBasket, bu
   return (
     <div className="col" style={{gap:9}}>
       {!onFacade && (
+        /* 구경·고르는 동안에는 숫자를 걷어낸 간단한 줄만 씁니다 (2026-08-11).
+           코너 안에 있을 땐 '매장으로 돌아가기'도 이 줄로 올려, 코너 제목 줄이 짧아지게 했어요. */
         <BudgetBar name={settings.name} budget={budget} total={total} remaining={remaining} basketCount={countOf(basket)} maxItems={maxItems} wallet={settings.walletView!==false} onWalletReset={onWalletReset} onBasket={onNext}
+          simple plan={plan} onBack={(corner||showLiked) ? ()=>{ setCorner(null); setShowLiked(false); } : null}
           caption="문구점을 구경해요" onChangeCharacter={onChangeCharacter} />
       )}
       {/* 계획 띠를 따로 한 줄 깔지 않아요 (2026-08-11).
@@ -3474,8 +3534,9 @@ function BrowseStage({settings, products, likes, setLikes, basket, setBasket, bu
         <div>
           <div className="corner-head">
             {corner && <BgImg name={'코너_'+CORNERS.find(c=>c.id===corner).title} />}
+            {/* '매장으로 돌아가기'는 위 줄(나 캐릭터 앞)로 올렸어요 (2026-08-11).
+                여기 두면 코너 이름보다 먼저 읽혀서, 정작 "여기가 어디인지"가 뒤로 밀렸거든요. */}
             <div className="row corner-head" style={{margin:0, position:'relative', zIndex:1}}>
-              <button className="btn ghost" onClick={()=>{setCorner(null); setShowLiked(false);}}>⬅️ 매장으로 돌아가기</button>
               {/* 제목에도 코너 아이콘을 넣지 않아요 (2026-08-11).
                   이미 그 코너에 들어와 있어서 아이콘이 새로 알려 줄 게 없고,
                   21px라 알아보기도 어려웠습니다. 글자만 두어 화면을 가볍게 했어요. */}
@@ -3488,10 +3549,8 @@ function BrowseStage({settings, products, likes, setLikes, basket, setBasket, bu
                 <button className="btn ghost sm add-here" title="이 코너에 우리 반 문구 넣기"
                   onClick={()=>{ stopSpeak(); setQuickAdd(true); }}>＋ 우리 반 문구</button>
               )}
-              {/* 코너에도 '오늘 하려던 것'을 남겨요 — 물건을 실제로 고르는 자리가 여기라서요.
-                  층 안내판과 마찬가지로 줄을 새로 만들지 않고 제목 줄에 얹습니다. */}
+              {/* '오늘 하려던 것' 띠는 맨 윗줄(BudgetBar)로 옮겼어요 — 여기 두면 두 번 나와요 */}
               <span className="spacer" style={{flex:1}}></span>
-              <PlanStrip plan={plan} inBar />
             </div>
           </div>
           {list.length===0 && <div className="card muted">아직 담긴 문구가 없어요.</div>}
@@ -4067,8 +4126,7 @@ function FloorPanorama({floorNo, products, likesCount, onCorner, onElevator, onL
           없어져요. 계획을 세우지 않았으면 아무것도 안 나오고 가운데는 그냥 빕니다. */}
       <div className="pano-top">
         <span className="pano-floorname">🏬 {floor.title} · {floor.desc}</span>
-        <span className="spacer" style={{flex:1}}></span>
-        <PlanStrip plan={plan} inBar />
+        {/* '오늘 하려던 것' 띠는 맨 윗줄(BudgetBar)로 옮겼어요 — 여기선 매장 그림에 묻혔거든요 */}
         <span className="spacer" style={{flex:1}}></span>
         <span className="elev">
           <button className="elev-btn" onClick={onElevator} disabled={walking}>🛗 엘리베이터 타기 (다른 층 가기)</button>
