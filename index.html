@@ -665,6 +665,9 @@ img.cicon{object-fit:contain;border-radius:.2em;}
 
 /* 지갑은 늘 '자기 줄'을 차지해 가로 폭을 다 써요 — 지폐를 한 장씩 더 많이 보여 주려고 */
 .topbar-left .wallet{flex:1 0 100%;max-width:100%;}
+/* 고르GO에서 지갑만 따로 놓을 때 (숫자 줄을 뺐거든요) — 예산바 안에 있을 때와 같은 모양 */
+.wallet-row{display:flex;}
+.wallet-row .wallet{flex:1;max-width:100%;}
 /* 간단한 줄 — [⬅️] [나 캐릭터] [지금 무엇을 하는지] 만 가운데로 (2026-08-11).
    숫자(예산·합계·남은 돈·바구니 개수)는 다 걷어냈어요. 남은 돈은 아래 지갑 바가
    지폐 그림으로 보여 주고, 담은 개수는 화면 아래 '이제 골라볼래요 (○개)'에 있습니다. */
@@ -4485,8 +4488,20 @@ function ChooseStage({settings, likes, basket, setBasket, budget, total, remaini
   const removeBasket = (id)=> setBasket(b=>b.filter(p=>p.id!==id));
   return (
     <div className="col" style={{gap:10}}>
-      <BudgetBar name={settings.name} budget={budget} total={total} remaining={remaining} basketCount={countOf(basket)} maxItems={maxItems} wallet={settings.walletView!==false} onWalletReset={onWalletReset} onChangeCharacter={onChangeCharacter} />
+      {/* 재배치 (2026-08-11 선생님 요청)
+          ① 숫자 줄(예산·현재 합계·남은 돈·내 바구니 + 나 캐릭터)은 **통째로 뺐어요** —
+             네 숫자가 한 줄에 몰려 "무엇을 보라는 건지" 알기 어려웠고,
+             남은 돈은 바로 아래 지갑이 지폐 그림으로 보여 주며,
+             담은 개수는 아래 '지금 바구니' 칸에 그대로 나옵니다.
+          ② 지금 무엇을 하는지(마음에 드는 문구를 골라요)를 **맨 위로**,
+          ③ 지갑은 그 아래로. */}
       <StageScene stage="choose" />
+      {settings.walletView!==false && (
+        <div className="wallet-row">
+          <Wallet amount={remaining} over={remaining<0}
+            onReset={onWalletReset ? ()=>{ sayBtn('지갑을 다시 정할까요?'); onWalletReset(); } : null} />
+        </div>
+      )}
 
       {/* 좋아한 문구가 있으면 두 칸을 나란히 (세로로 쌓으면 화면을 넘쳐요) */}
       <div className={"choose-cols"+(likes.length>0?' two':'')}>
