@@ -4625,12 +4625,15 @@ function ScanStage({settings, basket, scanned, setScanned, budget, total, onDone
   /* 합계 안내는 '마지막 물건 이름을 다 말한 뒤'에 해요.
      바로 말하면 마지막 물건이 찍히는 순간 그 이름을 덮어써서
      "파스텔 형광펜…"이 첫 글자만 들리고 끊겼어요(점원·키오스크 둘 다).
-     화면에는 이미 '🎉 모든 물건의 가격을 확인했어요!'가 떠 있으니 잠깐 기다려도 괜찮아요. */
+     화면에는 이미 합계가 떠 있으니 잠깐 기다려도 괜찮아요.
+     ⚠️ 읽어 주는 말은 **화면 글자와 똑같이** 유지할 것 — 2026-08-11에 화면에서
+        '모든 물건의 가격을 확인했어요…' 줄을 빼면서 이 말도 합계 줄에 맞췄어요. */
   useEffect(()=>{
     if(!allDone) return;
     /* 3.2초 = 가장 긴 상품명("구슬 팔찌 만들기 세트 2,000원")까지 다 말할 시간.
        2.6초로 뒀더니 "파스텔 형광펜 2,000원"이 끝나기 직전에 잘렸어요. */
-    const t = setTimeout(()=> speak('모든 물건의 가격을 확인했어요! 모두 합해서 '+won(scannedTotal)+'이에요.'), 3200);
+    const t = setTimeout(()=> speak('합계 '+won(scannedTotal)+'. '
+      + (scannedTotal<=budget ? '내 돈으로 살 수 있어요.' : '돈이 조금 더 필요해요.')), 3200);
     return ()=> clearTimeout(t);
   }, [allDone]);
 
@@ -4795,16 +4798,17 @@ function ScanStage({settings, basket, scanned, setScanned, budget, total, onDone
 
       {allDone && (
         <div className="card" style={{background:'#f0faff', padding:12}}>
-          <Hint kind="fit" text={'모든 물건의 가격을 확인했어요! 모두 합해서 '+won(scannedTotal)+'이에요.'}>
-            🎉 모든 물건의 가격을 확인했어요! 모두 합해서 <b>{won(scannedTotal)}</b>이에요.
-          </Hint>
-
+          {/* '모든 물건의 가격을 확인했어요! 모두 합해서 ○○원이에요.' 줄은 뺐어요 (2026-08-11).
+              바로 아래 '합계 ○○원'과 같은 말을 두 번 하고 있었거든요.
+              대신 그 합계 줄에 🔊를 붙여 눌러 들을 수 있게 했습니다. */}
           {settings.difficulty==='easy' && (
-            <div className="row center" style={{marginTop:12}}>
+            <div className="row center" style={{marginTop:4}}>
               <span className="bignum">합계 {won(scannedTotal)}</span>
               <span className={"pill"} style={{fontSize:'1em', padding:'8px 14px', background: scannedTotal<=budget?'#eafaf1':'#fff6e6', color:scannedTotal<=budget?'#177245':'#6a5200'}}>
                 {scannedTotal<=budget? '💰 내 돈으로 살 수 있어요.' : '돈이 조금 더 필요해요.'}
               </span>
+              {/* 🔊 는 줄 맨 뒤에 — 화면 글자와 똑같이 읽어 줘요 */}
+              <Speak text={'합계 '+won(scannedTotal)+'. '+(scannedTotal<=budget? '내 돈으로 살 수 있어요.' : '돈이 조금 더 필요해요.')} />
             </div>
           )}
           {settings.difficulty==='normal' && (
