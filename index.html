@@ -2393,18 +2393,26 @@ function App(){
       ? {...s, stamps:[...(s.stamps||[]), {date:day}]} : s));
   };
 
-  /* 🎁 비밀 가게에서 선물을 받았을 때 — 누가 언제 무엇을 받았는지 남겨요.
-     도장은 **줄이지 않아요**(그대로 쌓임). 학생마다 받는 때가 달라서
-     판을 리셋하면 오히려 관리가 어려워지거든요. 받은 날은 따로 적어 둡니다. */
+  /* 🎁 비밀 가게에서 선물을 받았을 때 (2026-08-11)
+     · 도장 10칸을 **다 채웠으면** → 10개를 쓰고 판을 비워요(넘치는 도장은 다음 판으로 넘어감).
+     · 아직 10개가 **안 됐으면** → 도장은 그대로 두고 선물만 줘요.
+       (10개를 채우기 어려운 학생에게도 선생님 재량으로 줄 수 있게 하려고요.) */
   const [rewardJust, setRewardJust] = useState(null);   // 방금 받은 선물 (마무리 화면 표시용)
   const giveReward = (item)=>{
     setRewardJust(item);
     if(!studentId) return;
     const t = new Date();
     const day = (t.getMonth()+1)+'/'+t.getDate();
-    setStudents(list=> list.map(s=> s.id===studentId
-      ? {...s, rewards:[...(s.rewards||[]), {date:day, name:item.name, stampsThen:(s.stamps||[]).length}]}
-      : s));
+    setStudents(list=> list.map(s=>{
+      if(s.id!==studentId) return s;
+      const st = s.stamps || [];
+      const used = st.length >= 10;                     // 한 판을 다 채웠나?
+      return {
+        ...s,
+        stamps: used ? st.slice(10) : st,               // 다 채웠으면 앞의 10개를 씀
+        rewards: [...(s.rewards||[]), {date:day, name:item.name, used}]
+      };
+    }));
   };
 
   // 그 학생의 회기 기록에 한 줄 더하기
