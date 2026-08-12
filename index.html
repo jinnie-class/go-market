@@ -406,7 +406,7 @@ img.cicon{object-fit:contain;border-radius:.2em;}
 .secret-title{font-weight:900;font-size:1.35em;color:#6a5200;}
 .pill.sec-gift{background:#eafaf1;color:#177245;border-color:#bfe9cf;}
 .pill.sec-look{background:#eaf7fe;color:#0b4a63;border-color:#cbeafb;}
-/* 매장 층처럼 넓은 배경 위에 물건을 얹어요 (배경 그림: 이미지/배경/시크릿층.png) */
+/* 매장 층처럼 넓은 배경 위에 물건을 얹어요 (배경 그림: 이미지/배경/비밀가게.png) */
 .secret-scene{position:relative;border-radius:24px;overflow:hidden;border:3px solid var(--line);
   box-shadow:var(--shadow-lg);height:clamp(360px,calc(100vh - 190px),720px);
   display:flex;align-items:flex-end;justify-content:center;background:#fdf6e8;}
@@ -1615,7 +1615,11 @@ const PRODUCTS = [
      ⚠️ 연필 셋의 feat(특징)은 서로 다르게 쓰세요. 안 그러면 학생 눈에 다 같아 보여요. */
   { id:'w9', corner:'write', name:'연필(10자루)', price:1000, emoji:'✏️', color:'알록달록', feat:'깎아서 써요(HB·B·2B·4B 택1)', use:'부드럽게 잘 써지고 지우개로 지워져요.' },
   { id:'w7', corner:'write', name:'샤프 세트', price:2000, emoji:'✏️', color:'검정', feat:'샤프심을 넣어서 써요', use:'샤프심도 같이 들어 있어요.' },
-  { id:'w5', corner:'write', name:'만년 연필', price:1000, emoji:'✏️', color:'회색(고양이 장식)', feat:'깎을 필요 없어요', use:'심이 잘 닳지 않아 오래 사용해요. 한 손으로 달칵 눌러 사용해요.' },
+  /* '만년 연필'을 빼고 '공책'을 넣었어요 (2026-08-12).
+     문구점에 공책이 없는 것이 어색했고, 만년 연필은 샤프 세트와 기능·모양이 비슷해
+     학생이 둘을 구분하기 어려웠어요. 스프링 노트(2,000원)와는 값도 종류도 달라
+     둘 다 있어도 고르는 재미가 생깁니다. */
+  { id:'w16', corner:'write', name:'공책', price:1000, emoji:'📔', color:'흰색', feat:'줄공책 40매', use:'줄이 있는 줄공책이에요. 필기구로 필요한 내용을 정리해서 적어요.' },
   { id:'w13', corner:'write', name:'볼펜(3색)', price:1000, emoji:'🖊️', color:'검정·파랑·빨강', feat:'부드럽게 글씨가 써져요', use:'검정·빨강·파랑이 함께 있는 3색 볼펜이에요.' },
   { id:'w4', corner:'write', name:'젤펜 세트', price:2000, emoji:'🖊️', color:'알록달록', feat:'젤펜 8개', use:'가볍고 여러 색으로 글씨를 써요.' },
   { id:'w8', corner:'write', name:'네임펜', price:1000, emoji:'🖋️', color:'흑색', feat:'트윈 네임펜 3개', use:'번짐이 적고 쉽게 지워지지 않아요. 가는 심, 굵은 심을 골라서 사용해요.' },
@@ -1934,9 +1938,11 @@ const CHARACTERS = [
   { id:'dog',     emoji:'🐶', name:'강아지',   bg:'#e7f0ff' },
   { id:'panda',   emoji:'🐼', name:'판다',     bg:'#eef0f4' },
   { id:'lion',    emoji:'🦁', name:'사자',     bg:'#fff0cf' },
-  { id:'penguin', emoji:'🐧', name:'펭귄',     bg:'#e0f2ff' },
-  { id:'unicorn', emoji:'🦄', name:'유니콘',   bg:'#f3e8ff' },
-  { id:'frog',    emoji:'🐸', name:'개구리',   bg:'#e5f6df' },
+  { id:'monkey',  emoji:'🐵', name:'원숭이',   bg:'#f3e7d8' },
+  { id:'pig',     emoji:'🐷', name:'돼지',     bg:'#ffe6ee' },
+  { id:'elephant',emoji:'🐘', name:'코끼리',   bg:'#eaeef4' },
+  /* 1쪽은 **동물 10 + 사람 2**로 맞춰요 (2026-08-12).
+     개구리·펭귄·유니콘을 빼고 원숭이·돼지·코끼리를 넣었습니다. */
   { id:'boy',     emoji:'👦', name:'남자아이', bg:'#e7f0ff' },
   { id:'girl',    emoji:'👧', name:'여자아이', bg:'#ffe3ef' },
   /* ── 바다 친구 12 (2026-08-12) ── 그림은 이미지/캐릭터/<이름>.png */
@@ -6559,7 +6565,7 @@ function SecretGate({code, onOpen, onClose}){
 /* ---- 🎁 비밀 가게 (옥상 편의점) ----
    mode 'look' : 구경만 — "이런 게 있어! 도장 모으면 받을 수 있어" (동기부여)
    mode 'gift' : 선물 주기 — 하나 고르면 기록에 남아요.
-   배경은 `이미지/배경/시크릿층.png` (매장 층 그림과 같은 넓은 파노라마). */
+   배경은 `이미지/배경/비밀가게.png` (매장 층 그림과 같은 넓은 파노라마). */
 function SecretShop({items, mode, studentName, stampCount, onPick, onExit, onMode, setItems}){
   const [chosen, setChosen] = useState(null);
   /* 🔧 선생님 칸 — 설정 화면까지 갔다 오지 않고 여기서 바로 고쳐요 (2026-08-11).
@@ -6579,7 +6585,7 @@ function SecretShop({items, mode, studentName, stampCount, onPick, onExit, onMod
     return (
       <div className="app secret-app">
         <div className="secret-scene">
-          <BgImg name="시크릿층" className="secret-bg" dim={0.35} />
+          <BgImg name="비밀가게" className="secret-bg" dim={0.35} />
           <div className="secret-done">
             <div className="sd-item">{chosen.photo ? <img src={chosen.photo} alt="" /> : <span className="sd-emoji">{chosen.emoji||'🎁'}</span>}</div>
             <div className="sd-name">{chosen.name}</div>
@@ -6655,7 +6661,7 @@ function SecretShop({items, mode, studentName, stampCount, onPick, onExit, onMod
       )}
 
       <div className="secret-scene">
-        <BgImg name="시크릿층" className="secret-bg" />
+        <BgImg name="비밀가게" className="secret-bg" />
         <div className="secret-front">
           <Hint kind="fit" style={{margin:'0 0 10px'}}
             /* ⚠️ '도장 10개를 채워야만'이라고 쓰지 않아요 — 열심히 한 날에도 선생님이 줄 수 있게
