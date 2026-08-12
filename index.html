@@ -6593,7 +6593,12 @@ function SecretShop({items, mode, studentName, stampCount, onPick, onExit, onMod
               text={(studentName? studentName+'! ':'')+chosen.name+josa(chosen.name,'을','를')+' 받았어요. 도장을 모아 줘서 고마워요!'}>
               🎉 <b>{chosen.name}</b>{josa(chosen.name,'을','를')} 받았어요!
             </Hint>
-            <button className="btn primary big" onClick={onExit}>돌아가기</button>
+            {/* 선물을 받았다고 가게를 나가 버리면 안 돼요 (2026-08-12).
+                선생님이 하나 더 주고 싶을 수도 있어서, 여기서는 **가게 안으로만** 돌아갑니다.
+                가게를 나가는 것은 가게 화면 위쪽의 '나가기'로만 해요. */}
+            <button className="btn primary big" onClick={()=>{ setChosen(null); speak('가게로 돌아왔어요.'); }}>
+              ◀ 🎁 가게로 돌아가기
+            </button>
           </div>
         </div>
       </div>
@@ -6609,7 +6614,9 @@ function SecretShop({items, mode, studentName, stampCount, onPick, onExit, onMod
         <span className={"pill "+(gift?'sec-gift':'sec-look')}>{gift? '🎁 선물 주기' : '👀 구경만'}</span>
         {setItems && <button className={"btn sm "+(teach?'mint':'ghost')} onClick={()=>setTeach(t=>!t)}
           aria-label={teach? '선생님 칸 닫기':'선생님 칸 열기'}>🔧 선생님</button>}
-        <button className="btn ghost sm" onClick={onExit}>◀ 나가기</button>
+        {/* 가게를 나가는 길은 여기 하나뿐이에요 — 선물을 받은 뒤에도 가게 안에 머물거든요.
+            어디로 가는지 알 수 있게 '매장으로'라고 풀어 씁니다. */}
+        <button className="btn ghost sm" onClick={onExit}>◀ 🏬 매장으로 나가기</button>
       </div>
 
       {teach && setItems && (
