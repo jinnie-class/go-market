@@ -4854,9 +4854,11 @@ function ScanStage({settings, basket, scanned, setScanned, budget, total, onDone
           {notScanned.length>0 && (
             <button className="btn primary big" onClick={handOver}>🤝 점원에게 물건 건네기</button>
           )}
-          {/* 찍은 물건도 6개씩 나눠 보여 줘요 (스크롤 없이) */}
+          {/* 찍은 물건은 **2줄(4개)까지만** 보여 주고 넘으면 ▶ 로 넘겨요 (2026-08-12).
+              6개씩 두면 3줄이 되어 세로가 길어지고, 학생이 한눈에 보기도 어려웠어요.
+              followLast 덕분에 점원이 찍어 줄 때 화면이 저절로 마지막 쪽으로 따라갑니다. */}
           <div style={{width:'100%', maxWidth:920}}>
-            <Paged items={validScanned} per={6} followLast={true} resetKey="clerkscan" cls="choose-list" render={(p,i,now)=>(
+            <Paged items={validScanned} per={4} followLast={true} resetKey="clerkscan" cls="choose-list" render={(p,i,now)=>(
               <div key={p.id} className={"list-item"+(now?' now':'')}><span>{p.name}{qtyOf(p)>1 && <b className="qty-tag"> &times;{qtyOf(p)}</b>}</span><b>{won(p.price*qtyOf(p))}</b></div>
             )} />
           </div>
