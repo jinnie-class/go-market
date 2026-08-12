@@ -3172,9 +3172,9 @@ function TeacherSettings({settings, setSettings, onDone, onResult, students, set
             '못 찾았다'고 단정하지 않고 **안 열렸을 때 무엇을 보면 되는지**만 알려 줍니다. */}
         {manualOpened && (
           <div className="card" style={{background:'#eef7ff', border:'2px solid #bcdcf7', marginBottom:16}}>
-            <b>📖 새 창에서 설명서를 열었어요. 그 창에서 <u>Ctrl + P</u> 를 누르면 인쇄됩니다.</b>
+            <b>📖 새 창에서 설명서를 열었어요. 그 창 맨 위의 파란 <u>🖨️ 인쇄하기</u> 단추를 누르세요.</b>
             <p className="muted" style={{margin:'6px 0 0'}}>
-              <span style={{display:'block'}}>인쇄 창에서 <b>대상</b>을 <b>‘PDF로 저장’</b>으로 바꾸면 PDF 파일이 돼요.</span>
+              <span style={{display:'block'}}>종이로 뽑으려면 그대로 <b>인쇄</b>, 파일로 남기려면 <b>대상</b>을 <b>‘PDF로 저장’</b>으로 바꾸면 돼요.</span>
               <span style={{display:'block'}}>새 창이 안 열렸다면 — <b>사용설명서_인쇄용.html</b> 이 <b>index.html 과 같은 폴더</b>에 있어야 합니다. 앱만 따로 옮기면 설명서는 따라오지 않아요.</span>
             </p>
           </div>
@@ -7028,7 +7028,12 @@ function CharacterSelect({initial, onConfirm, onHome, onBack, lockedName, custom
     reader.readAsDataURL(file);
   };
 
-  const confirm = ()=>{
+  /* ⚠️ 이 함수 이름을 `confirm` 으로 두면 **브라우저의 확인 창(window.confirm)을 가려 버립니다.**
+     실제로 사고가 났었어요 — 우리 반 캐릭터의 × 를 누르면 확인 창이 뜨는 대신
+     이 함수가 불려서 **'이 캐릭터로 쇼핑하러 가기'가 실행**됐고(다음 화면으로 넘어감),
+     돌아온 값이 undefined 라 캐릭터는 지워지지 않았습니다.
+     이름을 바꿔서 가리는 일이 없게 했습니다. 확인 창은 `window.confirm` 으로 분명히 부릅니다. */
+  const goShopping = ()=>{
     const ch = {...sel, name: name.trim() || sel.name
       || (sel.kind==='preset' ? (CHARACTERS.find(c=>c.id===sel.id)||{}).name : '나') };
     speak((ch.name||'내 캐릭터')+'(으)로 쇼핑하러 가요!');
@@ -7084,7 +7089,7 @@ function CharacterSelect({initial, onConfirm, onHome, onBack, lockedName, custom
                         aria-label={c.name+' 빼기'}
                         onClick={(e)=>{
                           e.preventDefault(); e.stopPropagation();
-                          if(!confirm(`'${c.name}'을(를) 뺄까요?`)) return;
+                          if(!window.confirm(`'${c.name}'을(를) 뺄까요?`)) return;
                           setCustomChars(l=>{
                             const next = l.filter(x=>x.id!==c.id);
                             /* 마지막 캐릭터를 빼면 쪽 수가 줄어요. 보고 있던 쪽이 없어지면
@@ -7125,7 +7130,7 @@ function CharacterSelect({initial, onConfirm, onHome, onBack, lockedName, custom
           </div>
         </div>
 
-        <button className="btn primary big" style={{width:'100%', marginTop:12}} onClick={confirm}>
+        <button className="btn primary big" style={{width:'100%', marginTop:12}} onClick={goShopping}>
           🛍️ 이 캐릭터로 쇼핑하러 가기
         </button>
       </div>

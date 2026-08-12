@@ -31,11 +31,27 @@
   pre{ margin:.2em 0; font-family:Consolas,"D2Coding",monospace; font-size:.92em;
        background:#f7f9fc; border:1px solid var(--line); border-radius:8px; padding:10px 14px;
        white-space:pre-wrap; }
-  .printtip{ background:#eef7ff; border:2px solid #bcdcf7; border-radius:12px;
-             padding:12px 18px; margin:0 0 22px; font-size:.95em; }
+  .printtip{ background:#eef7ff; border:2px solid #bcdcf7; border-radius:14px;
+             padding:16px 18px; margin:0 0 24px; font-size:.97em; }
+  .pt-row{ display:flex; align-items:center; gap:18px; flex-wrap:wrap; }
+  .pt-txt{ display:flex; flex-direction:column; gap:3px; min-width:220px; flex:1; }
+  .pt-txt b{ font-size:1.06em; }
+  .pt-foot{ margin-top:10px; color:#5b6b7d; font-size:.9em; }
+  /* 큼직한 인쇄 단추 — 컴퓨터가 익숙하지 않아도 한눈에 보이게 */
+  .printbtn{ font:inherit; font-weight:900; font-size:1.22em; color:#fff; cursor:pointer;
+             background:linear-gradient(135deg,#4aa3e8,#2b7fc4); border:0; border-radius:999px;
+             padding:15px 34px; box-shadow:0 5px 14px rgba(43,127,196,.38); white-space:nowrap; }
+  .printbtn:hover{ filter:brightness(1.07); transform:translateY(-1px); }
+  .printbtn:active{ transform:translateY(1px); }
+  /* 아래로 내려가도 계속 따라다니는 작은 인쇄 단추 (긴 문서라서) */
+  .printfab{ position:fixed; right:22px; bottom:22px; z-index:9;
+             font:inherit; font-weight:900; font-size:1em; color:#fff; cursor:pointer;
+             background:linear-gradient(135deg,#4aa3e8,#2b7fc4); border:0; border-radius:999px;
+             padding:13px 22px; box-shadow:0 5px 16px rgba(0,0,0,.22); }
+  .printfab:hover{ filter:brightness(1.07); }
   @media print{
     body{ padding:0; font-size:11.2pt; max-width:none; }
-    .printtip{ display:none; }
+    .printtip, .printfab{ display:none; }
     h1{ font-size:20pt; }
     h2{ font-size:14pt; break-after:avoid; page-break-after:avoid; }
     h3,h4{ break-after:avoid; page-break-after:avoid; }
@@ -47,7 +63,17 @@
 </style>
 </head>
 <body>
-<div class="printtip">🖨️ <strong>인쇄하려면</strong> Ctrl + P 를 누르세요. 인쇄 창에서 <strong>대상</strong>을 <strong>PDF로 저장</strong>으로 바꾸면 PDF 파일이 됩니다. (이 안내 상자는 인쇄물에 나오지 않아요.)</div>
+<div class="printtip">
+  <div class="pt-row">
+    <button type="button" class="printbtn" onclick="window.print()">🖨️ 인쇄하기</button>
+    <div class="pt-txt">
+      <b>이 단추를 누르면 바로 인쇄 창이 열려요.</b>
+      <span>종이로 뽑으려면 그대로 <b>인쇄</b>를 누르고, 파일로 남기려면 <b>대상</b>을 <b>‘PDF로 저장’</b>으로 바꾸세요.</span>
+    </div>
+  </div>
+  <div class="pt-foot">이 안내 상자는 <b>인쇄물에는 나오지 않습니다.</b></div>
+</div>
+<button type="button" class="printfab" onclick="window.print()" title="인쇄하기">🖨️ 인쇄</button>
 <h1>GO! 문구마켓 — 선생님 사용설명서</h1>
 <p>발달·지적장애 학생을 위한 <strong>문구점 여가활동 웹앱</strong>입니다.</p>
 <p>계산을 잘하는 것이 목표가 아니라, <strong>마음에 드는 문구를 고르고 그것으로 즐겁게 노는 것</strong>이 목표예요.</p>
@@ -71,8 +97,17 @@
 <p>설정 <strong>5번 음성 안내</strong>의 <code>🔊 소리 검사</code> 를 눌러 보세요. 무엇이 문제인지 화면에 알려 줍니다.</p>
 <hr>
 <h3>이 설명서를 인쇄하려면</h3>
-<p><strong>앱 안에서 바로 열 수 있습니다.</strong> ⚙️ 선생님 설정 → 오른쪽 위 <strong><code>📖 사용설명서</code></strong></p>
-<p>새 창이 열리면 <strong>Ctrl + P</strong>. 인쇄 창에서 <strong>대상</strong>을 <strong>‘PDF로 저장’</strong> 으로 바꾸면 PDF가 됩니다.</p>
+<p><strong>세 번만 누르면 됩니다.</strong></p>
+<ol>
+<li>앱에서 <strong>⚙️</strong> (오른쪽 위)</li>
+<li>설정 오른쪽 위의 <strong><code>📖 사용설명서</code></strong></li>
+<li>새 창 맨 위의 파란 <strong><code>🖨️ 인쇄하기</code></strong> 단추</li>
+</ol>
+<p>그러면 인쇄 창이 열립니다. <strong>종이로 뽑으려면</strong> 그대로 <code>인쇄</code> 를 누르고, <strong>파일로 남기려면</strong> <code>대상</code> 을 <code>PDF로 저장</code> 으로 바꾸세요.</p>
+<blockquote>
+<p>💡 단축키를 외우지 않아도 됩니다. 아래로 내려가도 <strong>오른쪽 아래에 인쇄 단추가 계속 따라다녀요.</strong></p>
+<p>인쇄 단추와 이 안내 상자는 <strong>인쇄물에는 나오지 않습니다.</strong></p>
+</blockquote>
 <blockquote>
 <p>⚠️ <code>사용설명서_인쇄용.html</code> 이 <strong><code>index.html</code> 과 같은 폴더</strong>에 있어야 열립니다.</p>
 <p>다른 컴퓨터로 옮기실 땐 <strong>폴더째로</strong> 옮겨 주세요. 앱 파일만 옮기면 설명서는 따라오지 않아요.</p>
