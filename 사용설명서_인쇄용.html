@@ -46,6 +46,12 @@
              padding:13px 22px; box-shadow:0 5px 14px rgba(43,127,196,.38); white-space:nowrap; }
   .printbtn:hover{ filter:brightness(1.07); transform:translateY(-1px); }
   .printbtn:active{ transform:translateY(1px); }
+  /* 📄 PDF 는 미리 만들어 둔 파일을 그냥 내려받습니다 — 인쇄 창을 거치지 않아요 */
+  .pdfbtn{ font-weight:900; font-size:1.06em; color:#fff; text-decoration:none; white-space:nowrap;
+           background:linear-gradient(135deg,#e8663a,#c94f26); border-radius:999px;
+           padding:13px 22px; box-shadow:0 5px 14px rgba(201,79,38,.34); display:inline-block; }
+  .pdfbtn:hover{ filter:brightness(1.07); }
+  .pt-txt .k{ background:#fff; border:1px solid #cfe0f0; border-radius:6px; padding:1px 7px; white-space:nowrap; }
   /* 아래로 내려가도 계속 따라다니는 작은 인쇄 단추 (긴 문서라서) */
   .printfab{ position:fixed; right:22px; bottom:22px; z-index:9;
              font:inherit; font-weight:900; font-size:1em; color:#fff; cursor:pointer;
@@ -69,9 +75,10 @@
 <div class="printtip">
   <div class="pt-row">
     <button type="button" class="printbtn" onclick="window.print()">🖨️ 인쇄하기</button>
+    <a class="pdfbtn" href="사용설명서.pdf" download="GO! 문구마켓 사용설명서.pdf">📄 PDF로 저장</a>
     <div class="pt-txt">
-      <b>이 단추를 누르면 바로 인쇄 창이 열려요. <span class="pt-note">(이 안내는 인쇄물에 안 나와요)</span></b>
-      <span class="pt-how">종이로 뽑으려면 <b>인쇄</b>를, 파일로 남기려면 <b>대상</b>을 <b>‘PDF로 저장’</b>으로 바꾸세요.</span>
+      <b>종이로 뽑으려면 <span class="k">🖨️ 인쇄하기</span>, 파일로 받으려면 <span class="k">📄 PDF로 저장</span>.</b>
+      <span class="pt-how">PDF는 <b>이미 만들어 둔 파일</b>이라 누르면 바로 받아집니다. <span class="pt-note">(이 안내는 인쇄물에 안 나와요)</span></span>
     </div>
   </div>
 </div>
@@ -110,17 +117,26 @@
 <h3>소리가 안 나올 때</h3>
 <p>설정 <strong>5번 음성 안내</strong>의 <code>🔊 소리 검사</code> 를 눌러 보세요. 무엇이 문제인지 화면에 알려 줍니다.</p>
 <hr>
-<h3>이 설명서를 인쇄하려면</h3>
+<h3>이 설명서를 인쇄하거나 받으려면</h3>
 <p><strong>세 번만 누르면 됩니다.</strong></p>
 <ol>
 <li>앱에서 <strong>⚙️</strong> (오른쪽 위)</li>
 <li>설정 오른쪽 위의 <strong><code>📖 사용설명서</code></strong></li>
-<li>새 창 맨 위의 파란 <strong><code>🖨️ 인쇄하기</code></strong> 단추</li>
+<li>새 창 맨 위에서 원하는 단추</li>
 </ol>
-<p>그러면 인쇄 창이 열립니다. <strong>종이로 뽑으려면</strong> 그대로 <code>인쇄</code> 를 누르고, <strong>파일로 남기려면</strong> <code>대상</code> 을 <code>PDF로 저장</code> 으로 바꾸세요.</p>
+<table><thead>
+<tr><th>단추</th><th>무엇을 하나</th></tr>
+</thead><tbody>
+<tr><td>🖨️ <strong>인쇄하기</strong></td><td>인쇄 창이 열려요. 그대로 <code>인쇄</code> 를 누르면 종이로 나옵니다</td></tr>
+<tr><td>📄 <strong>PDF로 저장</strong></td><td><strong>이미 만들어 둔 PDF 파일</strong>을 바로 받습니다 (13쪽)</td></tr>
+</tbody></table>
+<blockquote>
+<p>💡 PDF는 <strong>인쇄 창을 거치지 않습니다.</strong> <code>대상</code>을 바꾸거나 설정을 만질 필요가 없어요.</p>
+<p>받은 파일은 그대로 메신저로 보내거나 다른 선생님께 전달하셔도 됩니다.</p>
+</blockquote>
 <blockquote>
 <p>💡 단축키를 외우지 않아도 됩니다. 아래로 내려가도 <strong>오른쪽 아래에 인쇄 단추가 계속 따라다녀요.</strong></p>
-<p>인쇄 단추와 이 안내 상자는 <strong>인쇄물에는 나오지 않습니다.</strong></p>
+<p>두 단추와 이 안내 상자는 <strong>인쇄물에는 나오지 않습니다.</strong></p>
 </blockquote>
 <blockquote>
 <p>⚠️ 새 창이 안 열렸다면 <strong>팝업 차단</strong> 때문입니다.</p>

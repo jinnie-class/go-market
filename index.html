@@ -2056,7 +2056,7 @@ let studentGender = 'female';   // 학생 목소리: 'female' | 'male'
 let clerkGender = 'male';        // 점원(그림·목소리): 'male' | 'female'  (기본=남자 점원)
 let currentCharacter = null;     // 학생이 고른 쇼핑 캐릭터 {kind:'preset',id,name} | {kind:'photo',photo,name}
 let currentStudentName = '';     // 지금 쇼핑하는 학생 이름 (캐릭터 밑에 함께 보여 줘요 · 출처는 학생 명단)
-let lastBrowse = { floor:null, scene:'facade' };   // 구경하GO에 다시 오면 마지막 층으로 바로 돌아가요
+let lastBrowse = { floor:null, scene:'facade', from:1 };   // 구경하GO에 다시 오면 마지막 층으로 바로 돌아가요
 
 /* 자연스러운 한국어 음성 우선순위로 점수를 매겨 고름
    (신경망 'Natural/Online' 음성 > Google > Windows 기본(Heami 등) > 그 외) */
@@ -2754,7 +2754,7 @@ function App(){
      하트는 학생을 고른 경우엔 그 학생 것으로 이어가고(keepLikes), 명단이 없으면 예전처럼 비워요. */
   const startShopping = (opts)=>{
     const keepLikes = !!(opts && opts.keepLikes);
-    lastBrowse = { floor:null, scene:'facade' };   // 새 쇼핑은 건물 입구부터
+    lastBrowse = { floor:null, scene:'facade', from:1 };   // 새 쇼핑은 건물 입구부터
     setBasket([]); setScanned([]); setPayMethod(null); setPaidBills([]); setCheckoutMode(null);
     setReceipt(null); setActivity(null); setStudentBudget(null); setPlan(null);
     setBarcodeDone(false); setTeacherChecks({}); setHelpCount(0); setRetryCount(0); setStampGiven(false);
@@ -2788,7 +2788,7 @@ function App(){
   const askHelp = ()=>{ setHelpCount(c=>c+1); setHelpOpen(true); };
 
   const resetAll = ()=>{
-    lastBrowse = { floor:null, scene:'facade' };
+    lastBrowse = { floor:null, scene:'facade', from:1 };
     setLikes([]); setBasket([]); setScanned([]); setPayMethod(null); setPaidBills([]); setCheckoutMode(null);
     setReceipt(null); setActivity(null);
     setHelpCount(0); setRetryCount(0); setBarcodeDone(false); setTeacherChecks({});
@@ -3649,8 +3649,11 @@ function BudgetBar({name, budget, total, remaining, basketCount, maxItems, walle
 function BrowseStage({settings, products, likes, setLikes, basket, setBasket, budget, total, remaining, maxItems, onNext, onCheckout, celebrate, onWalletReset, onChangeCharacter, onAddProduct, plan, onSecret}){
   const [floor, setFloor] = useState(()=> lastBrowse.floor);       // null=입장 전 | 1·2·3=층 파노라마
   const [scene, setScene] = useState(()=> lastBrowse.scene);       // facade(건물 정면) | elevator(엘리베이터)
-  const [evFrom, setEvFrom] = useState(()=> lastBrowse.floor||1);  // 엘리베이터 출발 층
-  useEffect(()=>{ lastBrowse = {floor, scene}; }, [floor, scene]); // 다시 와도 같은 층에서 이어가요
+  /* ⚠️ 출발 층(evFrom)도 함께 기억해야 합니다 (2026-08-12).
+     엘리베이터 안에서는 floor 가 null 이라, 예전엔 `lastBrowse.floor||1` 이 늘 1이 됐어요.
+     그래서 **3층에서 비밀 가게에 다녀오면 '1층으로 돌아가기'** 가 떴습니다. */
+  const [evFrom, setEvFrom] = useState(()=> lastBrowse.from || lastBrowse.floor || 1);
+  useEffect(()=>{ lastBrowse = {floor, scene, from:evFrom}; }, [floor, scene, evFrom]); // 다시 와도 같은 층에서 이어가요
   const [corner, setCorner] = useState(null);
   const [detail, setDetail] = useState(null);
   const [showLiked, setShowLiked] = useState(false);
@@ -6583,7 +6586,9 @@ function SecretShop({items, mode, studentName, stampCount, onPick, onExit, onMod
   const photoRef = useRef(null);
   /* 물건을 많이 넣으면 화면 밖으로 넘쳤어요 → 한 쪽에 10개(5개씩 두 줄)만 (2026-08-12).
      넘으면 ◀ 이전 / 다음 ▶ 로 넘겨요 — 상품 목록·캐릭터 고르기와 같은 방식이라 익숙해요. */
-  const PER_SEC = 10;
+  /* 한 줄 5개만 — 두 줄로 깔면 편의점 배경이 거의 가려졌어요 (2026-08-12).
+     비밀 가게는 '와, 여기 뭐가 있지?' 하는 장면이라 배경이 보이는 게 중요합니다. */
+  const PER_SEC = 5;
   const [sPage, setSPage] = useState(0);
   const sPages = Math.max(1, Math.ceil(items.length / PER_SEC));
   const sPage2 = Math.min(sPage, sPages - 1);
@@ -6628,8 +6633,9 @@ function SecretShop({items, mode, studentName, stampCount, onPick, onExit, onMod
         {setItems && <button className={"btn sm "+(teach?'mint':'ghost')} onClick={()=>setTeach(t=>!t)}
           aria-label={teach? '선생님 칸 닫기':'선생님 칸 열기'}>🔧 선생님</button>}
         {/* 가게를 나가는 길은 여기 하나뿐이에요 — 선물을 받은 뒤에도 가게 안에 머물거든요.
-            어디로 가는지 알 수 있게 '매장으로'라고 풀어 씁니다. */}
-        <button className="btn ghost sm" onClick={onExit}>◀ 🏬 매장으로 나가기</button>
+            ⚠️ 이름이 '매장으로 나가기'였는데, 실제로는 **타고 온 엘리베이터**로 돌아갑니다.
+               말과 동작이 달라 헷갈렸어요. 동작에 맞춰 고쳐 씁니다 (2026-08-12). */}
+        <button className="btn ghost sm" onClick={onExit}>◀ 🛗 엘리베이터로 돌아가기</button>
       </div>
 
       {teach && setItems && (
