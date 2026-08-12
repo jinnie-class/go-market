@@ -467,7 +467,9 @@ img.cicon{object-fit:contain;border-radius:.2em;}
 /* ② '무엇을 해 볼까요?' 는 카드가 3개뿐이라 그림을 훨씬 크게 보여 줄 수 있어요 */
 /* 최대 폭을 320 → 420 으로 (2026-08-11). 전자칠판처럼 넓은 화면에서 그림을 크게 그려야
    1536px 원본을 덜 줄이게 되고, 그래야 거칠어 보이지 않아요. */
-.plan-grid.few .act{width:clamp(220px,23vw,380px);padding:14px 12px;gap:8px;}
+/* 카드 3장이 1020px 안에 한 줄로 들어가는 최대 크기 (3×312 + 사이 16×2 = 968 ≤ 980).
+   더 키우면 줄이 바뀌어 2+1로 갈라져요. (2026-08-12 앞뒤 화면과 폭을 맞추면서 정한 값) */
+.plan-grid.few .act{width:clamp(220px,30vw,312px);padding:14px 12px;gap:8px;}
 .plan-grid.few .act .ai{font-size:74px;}
 /* ⚠️ 높이를 vh로 잡지 말 것 (2026-08-12).
    `clamp(130px,22vh,264px)` 로 두었더니 **화면 높이에 따라 3:2가 깨져** 그림이
@@ -503,7 +505,7 @@ img.cicon{object-fit:contain;border-radius:.2em;}
      예전엔 296×152(1.95:1)라 3:2 그림의 위아래를 잘라 넣었고, 그만큼 더 줄여 그리느라
      잔 무늬가 점처럼 깨졌어요. 카드 폭 320 → 그림 폭 296 → 3:2면 세로 197이 맞습니다. */
   /* 세로가 짧으면 '그림 높이'가 아니라 **카드 폭**을 줄여요 — 비율(3:2)이 깨지면 잘리니까요 */
-  .plan-grid.few .act{width:clamp(200px,21vw,320px);}
+  .plan-grid.few .act{width:clamp(200px,27vw,290px);}
   .plan-grid.few .act .ai{font-size:62px;}
   .supply{min-height:60px;padding:11px 14px;font-size:1em;}
 }
@@ -6001,7 +6003,9 @@ function FinishScreen({settings, basket, likes, activity, onReplay, onRestart, o
 
         {/* 쇼핑 전에 정한 계획을 보여 줘요 — '하려던 것'(왼쪽)과 '실제로 한 것'(오른쪽 끝)을
             양쪽으로 벌려 놓습니다. 붙여 두면 어디까지가 계획인지 헷갈렸어요. (2026-08-12)
-            ⚠️ `{조건 && (` 바로 뒤(요소 밖)에는 JSX 주석을 넣을 수 없어요 — 문법 오류가 납니다. */}
+            ⚠️ 조건부 렌더링을 여는 줄 바로 뒤, 요소 밖에는 JSX 주석을 넣을 수 없어요(문법 오류).
+                설명은 이 자리처럼 조건문 '위'에 적으세요.
+                ※ 주석에 괄호·중괄호를 짝 없이 적으면 괄호 개수 검사가 어긋나니 피할 것. */}
         {plan && plan.title && (
           <div className="planstrip plan-vs" style={{marginTop:14}}>
             <span className="pv-side">
@@ -6658,13 +6662,16 @@ function ActivityPick({name, initial, onConfirm, onHome, onBack}){
     : [];
 
   return (
-    /* ⚠️ 이 화면만 폭을 넓게 씁니다 — 다른 화면(1020px)과 다른 것은 **일부러** 그런 거예요.
-       주 사용 기기가 1920 전자칠판인데 1020px로 묶으면 카드가 320px에서 멈춰,
-       1536px 그림을 5배 넘게 줄여 그리느라 **거칠어 보였어요**. 화면이 넓으면 넓은 만큼
-       그림도 커지도록 풀어 둡니다. (2026-08-11 넓힘 → 8-11 되돌림 → 8-12 다시 넓힘으로 확정)
+    /* 폭은 앞뒤 화면(캐릭터 고르기 → 활동 → 지갑)과 같은 1020px 입니다.
+       ── 경위 ── 한때 '그림이 거칠어 보인다'를 고치려고 1500px로 넓혔는데, 진짜 원인은
+       ①새 그림이 커밋 안 돼 옛 그림이 배포돼 있던 것 ②원본(1536px)이 표시 크기보다 너무 커서
+       브라우저가 많이 줄이던 것이었어요. 둘 다 해결(그림을 840px로 미리 축소)한 뒤
+       **폭은 다른 화면과 통일**로 확정했습니다. (2026-08-12)
+       📌 카드 크기는 아래 `.plan-grid.few .act` 의 폭으로만 조절하세요 — 312px가
+          1020px 안에 3장이 한 줄로 들어가는 최대값이에요.
        ⚠️ return 바로 안(요소 밖)에는 중괄호로 감싼 JSX 주석을 쓸 수 없어요 — 문법 오류가 납니다.
           여기처럼 일반 주석으로 적을 것. (주석 안에 별표+빗금을 쓰면 주석이 거기서 끊기니 주의) */
-    <div className="app" style={{paddingTop:10, maxWidth:'min(1500px, 96vw)'}}>
+    <div className="app" style={{paddingTop:10, maxWidth:1020}}>
       <BgImg name="벽지" className="wallpaper" />
       <div className="row" style={{marginBottom:8}}>
         <button className="brand step-btn" onClick={onHome} title="처음 화면으로"><BrandLogo /></button>
