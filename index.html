@@ -1202,7 +1202,8 @@ body.quiet .confetti{display:none !important;}
 .home-setup-tip:hover{background:#fff0b8;}
 /* 두 줄짜리 안내 — 윗줄은 '학생 등록', 아랫줄은 '그냥 들어가는 법' */
 .home-setup-tip{display:flex;flex-direction:column;align-items:center;gap:2px;line-height:1.35;}
-.home-setup-tip .hs-sub{font-size:.8em;font-weight:700;color:#8a7530;}
+.home-setup-tip .hs-main{white-space:nowrap;}
+.home-setup-tip .hs-sub{font-size:.8em;font-weight:700;color:#8a7530;white-space:nowrap;}
 /* ⚠️ 가운데 정렬(translateX(-50%))을 애니메이션에도 함께 써야 해요.
    scale만 쓰면 가운데 정렬이 풀려 오른쪽으로 밀립니다. */
 @keyframes homePulseR{0%,100%{transform:translateX(-50%) scale(1);}50%{transform:translateX(-50%) scale(1.05);}}
@@ -3086,7 +3087,10 @@ function Home({settings, onEnter, onTeacher, onToggleVoice, needSetup}){
               ⚠️ 들어가기 단추 '안'에 넣으면 눌렀을 때 매장으로 들어가 버려서 밖에 둡니다. */}
           {needSetup && (
             <button className="home-setup-tip" onClick={onTeacher}>
-              잠깐! 먼저 <b>학생을 등록</b>해 주세요 ⚙️
+              {/* ⚠️ 반드시 <span> 하나로 묶어야 합니다 (2026-08-12).
+                  이 단추는 세로 플렉스라, 글자와 <b>를 그냥 늘어놓으면 각각이 **따로 한 줄**이 되어
+                  '잠깐! 먼저 / 학생을 등록 / 해 주세요' 세 줄로 쪼개졌어요. */}
+              <span className="hs-main">잠깐! 먼저 <b>학생을 등록</b>해 주세요 ⚙️</span>
               {/* 들어가기 안내가 사라지면 '어떻게 들어가지?'가 되므로 한 줄로 함께 알려 줘요 */}
               <span className="hs-sub">그림을 누르면 바로 시작할 수도 있어요</span>
             </button>
