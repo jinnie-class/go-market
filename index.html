@@ -1195,11 +1195,17 @@ body.quiet .confetti{display:none !important;}
    누르면 선생님 설정으로 바로 가요. 들어가기 단추 오른쪽 아래에 둡니다. */
 /* 들어가기 말풍선과 '같은 자리'(가운데 아래)에 놓아요 — 둘은 절대 함께 나오지 않습니다.
    한쪽은 학생 등록 전, 한쪽은 등록 후에만 보여요. (2026-08-12) */
-.home-setup-tip{position:absolute;left:50%;bottom:16px;transform:translateX(-50%);z-index:4;white-space:nowrap;
-  background:#fff6d8;border:3px solid #ffd23f;color:#6a5200;font:inherit;font-weight:800;
-  border-radius:999px;padding:11px 20px;box-shadow:var(--shadow-lg);cursor:pointer;
+/* ⚠️ 자리와 바탕색은 **새 메인 그림에 맞춰** 정한 값입니다 (2026-08-12).
+   · bottom:12% — 예전 16px 이면 말풍선이 그림의 세로 79~99%에 얹혀,
+     아이 둘이 그림 그리는 탁자(공책·색연필)를 정통으로 가렸어요. 12%로 올려 비켜 놓습니다.
+   · 바탕 흰색 — 연노랑(#fff6d8)은 그 아래 그림이 비쳐 글씨가 흐려 보였습니다.
+     새 그림이 밝은 파스텔이라 더 그랬어요. 흰 바탕 + 노란 테두리면 어디에 놓여도 읽힙니다. */
+.home-setup-tip{position:absolute;left:50%;bottom:12%;transform:translateX(-50%);z-index:4;white-space:nowrap;
+  background:#fff;border:3px solid #ffd23f;color:#6a5200;font:inherit;font-weight:800;
+  border-radius:999px;padding:11px 20px;cursor:pointer;
+  box-shadow:0 0 0 4px rgba(255,255,255,.65), var(--shadow-lg);
   animation:homePulseR 2.2s ease-in-out infinite;}
-.home-setup-tip:hover{background:#fff0b8;}
+.home-setup-tip:hover{background:#fffbe9;}
 /* 두 줄짜리 안내 — 윗줄은 '학생 등록', 아랫줄은 '그냥 들어가는 법' */
 .home-setup-tip{display:flex;flex-direction:column;align-items:center;gap:2px;line-height:1.35;}
 .home-setup-tip .hs-main{white-space:nowrap;}
@@ -1207,8 +1213,9 @@ body.quiet .confetti{display:none !important;}
 /* ⚠️ 가운데 정렬(translateX(-50%))을 애니메이션에도 함께 써야 해요.
    scale만 쓰면 가운데 정렬이 풀려 오른쪽으로 밀립니다. */
 @keyframes homePulseR{0%,100%{transform:translateX(-50%) scale(1);}50%{transform:translateX(-50%) scale(1.05);}}
-@media (max-width:820px){ .home-setup-tip{font-size:.9em;padding:8px 14px;bottom:10px;} }
-.home-enter-hint{position:absolute;left:50%;bottom:16px;transform:translateX(-50%);white-space:nowrap;
+@media (max-width:820px){ .home-setup-tip{font-size:.9em;padding:8px 14px;} }
+/* 들어가기 말풍선도 **같은 자리**에 둡니다 (둘은 절대 함께 나오지 않아요) */
+.home-enter-hint{position:absolute;left:50%;bottom:12%;transform:translateX(-50%);white-space:nowrap;
   background:linear-gradient(135deg,#ff8a8a,#ff6b6b);color:#fff;font-weight:900;font-size:1.2em;
   padding:12px 26px;border-radius:999px;box-shadow:var(--shadow-lg);animation:homePulse 1.8s ease-in-out infinite;}
 @keyframes homePulse{0%,100%{transform:translateX(-50%) scale(1);}50%{transform:translateX(-50%) scale(1.05);}}
