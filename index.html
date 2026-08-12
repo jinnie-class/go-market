@@ -2775,6 +2775,12 @@ function App(){
     const maxIdx = STEPS.findIndex(s=>s.key===maxReached);
     const alwaysOpen = (key==='browse' || key==='choose');
     if(idx > maxIdx && !alwaysOpen){ speak('먼저 마음에 드는 문구를 바구니에 담아 볼까요?'); return; }
+    /* ⚠️ 구경·고르기로 **되돌아가면** 계산 방법을 지웁니다 (2026-08-12).
+       예전엔 점원/키오스크를 한 번 고르면 그 선택이 남아 있어서,
+       고르기로 갔다가 다시 '바코드를 찍으러 가기'를 눌러도 **고르는 화면이 안 나오고**
+       직전에 골랐던 쪽으로 바로 넘어갔어요. 마음이 바뀌어도 바꿀 길이 없었습니다.
+       찍던 것도 함께 비웁니다 — 방법이 바뀌면 처음부터 다시 찍는 게 맞아요. */
+    if(key==='browse' || key==='choose'){ setCheckoutMode(null); setScanned([]); }
     stopSpeak(); setStage(key);
   };
   const advance = (key)=>{
