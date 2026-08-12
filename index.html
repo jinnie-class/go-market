@@ -3147,12 +3147,38 @@ function TeacherSettings({settings, setSettings, onDone, onResult, students, set
     <button className={"choice "+(on?'on':'')} onClick={onClick}>{on?'✓ ':''}{children}</button>
   );
   const save = ()=>{ setSettings(s); onDone(); };
+
+  /* 📖 사용설명서 — index.html 옆의 `사용설명서_인쇄용.html` 을 새 창으로 엽니다 (2026-08-12).
+     ⚠️ 앱 안에 설명서를 복사해 넣지 않았습니다. 그러면 설명서를 고칠 때마다 두 군데를
+        고쳐야 하고, 한쪽만 고치면 서로 어긋나거든요. 파일 하나만 두고 열어 봅니다. */
+  const [manualOpened, setManualOpened] = useState(false);
+  const openManual = ()=>{
+    stopSpeak();
+    const w = window.open('사용설명서_인쇄용.html', '_blank');
+    if(!w){ alert('새 창이 열리지 않았어요. 브라우저의 팝업 차단을 풀어 주세요.'); return; }
+    setManualOpened(true);
+  };
+
   return (
     <div className="app tset" style={{paddingTop:30, maxWidth:860}}>
       <div className="panel">
         <div className="section-title">선생님 설정 <span className="spacer"></span>
+          <button className="btn sm sky" style={{fontSize:'.62em'}} onClick={openManual}>📖 사용설명서</button>
           <button className="btn sm purple" style={{fontSize:'.62em'}} onClick={onResult}>활동 결과 보기</button>
           <button className="btn sm ghost" style={{fontSize:'.62em'}} onClick={onDone}>닫기</button></div>
+
+        {/* 눌러 본 뒤에만 뜨는 안내.
+            file:// 에서는 파일이 있는지 미리 확인할 방법이 없어서(브라우저가 막아요),
+            '못 찾았다'고 단정하지 않고 **안 열렸을 때 무엇을 보면 되는지**만 알려 줍니다. */}
+        {manualOpened && (
+          <div className="card" style={{background:'#eef7ff', border:'2px solid #bcdcf7', marginBottom:16}}>
+            <b>📖 새 창에서 설명서를 열었어요. 그 창에서 <u>Ctrl + P</u> 를 누르면 인쇄됩니다.</b>
+            <p className="muted" style={{margin:'6px 0 0'}}>
+              <span style={{display:'block'}}>인쇄 창에서 <b>대상</b>을 <b>‘PDF로 저장’</b>으로 바꾸면 PDF 파일이 돼요.</span>
+              <span style={{display:'block'}}>새 창이 안 열렸다면 — <b>사용설명서_인쇄용.html</b> 이 <b>index.html 과 같은 폴더</b>에 있어야 합니다. 앱만 따로 옮기면 설명서는 따라오지 않아요.</span>
+            </p>
+          </div>
+        )}
 
         <div className="field">
           <label>1. 우리 반 학생 <span className="muted" style={{fontWeight:400,fontSize:'.85em'}}>학생마다 좋아요·활동 기록이 따로 모여요</span></label>
