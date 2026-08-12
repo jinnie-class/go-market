@@ -6145,7 +6145,9 @@ function Wallet({amount, over, onReset}){
         onClick={onReset||undefined}
         title={onReset? '지갑을 다시 정하기' : undefined}
         aria-label={onReset? '지갑을 다시 정하기' : undefined}>{over? '😮':'👛'}</IcoTag>
-      <span className="wallet-lbl">{over? '돈이 모자라요' : '지갑에 남은 돈'}</span>
+      {/* 모자랄 땐 라벨을 비워요 — 오른쪽 빨간 글씨가 '○○원이 모자라요'라고 다 말해 주거든요.
+          둘 다 두면 '돈이 모자라요 · 3,000원이 모자라요'처럼 같은 말이 두 번 나옵니다. */}
+      {!over && <span className="wallet-lbl">지갑에 남은 돈</span>}
       {/* 지폐는 '한 장씩' 보여 주는 게 기본이에요 — 학생이 돈을 세어 보고
           '이만큼 있다'를 눈으로 아는 것이 이 앱의 목적이라서요.
           다만 예산이 큰 날은 지폐가 너무 많아져요(49,000원 = 9장). 그러면 상단 줄이
@@ -6170,8 +6172,12 @@ function Wallet({amount, over, onReset}){
               );
             })}
       </span>
-      <b className="wallet-amt" style={{color: over?'#e8663a':'#177245'}}>{won(Math.max(0,amount))}</b>
-      <Speak text={over? '돈이 조금 모자라요.' : '지갑에 남은 돈은 '+won(Math.max(0,amount))+'이에요.'} />
+      {/* 돈이 모자랄 땐 '0원'이 아니라 **얼마가 모자란지** 빨간 글씨로 알려 줘요 (2026-08-12).
+          예산 줄(숫자 네 칸)을 없앤 뒤로는 여기가 그 정보를 볼 수 있는 유일한 자리예요. */}
+      <b className="wallet-amt" style={{color: over?'#c0392b':'#177245'}}>
+        {over ? won(-amount)+'이 모자라요' : won(Math.max(0,amount))}
+      </b>
+      <Speak text={over ? won(-amount)+'이 모자라요.' : '지갑에 남은 돈은 '+won(Math.max(0,amount))+'이에요.'} />
     </div>
   );
 }
