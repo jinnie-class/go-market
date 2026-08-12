@@ -385,6 +385,9 @@ img.cicon{object-fit:contain;border-radius:.2em;}
 .modal.gate.shake{animation:gateShake .4s;}
 @keyframes gateShake{0%,100%{transform:translateX(0);}25%{transform:translateX(-9px);}75%{transform:translateX(9px);}}
 .gate-face{font-size:3.6em;line-height:1;}
+/* 마법사 그림 — 이모지(3.6em ≈ 62px)보다 크게 잡아 '문지기'가 주인공으로 보이게.
+   창 자체가 420px이라 너무 키우면 숫자판이 밀려 내려가니 여기까지가 한계예요. */
+.gate-wizard{width:auto;height:clamp(96px,17vh,150px);object-fit:contain;display:block;}
 .gate-msg{font-weight:900;font-size:1.3em;color:#3e2e63;min-height:1.6em;}
 .gate-dots{display:flex;gap:10px;}
 .gate-dot{width:18px;height:18px;border-radius:50%;border:3px solid #c9b6ea;background:#fff;}
@@ -6456,6 +6459,16 @@ function WalletKidImg(){
   return <img className="wallet-kid" src={srcs[i]} alt="지갑에 돈을 넣는 학생 그림"
     onError={()=>{ if(i<srcs.length-1) setI(i+1); else setFailed(true); }} />;
 }
+/* 문지기 마법사 — `이미지\(비밀가게)암호 마법사.png` 가 있으면 그 그림, 없으면 이모지 🧙
+   (다른 그림 자리와 같은 방식이라, 파일을 지우면 저절로 이모지로 돌아갑니다) */
+function GateWizard(){
+  const srcs = imgList('이미지/(비밀가게)암호 마법사');
+  const [i, setI] = useState(0);
+  const [failed, setFailed] = useState(false);
+  if(failed) return <div className="gate-face">🧙</div>;
+  return <img className="gate-wizard" src={srcs[i]} alt=""
+    onError={()=>{ if(i<srcs.length-1) setI(i+1); else setFailed(true); }} />;
+}
 /* ---- 🔒 비밀 가게 문지기 : "암호를 대시오!" ----
    길게 누르기만으로 막으면 눈치 빠른 학생은 금방 알아채요.
    암호는 선생님만 알고, 학생에게는 '재미있는 관문'이 됩니다.
@@ -6482,7 +6495,7 @@ function SecretGate({code, onOpen, onClose}){
   return (
     <div className="overlay" onClick={onClose}>
       <div className={"modal gate"+(shake?' shake':'')} onClick={e=>e.stopPropagation()}>
-        <div className="gate-face">🧙</div>
+        <GateWizard />
         <div className="gate-msg">{msg}</div>
         <div className="gate-dots">
           {Array.from({length: String(code||'1234').length}).map((_,i)=>(
