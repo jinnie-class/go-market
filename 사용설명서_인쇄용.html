@@ -1,0 +1,353 @@
+﻿<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>GO! 문구마켓 — 선생님 사용설명서</title>
+<style>
+  :root{ --ink:#2b2b3a; --soft:#6b6b7d; --line:#dfe3ea; --accent:#e8663a; --accent2:#3aa0e8; }
+  *{ box-sizing:border-box; }
+  body{ font-family:"맑은 고딕","Malgun Gothic",system-ui,sans-serif; color:var(--ink);
+        line-height:1.75; max-width:900px; margin:0 auto; padding:36px 28px 60px; font-size:15.5px; }
+  h1{ font-size:2em; border-bottom:5px solid var(--accent); padding-bottom:12px; margin:0 0 8px; }
+  h2{ font-size:1.42em; margin:2.2em 0 .5em; padding:8px 14px; background:#f4f7fb;
+      border-left:7px solid var(--accent2); border-radius:0 10px 10px 0; }
+  h3{ font-size:1.14em; margin:1.6em 0 .4em; color:#1f5f8b; }
+  h4{ font-size:1.02em; margin:1.2em 0 .3em; }
+  p{ margin:.5em 0; }
+  ul,ol{ margin:.5em 0 .9em; padding-left:1.5em; }
+  li{ margin:.28em 0; }
+  code{ background:#eef1f6; border:1px solid #dde2ea; border-radius:5px;
+        padding:1px 6px; font-family:Consolas,"D2Coding",monospace; font-size:.92em; }
+  strong{ color:#111; }
+  table{ border-collapse:collapse; width:100%; margin:.9em 0 1.2em; font-size:.96em; }
+  th,td{ border:1px solid var(--line); padding:9px 12px; text-align:left; vertical-align:top; }
+  th{ background:#f4f7fb; font-weight:800; }
+  tr:nth-child(even) td{ background:#fbfcfe; }
+  blockquote{ margin:1em 0; padding:12px 18px; background:#fffdf3;
+              border-left:6px solid #f0c274; border-radius:0 10px 10px 0; }
+  blockquote p{ margin:.3em 0; }
+  blockquote .qh{ font-weight:800; font-size:1.05em; }
+  hr{ border:0; border-top:2px dashed var(--line); margin:2.2em 0; }
+  pre{ margin:.2em 0; font-family:Consolas,"D2Coding",monospace; font-size:.92em;
+       background:#f7f9fc; border:1px solid var(--line); border-radius:8px; padding:10px 14px;
+       white-space:pre-wrap; }
+  .printtip{ background:#eef7ff; border:2px solid #bcdcf7; border-radius:12px;
+             padding:12px 18px; margin:0 0 22px; font-size:.95em; }
+  @media print{
+    body{ padding:0; font-size:11.2pt; max-width:none; }
+    .printtip{ display:none; }
+    h1{ font-size:20pt; }
+    h2{ font-size:14pt; break-after:avoid; page-break-after:avoid; }
+    h3,h4{ break-after:avoid; page-break-after:avoid; }
+    table,blockquote,pre,ul,ol{ break-inside:avoid; page-break-inside:avoid; }
+    tr{ break-inside:avoid; page-break-inside:avoid; }
+    a{ color:inherit; text-decoration:none; }
+  }
+  @page{ margin:16mm 14mm; }
+</style>
+</head>
+<body>
+<div class="printtip">🖨️ <strong>인쇄하려면</strong> Ctrl + P 를 누르세요. 인쇄 창에서 <strong>대상</strong>을 <strong>PDF로 저장</strong>으로 바꾸면 PDF 파일이 됩니다. (이 안내 상자는 인쇄물에 나오지 않아요.)</div>
+<h1>GO! 문구마켓 — 선생님 사용설명서</h1>
+<p>발달·지적장애 학생을 위한 <strong>문구점 여가활동 웹앱</strong>입니다.</p>
+<p>계산을 잘하는 것이 목표가 아니라, <strong>마음에 드는 문구를 고르고 그것으로 즐겁게 노는 것</strong>이 목표예요.</p>
+<hr>
+<h2>0. 시작하기 전에</h2>
+<h3>앱 열기</h3>
+<p><code>index.html</code> 파일을 <strong>두 번 누르면</strong> 바로 열립니다. 설치도, 인터넷 연결도 필요 없어요.</p>
+<ul>
+<li>크롬(Chrome) 또는 엣지(Edge)에서 열어 주세요</li>
+<li>전자칠판·태블릿·노트북 모두 됩니다</li>
+<li>오른쪽 위 <strong>⛶</strong> 를 누르면 전체 화면이 돼요 (수업할 땐 이걸 권합니다)</li>
+</ul>
+<h3>기록은 어디에 저장되나요</h3>
+<p><strong>그 기기 안에만</strong> 저장됩니다. 인터넷으로 어디에도 보내지 않아요.</p>
+<ul>
+<li>학생 명단, 좋아요, 도장, 사진 모두 그 태블릿·컴퓨터에만 남습니다</li>
+<li>그래서 <strong>학생이 늘 같은 기기를 쓰는 것</strong>이 좋아요</li>
+<li>브라우저 기록을 지우면 함께 지워집니다 (학기 말에 정리하실 때 참고하세요)</li>
+</ul>
+<h3>소리가 안 나올 때</h3>
+<p>설정 <strong>5번 음성 안내</strong>의 <code>🔊 소리 검사</code> 를 눌러 보세요. 무엇이 문제인지 화면에 알려 줍니다.</p>
+<hr>
+<h2>1. 선생님 설정 여는 법</h2>
+<p>첫 화면 오른쪽 위 <strong>⚙️</strong> 를 누르면 열립니다. 설정은 <strong>13가지</strong>예요.</p>
+<blockquote>
+<p>학생이 함부로 못 열게 막아 두진 않았습니다. 대신 <strong>첫 화면에만</strong> 있어서, 쇼핑 중에는 눈에 띄지 않아요.</p>
+</blockquote>
+<p>다 고치셨으면 맨 아래 <strong><code>설정 완료</code></strong> 를 꼭 눌러 주세요.</p>
+<hr>
+<h2>2. 처음이라면 — 이 순서대로 하세요</h2>
+<blockquote>
+<p class="qh">🟡 무엇보다 먼저: <strong>학생 등록(1번)</strong></p>
+<br>
+<p>수업을 시작하기 전에 <strong>설정 1번에서 학생 이름부터 넣어 주세요.</strong></p>
+<p>학생을 넣지 않으면 앱은 돌아가지만 <strong>다음이 모두 없는 상태</strong>로 쓰게 됩니다.</p>
+<br>
+<p>- 좋아요·활동 기록이 <strong>누구 것인지 구분되지 않습니다</strong> (모두 한 덩어리로 섞여요)</p>
+<p>- <strong>도장판이 아예 나오지 않습니다</strong> → 비밀 가게 선물도 줄 수 없어요</p>
+<p>- 학생마다 목소리·표시를 정할 수 없습니다</p>
+<br>
+<p>이름 하나만 넣어도 위 세 가지가 모두 살아납니다. <strong>1분이면 됩니다.</strong></p>
+</blockquote>
+<table><thead>
+<tr><th>순서</th><th>할 일</th><th>설정 번호</th></tr>
+</thead><tbody>
+<tr><td>①</td><td>우리 반 학생 이름 넣기</td><td><strong>1번</strong></td></tr>
+<tr><td>②</td><td>돈을 학생이 고를지, 선생님이 정할지</td><td><strong>2번</strong></td></tr>
+<tr><td>③</td><td>몇 개까지 살 수 있는지</td><td><strong>3번</strong></td></tr>
+<tr><td>④</td><td>소리 확인 (음성·효과음)</td><td><strong>5번</strong></td></tr>
+<tr><td>⑤</td><td>계산을 간단히 할지, 연습할지</td><td><strong>12번</strong></td></tr>
+</tbody></table>
+<p>나머지는 <strong>기본값 그대로 두셔도 잘 돌아갑니다.</strong> 한 번 해 보시고 필요할 때 바꾸세요.</p>
+<hr>
+<h1>설정 하나씩 살펴보기</h1>
+<h2>1. 우리 반 학생</h2>
+<p><strong>가장 먼저 하실 일입니다.</strong></p>
+<p><code>＋ 학생 추가</code> 를 누르고 <strong>이름을 적으면</strong> 끝이에요. 학생마다 다음이 <strong>따로따로</strong> 모입니다.</p>
+<ul>
+<li>💗 <strong>좋아요</strong> 를 누른 문구</li>
+<li>🎨 오늘 무엇을 하고 놀았는지 <strong>활동 기록</strong></li>
+<li>🏅 <strong>도장</strong> (한 번 다녀올 때마다 하나)</li>
+</ul>
+<p>학생을 넣으면 쇼핑을 시작할 때 <strong>"누가 쇼핑할까요?"</strong> 화면이 먼저 나와요. 학생이 자기 이름을 눌러 시작합니다.</p>
+<p><strong>학생마다 정할 수 있는 것</strong></p>
+<ul>
+<li><strong>표시</strong> — 이름 옆에 붙는 그림. 글자를 못 읽는 학생도 자기 자리를 찾을 수 있어요</li>
+<li><strong>목소리</strong> — 여자 / 남자. 그 학생이 말할 때 쓰는 목소리예요</li>
+</ul>
+<blockquote>
+<p><strong>학생을 넣지 않아도 됩니다.</strong> 그러면 "누가 쇼핑할까요?" 화면 없이 바로 시작해요.</p>
+<p>다만 <strong>도장판은 학생을 넣어야 나옵니다.</strong> 도장을 쓰실 거면 이름을 꼭 넣어 주세요.</p>
+</blockquote>
+<p><strong>언제 쓰면 좋은가요</strong></p>
+<p>한 태블릿을 여러 학생이 돌아가며 쓸 때 꼭 필요합니다. 학생마다 좋아하는 문구가 쌓여서, 나중에 "○○이는 스티커를 참 좋아하는구나" 를 눈으로 볼 수 있어요.</p>
+<hr>
+<h2>2. 예산(지갑 돈) 정하기</h2>
+<table><thead>
+<tr><th>고를 수 있는 것</th><th>뜻</th></tr>
+</thead><tbody>
+<tr><td><strong>학생이 지갑에서 고름</strong> (기본)</td><td>쇼핑 전에 학생이 <strong>천 원씩 눌러</strong> 스스로 정해요 (최대 5만 원)</td></tr>
+<tr><td>선생님이 정함</td><td>선생님이 미리 정한 금액으로 시작해요</td></tr>
+</tbody></table>
+<p><strong>권합니다: 학생이 고름.</strong></p>
+<p>"얼마를 가지고 갈까?" 를 스스로 정하는 것 자체가 배움이고, 이 앱에서 가장 재미있어하는 장면 중 하나예요.</p>
+<blockquote>
+<p>⚠️ <strong>예산을 넘겨도 앱이 막지 않습니다.</strong> 일부러 그렇게 두었어요.</p>
+<p>"돈이 모자라네, 그럼 뭘 뺄까?" 를 학생이 스스로 겪어 보게 하려는 것입니다. 야단치는 화면은 없어요.</p>
+</blockquote>
+<hr>
+<h2>3. 최대 구매 개수</h2>
+<p><code>1개</code> <code>2개</code> <code>3개</code> <code>5개</code> <code>제한 없음</code>(기본)</p>
+<p>바구니에 담을 수 있는 개수예요.</p>
+<p><strong>언제 줄이나요</strong></p>
+<ul>
+<li>처음 해 보는 학생 → <strong>1~2개</strong>. 고를 게 적어야 결정이 쉬워요</li>
+<li>익숙해지면 → <strong>제한 없음</strong></li>
+</ul>
+<hr>
+<h2>4. 계산 방법</h2>
+<p><code>현금</code> <code>카드</code> <code>학생이 선택</code>(기본)</p>
+<p><strong>권합니다: 학생이 선택.</strong> 계산대에서 학생이 직접 고릅니다.</p>
+<p>현금만, 또는 카드만 연습시키고 싶은 날에는 하나로 고정하세요.</p>
+<hr>
+<h2>5. 음성 안내</h2>
+<p><strong>소리에 관한 모든 것</strong>이 이 칸에 모여 있습니다.</p>
+<h3>음성 안내 <code>켜기</code>(기본) / <code>끄기</code></h3>
+<p>화면의 글을 읽어 줍니다.</p>
+<h3>🔊 소리 검사</h3>
+<p>소리가 안 날 때 눌러 보세요. <strong>무엇이 문제인지</strong> 알려 줍니다.</p>
+<h3>재생 방식</h3>
+<table><thead>
+<tr><th></th><th></th></tr>
+</thead><tbody>
+<tr><td><strong>자동 안내</strong> (기본)</td><td>화면이 바뀌면 저절로 읽어 줘요</td></tr>
+<tr><td>눌렀을 때만</td><td><strong>🔊 버튼을 누른 문장만</strong> 읽어 줘요</td></tr>
+</tbody></table>
+<blockquote>
+<p>글을 못 읽는 학생이 많아 <strong>자동 안내</strong>를 기본으로 두었습니다.</p>
+<p>소리가 부담스러운 학생에겐 <code>눌렀을 때만</code> 으로 바꿔 주세요.</p>
+</blockquote>
+<h3>학생 목소리 <code>여자</code> / <code>남자</code></h3>
+<blockquote>
+<p>학생 명단(1번)에 이름을 넣으면 <strong>이 칸은 사라집니다.</strong> 학생마다 따로 정하게 되어 있어서예요.</p>
+<p>같은 것을 두 군데서 정하면 헷갈리니까요.</p>
+</blockquote>
+<h3>점원 목소리 <code>여자</code> / <code>남자</code></h3>
+<p>성별을 누르면 <strong>그 목소리를 미리 들려줍니다.</strong></p>
+<h3>효과음 <code>켜기</code>(기본) / <code>끄기</code></h3>
+<ul>
+<li>문구점에 들어갈 때 <strong>딸랑</strong></li>
+<li>바코드를 찍을 때 <strong>삑</strong></li>
+<li>바구니에 담을 때 <strong>톡</strong></li>
+<li>계산이 끝나면 <strong>딩동</strong></li>
+</ul>
+<blockquote>
+<p>음성과 <strong>따로</strong> 켜고 끕니다. "말은 끄고 효과음만" 도 되고 그 반대도 돼요.</p>
+<p>소리에 예민한 학생이 있으면 꺼 주세요.</p>
+</blockquote>
+<hr>
+<h2>6. 점원 그림</h2>
+<p><code>여자 점원</code> / <code>남자 점원</code>(기본)</p>
+<p>계산대에 서 있는 점원의 그림입니다.</p>
+<hr>
+<h2>7. 글자 크기</h2>
+<p><code>크게</code>(기본) / <code>아주 크게</code></p>
+<p>시각에 어려움이 있거나 멀리서 보는 전자칠판에서는 <code>아주 크게</code> 를 권합니다.</p>
+<hr>
+<h2>8. 점원과의 대화 연습</h2>
+<p><code>켜기</code>(기본) / <code>끄기</code></p>
+<p>계산대에서 점원과 <strong>세 번 주고받습니다.</strong></p>
+<ol>
+<li>점원 "안녕하세요! 어서 오세요." → 학생 <code>안녕하세요!</code> / <code>반가워요!</code></li>
+<li>점원 "무엇을 사고 싶어요?" → 학생 <code>이거 주세요.</code> / <code>이거 살게요.</code></li>
+<li>점원 "네, 모두 ○○원이에요." → 학생 <code>네, 계산할게요.</code> / <code>네, 알겠어요.</code></li>
+</ol>
+<p>계산이 끝나면 인사도 주고받아요.</p>
+<p><strong>끄면</strong> 대화 없이 바로 계산합니다. 말이 부담스러운 학생에게 꺼 주세요.</p>
+<hr>
+<h2>9. 지갑 보기</h2>
+<p><code>켜기</code>(기본) / <code>끄기</code></p>
+<p>매장 화면 위에 <strong>남은 돈을 지폐 그림으로</strong> 보여 줍니다. 숫자만으로는 감이 안 오는 학생에게 도움이 돼요.</p>
+<hr>
+<h2>10. 조용한 모드</h2>
+<p><code>켜기</code> / <code>끄기</code>(기본)</p>
+<p><strong>감각이 예민한 학생</strong>을 위한 설정입니다. 켜면 소리·반짝임·진한 색이 함께 줄어들어요.</p>
+<hr>
+<h2>11. 우리 반 상품 더하기</h2>
+<p><strong>교실에 실제로 있는 문구</strong>를 매장에 넣을 수 있습니다.</p>
+<ol>
+<li>어느 <strong>코너</strong>에 넣을지 고르고</li>
+<li><strong>이름</strong>과 <strong>값</strong>을 적고</li>
+<li><code>📷 상품 사진 찍기</code> 로 실물을 찍고</li>
+<li><code>＋ 매장에 넣기</code></li>
+</ol>
+<blockquote>
+<p>사진을 안 찍어도 됩니다. <code>이미지\상품\</code> 폴더에 <strong>상품이름.png</strong> 를 넣어도 자동으로 나와요.</p>
+</blockquote>
+<p><strong>이렇게 써 보세요</strong></p>
+<p>학교 앞 문구점이나 교실 문구를 그대로 넣으면, 앱에서 고른 것을 <strong>실제로 사러 갈 수 있습니다.</strong> 이 앱의 원래 목적이에요.</p>
+<hr>
+<h2>12. 계산 방식</h2>
+<table><thead>
+<tr><th></th><th></th></tr>
+</thead><tbody>
+<tr><td>간단히 (돈 건네기·카드 한 번)</td><td>돈을 건네거나 카드를 대면 <strong>바로</strong> 계산돼요</td></tr>
+<tr><td><strong>계산 연습 (지폐·거스름돈)</strong> (기본)</td><td><strong>지폐를 골라 내고</strong> 거스름돈까지 다뤄요</td></tr>
+</tbody></table>
+<p><strong>여가가 목적이면 <code>간단히</code></strong> 를 권합니다. 계산에서 막히면 정작 재미있는 부분까지 못 가거든요.</p>
+<p>수학 시간과 이어서 하실 때만 <code>계산 연습</code> 으로 바꾸세요.</p>
+<hr>
+<h2>13. 🎁 비밀 가게</h2>
+<p><strong>도장을 모은 학생에게 주는 선물 가게</strong>입니다. 선생님만 여실 수 있어요.</p>
+<h3>어떻게 여나요</h3>
+<p>매장 <strong>엘리베이터 안의 ⭐ 버튼</strong> → <strong>"암호를 대시오!"</strong> 창 → 암호를 누르면 열립니다.</p>
+<ul>
+<li>기본 암호는 <strong>1234</strong>. 이 칸에서 바꾸세요 (숫자만, 최대 8자리)</li>
+<li>틀려도 혼내지 않습니다. *"음… 그 암호가 아닌걸?"* 하고 놀이처럼 넘어가요</li>
+</ul>
+<p>또는 설정에서 <strong><code>👀 구경만 열기</code></strong> / <strong><code>🎁 선물 주기</code></strong> 를 눌러 암호 없이 바로 열 수 있어요.</p>
+<table><thead>
+<tr><th></th><th></th></tr>
+</thead><tbody>
+<tr><td><strong>👀 구경만</strong></td><td>*"이런 게 있어! 모으면 받을 수 있어"* — 보여만 줍니다</td></tr>
+<tr><td><strong>🎁 선물 주기</strong></td><td>학생이 하나 고르고, 기록에 남습니다</td></tr>
+</tbody></table>
+<h3>도장은 이렇게 쓰입니다</h3>
+<ul>
+<li>한 번 다녀올 때마다 도장 <strong>하나</strong></li>
+<li><strong>10개를 채우면</strong> → 선물을 주고 <strong>도장판이 비워집니다</strong> (넘친 도장은 다음 판으로)</li>
+<li><strong>10개가 안 되어도</strong> 선생님 재량으로 줄 수 있어요 (이때는 도장이 그대로 남습니다)</li>
+</ul>
+<blockquote>
+<p><strong>문을 여는 사람은 도장이 아니라 선생님입니다.</strong></p>
+<p>학생마다 채우는 속도가 다르고, 오늘 유난히 애쓴 학생에게도 주고 싶으니까요.</p>
+</blockquote>
+<h3>넣을 물건</h3>
+<p>처음엔 <strong>예시 하나(젤리)</strong> 만 들어 있습니다. 학급에서 실제로 쓰는 것으로 바꿔 주세요 — 과자, 스티커, 칭찬 쿠폰 등.</p>
+<p>이름과 이모지를 적고 <code>＋ 더하기</code>. 사진을 찍어 넣어도 됩니다.</p>
+<h3>💡 비밀 가게 안에서 바로 고치기</h3>
+<p>비밀 가게 화면 위쪽 <strong><code>🔧 선생님</code></strong> 을 누르면, <strong>설정까지 나갔다 오지 않고</strong> 그 자리에서 바꿀 수 있어요.</p>
+<ul>
+<li>구경만 ↔ 선물 주기 <strong>모드 바꾸기</strong></li>
+<li>물건 <strong>빼기 / 더하기 / 사진 찍기</strong></li>
+</ul>
+<p>학생도 같이 보는 화면이라 <strong>기본은 닫혀 있습니다.</strong> 다 하시면 🔧 를 다시 눌러 닫아 주세요.</p>
+<hr>
+<h1>설정 밖에서 하는 두 가지</h1>
+<p>설정 화면에 없지만 선생님이 꼭 아셔야 할 것이 둘 있습니다.</p>
+<h2>🏠 첫 화면 — 학생 등록 안내</h2>
+<p>앱을 열면 큰 문구점 그림이 뜹니다. <strong>학생을 아직 넣지 않았다면</strong> 그림 위에 이런 말풍선이 나와요.</p>
+<blockquote>
+<p><strong>잠깐! 먼저 학생을 등록해 주세요 ⚙️</strong></p>
+<p>그림을 누르면 바로 시작할 수도 있어요</p>
+</blockquote>
+<ul>
+<li><strong>말풍선을 누르면</strong> 곧장 선생님 설정으로 갑니다 (1번 학생 등록으로 바로 가세요)</li>
+<li><strong>그림을 누르면</strong> 등록 없이 바로 시작합니다 — 참관 수업이나 시범용으로 한 번 보여 줄 때 쓰세요</li>
+</ul>
+<p>학생을 한 명이라도 넣으면 이 말풍선은 <strong>저절로 사라지고</strong>, 대신 <code>그림을 눌러서 들어가기</code> 안내로 바뀝니다.</p>
+<blockquote>
+<p>💡 두 말풍선은 <strong>절대 함께 나오지 않습니다.</strong> 등록 전이면 앞의 것, 등록 후면 뒤의 것 하나만 보여요.</p>
+</blockquote>
+<h2>🧑‍🎨 쇼핑 캐릭터 — 36가지 + 우리 반 캐릭터 넣기</h2>
+<p>캐릭터 고르기 화면에는 <strong>36가지</strong>가 준비돼 있습니다.</p>
+<table><thead>
+<tr><th>쪽</th><th>무엇이 있나</th></tr>
+</thead><tbody>
+<tr><td>1쪽</td><td><strong>기본 12</strong> — 여우·토끼·곰·고양이·강아지·판다·사자·펭귄·유니콘·개구리·남자아이·여자아이</td></tr>
+<tr><td>2쪽</td><td><strong>바다 12</strong></td></tr>
+<tr><td>3쪽</td><td><strong>곤충 12</strong></td></tr>
+</tbody></table>
+<p><code>◀ ▶</code> 로 쪽을 넘겨 봅니다. 한 화면에 12개씩만 보여서 고르기 어렵지 않아요.</p>
+<h3>＋ 더하기 — 우리 반 캐릭터</h3>
+<p>맨 마지막 칸의 <strong><code>＋ 더하기</code></strong> 를 누르면 <strong>그림을 골라 캐릭터로 넣을 수 있습니다.</strong></p>
+<ul>
+<li>학급 마스코트, 반 이름표 그림, 학생이 직접 그린 그림 등</li>
+<li>앨범에서 고르는 방식이라 <strong>카메라가 켜지지 않습니다</strong> (수업 중 당황할 일이 없어요)</li>
+<li>넣은 캐릭터에는 모서리에 <strong>빼기 단추</strong>가 생겨 언제든 지울 수 있습니다</li>
+<li>36가지 뒤에 이어 붙고, 개수가 늘면 쪽이 저절로 하나 더 생겨요</li>
+</ul>
+<h3>📷 내 얼굴로 만들기</h3>
+<p>아래쪽 <code>📷 내 얼굴로 만들기</code> 는 <strong>학생 본인 사진</strong>으로 캐릭터를 만드는 것입니다. <code>＋ 더하기</code> 와 달리 <strong>그 자리에서 바로 내 캐릭터가 됩니다.</strong></p>
+<blockquote>
+<p>⚠️ 사진은 <strong>그 기기에만</strong> 저장됩니다. 어디에도 보내지 않아요.</p>
+</blockquote>
+<hr>
+<h1>수업은 이렇게 흘러갑니다</h1>
+<pre>① 누가 쇼핑할까요?      (학생 명단을 넣었을 때만)</pre>
+<pre>② 쇼핑 캐릭터 고르기     36가지(기본·바다·곤충) 또는 내 얼굴 사진</pre>
+<pre>③ 오늘 무엇을 하고 놀까?  8가지 갈래 → 활동 3가지</pre>
+<pre>④ 무엇이 필요할까?       준비물 체크리스트</pre>
+<pre>⑤ 지갑에 돈 넣기         천 원씩 스스로</pre>
+<pre>⑥ 👀 구경하GO!          3층 매장을 돌아다니며 구경</pre>
+<pre>⑦ 🧺 고르GO!            바구니 확인</pre>
+<pre>⑧ 🔦 찍어보GO!          바코드로 가격 확인</pre>
+<pre>⑨ 💳 계산하GO!          점원 또는 키오스크</pre>
+<pre>⑩ 🎉 즐기GO!            산 문구로 무엇을 하고 놀았는지</pre>
+<pre>⑪ 마무리                 오늘의 취향 · 도장 · 인쇄물</pre>
+<h3>매장 돌아다니기</h3>
+<ul>
+<li>진열대를 <strong>한 번 누르면</strong> 캐릭터가 그 앞으로 걸어가고, <strong>한 번 더 누르면</strong> 들어갑니다</li>
+<li><strong>🛗 엘리베이터</strong>로 층을 옮겨요 (1층 쓰기·그리기·꾸미기 / 2층 만들기·키트·놀이하기 / 3층 모으기·정리하기)</li>
+<li>💗 <strong>좋아요</strong> 는 사지 않아도 눌러 둘 수 있어요. 그 학생이 무엇을 좋아하는지 쌓입니다</li>
+</ul>
+<h3>🖨️ 실제 문구점 쇼핑 리스트</h3>
+<p>마지막 화면의 이 버튼을 누르면 <strong>종이로 뽑을 수 있는 쇼핑 리스트</strong>가 나옵니다.</p>
+<p>앱에서 고른 것을 <strong>진짜 다이소에 사러 갈 때</strong> 쓰시라고 만들었어요. 상품은 실제 다이소 물건을 기준으로 골랐습니다.</p>
+<hr>
+<h1>자주 있는 일</h1>
+<p><strong>Q. 그림이 안 나와요</strong></p>
+<p>그림을 새로 넣으셨다면 <strong>새로고침(Ctrl+F5)</strong> 해 주세요. 브라우저가 "그림이 없다"를 한 번 기억하면 계속 그렇게 보여 줍니다.</p>
+<p><strong>Q. 학생이 예산을 넘겨 담았어요</strong></p>
+<p>막지 않는 것이 <strong>일부러 정한 규칙</strong>입니다. 계산대에서 "돈이 모자라네" 를 스스로 보고, 무엇을 뺄지 정하게 해 주세요.</p>
+<p><strong>Q. 학생 기록을 지우고 싶어요</strong></p>
+<p>설정 1번에서 학생을 지우면 그 학생의 기록도 함께 사라집니다.</p>
+<p><strong>Q. 다른 태블릿에서도 같은 기록을 보고 싶어요</strong></p>
+<p>안 됩니다. 기록은 <strong>기기마다 따로</strong> 저장돼요. 학생이 늘 같은 기기를 쓰게 해 주세요.</p>
+<p><strong>Q. 소리가 안 나요</strong></p>
+<p>설정 5번의 <code>🔊 소리 검사</code> 를 눌러 보세요.</p>
+<hr>
+<p>*이 앱은 특수교육 현장에서 쓰려고 만들었습니다. 학급에 맞게 마음껏 고쳐 쓰세요.*</p>
+</body>
+</html>
