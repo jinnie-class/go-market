@@ -463,12 +463,14 @@ img.cicon{object-fit:contain;border-radius:.2em;}
 /* ② '무엇을 해 볼까요?' 는 카드가 3개뿐이라 그림을 훨씬 크게 보여 줄 수 있어요 */
 /* 최대 폭을 320 → 420 으로 (2026-08-11). 전자칠판처럼 넓은 화면에서 그림을 크게 그려야
    1536px 원본을 덜 줄이게 되고, 그래야 거칠어 보이지 않아요. */
-.plan-grid.few .act{width:clamp(230px,26vw,420px);padding:14px 12px;gap:8px;}
+.plan-grid.few .act{width:clamp(220px,23vw,380px);padding:14px 12px;gap:8px;}
 .plan-grid.few .act .ai{font-size:74px;}
-/* 카드 폭 420 → 그림 폭 396 → 원본과 같은 3:2면 세로 264 (2026-08-11).
-   여기서 210으로 막아 두면 세로가 눌려 그림을 위아래로 잘라 넣게 되고,
-   그만큼 더 줄여 그리느라 거칠어집니다. */
-.plan-grid.few .act .act-thumb{height:clamp(130px,22vh,264px);}
+/* ⚠️ 높이를 vh로 잡지 말 것 (2026-08-12).
+   `clamp(130px,22vh,264px)` 로 두었더니 **화면 높이에 따라 3:2가 깨져** 그림이
+   위아래로 잘렸어요(아이들 머리가 잘림). 원본이 3:2이므로 **비율로 고정**하면
+   `cover` 를 써도 한 조각도 잘리지 않고, 높이는 카드 폭을 따라 자동으로 정해집니다.
+   크기를 조절하려면 위의 **카드 폭(.act width)** 만 고치세요. */
+.plan-grid.few .act .act-thumb{height:auto;aspect-ratio:3/2;}
 /* 지금 고른 활동을 작게 보여 주는 칩 */
 .plan-act{display:inline-flex;align-items:center;gap:8px;background:#fff6e6;border:2px solid #ffe1a8;
   border-radius:999px;padding:6px 16px 6px 8px;font-weight:900;color:#6a5200;}
@@ -496,7 +498,8 @@ img.cicon{object-fit:contain;border-radius:.2em;}
   /* 그림 상자를 원본과 같은 **3:2**에 가깝게 (2026-08-11).
      예전엔 296×152(1.95:1)라 3:2 그림의 위아래를 잘라 넣었고, 그만큼 더 줄여 그리느라
      잔 무늬가 점처럼 깨졌어요. 카드 폭 320 → 그림 폭 296 → 3:2면 세로 197이 맞습니다. */
-  .plan-grid.few .act .act-thumb{height:clamp(132px,24vh,264px);}
+  /* 세로가 짧으면 '그림 높이'가 아니라 **카드 폭**을 줄여요 — 비율(3:2)이 깨지면 잘리니까요 */
+  .plan-grid.few .act{width:clamp(200px,21vw,320px);}
   .plan-grid.few .act .ai{font-size:62px;}
   .supply{min-height:60px;padding:11px 14px;font-size:1em;}
 }
@@ -511,12 +514,12 @@ img.cicon{object-fit:contain;border-radius:.2em;}
    그림 상자를 원본과 같은 **3:2에 가깝게** 두고 크게 잡아 줄이는 배율을 5~6배로 낮췄습니다.
    → 활동 그림을 다시 그릴 필요는 없습니다. 1536×1024 그대로 두세요. */
 .playpick .act{width:clamp(230px,22vw,300px);padding:14px 12px;gap:6px;}
-.playpick .act .act-thumb{width:100%;height:clamp(120px,17vh,176px);object-fit:cover;object-position:center;}
+/* 여기도 높이를 vh로 잡으면 3:2가 깨져 그림이 잘려요 — 비율로 고정 (2026-08-12) */
+.playpick .act .act-thumb{width:100%;height:auto;aspect-ratio:3/2;object-fit:cover;object-position:center;}
 .playpick .act .ai{font-size:56px;}
 @media (max-height:820px){
   /* 여기도 3:2에 맞춰요 — 카드 폭 282 → 그림 폭 258 → 3:2면 세로 172 */
   .playpick .act{width:clamp(210px,20vw,268px);padding:11px 10px;}
-  .playpick .act .act-thumb{height:clamp(118px,21vh,172px);}
 }
 .actgrid.compact{gap:14px;}
 .actgrid.compact .act{width:200px;padding:12px;gap:5px;}
@@ -603,7 +606,7 @@ img.cicon{object-fit:contain;border-radius:.2em;}
 
 /* 점원 대화 */
 .cashier{background:linear-gradient(160deg,#fff,#f1fbff);}
-.cashier-row,.student-row{display:flex;gap:12px;align-items:flex-start;margin:10px 0;}
+.cashier-row,.student-row{display:flex;gap:12px;align-items:flex-start;margin:4px 0;}
 .student-row{flex-direction:row-reverse;}
 .cashier-face,.student-face{font-size:2.8em;flex:0 0 auto;line-height:1;}
 .person-art{flex:0 0 auto;align-self:flex-start;}
@@ -613,17 +616,23 @@ img.cicon{object-fit:contain;border-radius:.2em;}
 .handover-fig{display:flex;justify-content:center;}
 .handover-fig .person-photo{height:130px;max-width:190px;align-self:center;}
 /* 점원·학생 대화: 채팅창 느낌 + 똑같은 크기의 원형 아바타 */
-.chatbox{background:#eef5fb;border:1.5px solid #dbe6f0;border-radius:18px;padding:14px 16px;
-  margin:10px 0;display:flex;flex-direction:column;gap:16px;}
+/* 세로를 아끼려고 여백을 줄였어요 (2026-08-12) — 계산하GO에서 스크롤이 생기던 문제.
+   gap 16→10, margin 10→4, 얼굴 원 116→96px. 표정은 충분히 보입니다. */
+.chatbox{background:#eef5fb;border:1.5px solid #dbe6f0;border-radius:18px;padding:10px 14px;
+  margin:4px 0;display:flex;flex-direction:column;gap:10px;}
+/* '점원에게 할 말을 골라 눌러요' — 학생 줄 왼쪽 빈 자리에 (줄을 새로 만들지 않아요) */
+.student-row .chat-hint{order:-1;flex:1;color:var(--ink-soft);font-size:.95em;font-weight:700;
+  text-align:right;padding-right:6px;align-self:center;}
+@media (max-width:700px){ .student-row .chat-hint{display:none;} }
 /* 채팅창 속 얼굴 — 정원(正圓) 안에 '잘리지 않고' 전체가 들어가요(contain).
    '나' 캐릭터 원과 크기를 똑같이 맞춰요. */
 .cashier-row .person-photo, .student-row .person-photo{
-  width:116px;height:116px;max-width:none;border-radius:50%;
+  width:96px;height:96px;max-width:none;border-radius:50%;
   /* 얼굴이 크게 그려진 그림이라 원을 꽉 채워요 ('나' 캐릭터 원과 같은 모양) */
   object-fit:cover;object-position:center 30%;
   border:4px solid #fff;box-shadow:0 0 0 3px #dbe6f0,var(--shadow);align-self:center;background:#fff;}
 .cashier-row .figure-avatar .avatar, .student-row .figure-avatar .avatar{
-  width:116px !important;height:116px !important;}
+  width:96px !important;height:96px !important;}
 .cashier-row, .student-row{align-items:center;}
 .card-terminal{width:230px;max-width:100%;height:auto;display:block;}
 /* 카드 드래그해서 꽂기 */
@@ -645,12 +654,14 @@ img.cicon{object-fit:contain;border-radius:.2em;}
    크기는 '높이'가 정하고 가로는 그림 비율대로 늘어나요.
    → 두 장을 붙여 만든 가로로 긴 그림(카드로 계산해요 3104x1024)은 자동으로 두 배 넓게 나와요. */
 /* ===== 계산하GO 윗부분 : 왼쪽 그림 · 오른쪽 계산대 모니터 (2026-08-12) ===== */
-.paytop{display:flex;gap:22px;align-items:flex-start;justify-content:center;flex-wrap:wrap;}
+/* 왼쪽 그림·글을 모니터 높이의 '가운데'에 맞춰요 (2026-08-12).
+   위로 붙여 두니 아래가 휑했고, 가운데로 오니 균형이 맞아 그림도 조금 더 키울 수 있었어요. */
+.paytop{display:flex;gap:22px;align-items:center;justify-content:center;flex-wrap:wrap;}
 .paytop-left{flex:0 1 380px;min-width:240px;display:flex;flex-direction:column;align-items:center;gap:8px;}
 .paytop-left .stage-scene{width:100%;height:auto;max-height:34vh;object-fit:contain;border-radius:18px;}
 .paytop-cap{display:flex;align-items:center;gap:10px;font-weight:900;font-size:1.2em;text-align:center;}
 .paytop-right{flex:1 1 460px;min-width:300px;display:flex;flex-direction:column;align-items:center;gap:6px;}
-.paytop-title{display:flex;align-items:center;gap:10px;font-weight:900;font-size:1.15em;}
+/* (.paytop-title 은 '점원 계산대/셀프 계산대' 제목용이었는데 2026-08-12에 제목을 없애서 지웠어요) */
 
 /* 모니터 — 그림 위에 '화면 안쪽'만 골라 물건을 얹어요.
    안쪽 자리(6%/5%/6%/14.5%)는 바코드 화면.png 의 실제 화면 테두리를 재서 정한 값이에요. */
@@ -4990,14 +5001,13 @@ function PayStage({settings, basket, total, budget, onBack, onGoPay, checkoutMod
           <StageArt key={4} num={4} s={{bg:'#f3f0fb', cap:'현금이나 카드로 계산해요', art:null}} />
           <div className="paytop-cap">
             <span>현금이나 카드로 계산해요</span>
-            <Speak text="현금이나 카드로 계산해요" />
+            {/* 없앤 계산대 제목의 🔊가 하던 '합계 읽어 주기'를 여기서 함께 해요 */}
+            <Speak text={'현금이나 카드로 계산해요. 모두 합해서 '+won(total)+'이에요.'} />
           </div>
         </div>
+        {/* '🧾 점원 계산대' 제목은 뺐어요 (2026-08-12) — 아래 모니터가 이미 계산대인 게 보이고,
+            세로를 40px쯤 잡아먹었습니다. 합계 읽어 주기(🔊)는 왼쪽 글 옆으로 옮겼어요. */}
         <div className="paytop-right">
-          <div className="paytop-title">
-            {checkoutMode==='kiosk' ? '🖥️ 셀프 계산대' : '🧾 점원 계산대'}
-            <Speak text={'모두 합해서 '+won(total)+'이에요.'} />
-          </div>
           <CheckoutMonitor items={basket} total={total} />
         </div>
       </div>
@@ -6987,9 +6997,11 @@ function CashierChat({mode, total, studentName, onDone}){
               </button>
             ))}
           </div>
+          {/* 안내 문구를 학생 줄 '왼쪽 빈 자리'에 넣어요 (2026-08-12).
+              예전엔 대화창 아래에 한 줄을 통째로 써서 세로가 그만큼 길어졌어요. */}
+          <span className="chat-hint">점원에게 할 말을 골라 눌러요.</span>
         </div>
       </div>
-      <p className="muted center" style={{marginTop:6}}>점원에게 할 말을 골라 눌러요.</p>
     </div>
   );
 }
