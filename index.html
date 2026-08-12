@@ -6441,17 +6441,13 @@ function ActivityPick({name, initial, onConfirm, onHome, onBack}){
     : [];
 
   return (
-    /* 폭은 앞뒤 화면과 같은 1020px 입니다 (2026-08-11 선생님 결정으로 되돌림).
-       ── 경위 ──
-       한때 '그림이 거칠어 보인다'를 고치려고 1500px로 넓혔었어요(1920 전자칠판에서
-       카드가 320px에 멈춰 1536px 그림을 5배 넘게 줄이니 거칠다는 판단). 그런데 진짜 원인은
-       **새 그림이 커밋되지 않아 옛 그림이 배포돼 있던 것**이었고, 폭과는 무관했습니다.
-       그래서 앞뒤 화면(캐릭터 고르기 → 활동 → 지갑)과 폭을 맞춰 화면이 튀지 않게 되돌렸어요.
-       ⚠️ 그래도 전자칠판에서 그림이 작다고 느껴지면, 폭을 넓히기보다 **카드 크기
-          (.plan-grid.few .act)** 를 키우는 쪽이 다른 화면과의 통일을 해치지 않습니다.
+    /* ⚠️ 이 화면만 폭을 넓게 씁니다 — 다른 화면(1020px)과 다른 것은 **일부러** 그런 거예요.
+       주 사용 기기가 1920 전자칠판인데 1020px로 묶으면 카드가 320px에서 멈춰,
+       1536px 그림을 5배 넘게 줄여 그리느라 **거칠어 보였어요**. 화면이 넓으면 넓은 만큼
+       그림도 커지도록 풀어 둡니다. (2026-08-11 넓힘 → 8-11 되돌림 → 8-12 다시 넓힘으로 확정)
        ⚠️ return 바로 안(요소 밖)에는 중괄호로 감싼 JSX 주석을 쓸 수 없어요 — 문법 오류가 납니다.
           여기처럼 일반 주석으로 적을 것. (주석 안에 별표+빗금을 쓰면 주석이 거기서 끊기니 주의) */
-    <div className="app" style={{paddingTop:10, maxWidth:1020}}>
+    <div className="app" style={{paddingTop:10, maxWidth:'min(1500px, 96vw)'}}>
       <BgImg name="벽지" className="wallpaper" />
       <div className="row" style={{marginBottom:8}}>
         <button className="brand step-btn" onClick={onHome} title="처음 화면으로"><BrandLogo /></button>
