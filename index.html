@@ -1347,12 +1347,16 @@ body.reduce-motion .stamp-slot.today{animation:none;}
 .cs-cell.cs-add{border-style:dashed;border-color:#bcd9ea;background:#f6fbff;color:#2b8fc0;}
 .cs-cell.cs-add:hover{background:#eaf7fe;}
 .cs-add-ico{font-size:32px;font-weight:900;line-height:1.1;}
-/* 선생님이 넣은 캐릭터만 오른쪽 위에 작은 × (빼기) */
-.cs-cell{position:relative;}
-.cs-del{position:absolute;top:2px;right:5px;width:22px;height:22px;border-radius:50%;
-  background:#fff;border:2px solid var(--line);color:#c0392b;font-weight:900;font-size:.8em;
-  display:inline-flex;align-items:center;justify-content:center;line-height:1;}
-.cs-del:hover{background:#ffe8e8;}
+/* 선생님이 넣은 캐릭터만 오른쪽 위에 작은 × (빼기).
+   ⚠️ × 는 캐릭터 단추 **밖**에 형제로 둡니다 — 단추 안에 단추를 넣으면
+      눌러도 지워지지 않고 부모 단추(캐릭터 고르기)까지 눌려요. 감싼 칸이 기준점입니다. */
+.cs-cell-wrap{position:relative;display:flex;}
+.cs-cell-wrap .cs-cell{flex:1;min-width:0;}
+.cs-del{position:absolute;top:-6px;right:-6px;z-index:2;width:30px;height:30px;border-radius:50%;
+  background:#fff;border:2px solid #e0a0a0;color:#c0392b;font-weight:900;font-size:1em;
+  display:inline-flex;align-items:center;justify-content:center;line-height:1;
+  cursor:pointer;padding:0;box-shadow:var(--shadow);}
+.cs-del:hover{background:#ffe8e8;transform:scale(1.1);}
 .cs-cell .avatar{width:clamp(52px,8.6vh,104px) !important;height:clamp(52px,8.6vh,104px) !important;
   font-size:clamp(26px,4.3vh,52px) !important;
   /* 그림이 뜨기 전에도 빈 구멍처럼 보이지 않게 옅은 자리를 깔아 둬요 */
@@ -7038,16 +7042,37 @@ function CharacterSelect({initial, onConfirm, onHome, onBack, lockedName, custom
                   </button>
                 )
                 : (
-                  <button key={c.id} className={"cs-cell"+(sel.kind==='preset'&&sel.id===c.id?' on':'')}
-                    onClick={()=>pickPreset(c)} aria-label={c.name}>
-                    <Avatar character={{kind:'preset', id:c.id, photo:c.photo}} size={52} />
-                    <span className="cs-lbl">{c.name}</span>
+                  /* ⚠️ 빼기(×)는 캐릭터 단추 **밖**에 형제로 둡니다 (2026-08-12 고침).
+                     예전엔 <button> 안에 <span>으로 넣었더니, 눌러도 지워지지 않고
+                     그 캐릭터가 골라지기만 했어요(부모 단추까지 눌린 것).
+                     단추 안에 단추를 넣는 셈이라 브라우저마다 다르게 동작합니다.
+                     이제 감싼 칸(cs-cell-wrap) 안에 나란히 두어 서로 간섭하지 않아요. */
+                  <span key={c.id} className="cs-cell-wrap">
+                    <button className={"cs-cell"+(sel.kind==='preset'&&sel.id===c.id?' on':'')}
+                      onClick={()=>pickPreset(c)} aria-label={c.name}>
+                      <Avatar character={{kind:'preset', id:c.id, photo:c.photo}} size={52} />
+                      <span className="cs-lbl">{c.name}</span>
+                    </button>
                     {c.custom && (
-                      <span className="cs-del" title="우리 반 캐릭터 빼기"
-                        onClick={(e)=>{ e.stopPropagation();
-                          if(confirm(`'${c.name}'을(를) 뺄까요?`)) setCustomChars(l=>l.filter(x=>x.id!==c.id)); }}>×</span>
+                      <button type="button" className="cs-del" title="우리 반 캐릭터 빼기"
+                        aria-label={c.name+' 빼기'}
+                        onClick={(e)=>{
+                          e.preventDefault(); e.stopPropagation();
+                          if(!confirm(`'${c.name}'을(를) 뺄까요?`)) return;
+                          setCustomChars(l=>{
+                            const next = l.filter(x=>x.id!==c.id);
+                            /* 마지막 캐릭터를 빼면 쪽 수가 줄어요. 보고 있던 쪽이 없어지면
+                               한 쪽 앞으로 당겨, 빈 화면이 뜨지 않게 합니다. */
+                            const cnt = CHARACTERS.length + next.length + 1;
+                            const maxPage = Math.max(0, Math.ceil(cnt/PER_CHAR)-1);
+                            setCPage(p=> Math.min(p, maxPage));
+                            return next;
+                          });
+                          /* 지운 캐릭터를 고른 상태였다면 고름도 풀어 줍니다 */
+                          setSel(s=> (s.kind==='preset' && s.id===c.id) ? {kind:'preset', id:CHARACTERS[0].id} : s);
+                        }}>×</button>
                     )}
-                  </button>
+                  </span>
                 ))}
             </div>
             {cPages>1 && (
