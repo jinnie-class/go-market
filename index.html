@@ -1197,6 +1197,9 @@ body.quiet .confetti{display:none !important;}
   border-radius:999px;padding:11px 20px;box-shadow:var(--shadow-lg);cursor:pointer;
   animation:homePulseR 2.2s ease-in-out infinite;}
 .home-setup-tip:hover{background:#fff0b8;}
+/* 두 줄짜리 안내 — 윗줄은 '학생 등록', 아랫줄은 '그냥 들어가는 법' */
+.home-setup-tip{display:flex;flex-direction:column;align-items:center;gap:2px;line-height:1.35;}
+.home-setup-tip .hs-sub{font-size:.8em;font-weight:700;color:#8a7530;}
 /* ⚠️ 가운데 정렬(translateX(-50%))을 애니메이션에도 함께 써야 해요.
    scale만 쓰면 가운데 정렬이 풀려 오른쪽으로 밀립니다. */
 @keyframes homePulseR{0%,100%{transform:translateX(-50%) scale(1);}50%{transform:translateX(-50%) scale(1.05);}}
@@ -3081,6 +3084,8 @@ function Home({settings, onEnter, onTeacher, onToggleVoice, needSetup}){
           {needSetup && (
             <button className="home-setup-tip" onClick={onTeacher}>
               잠깐! 먼저 <b>학생을 등록</b>해 주세요 ⚙️
+              {/* 들어가기 안내가 사라지면 '어떻게 들어가지?'가 되므로 한 줄로 함께 알려 줘요 */}
+              <span className="hs-sub">그림을 누르면 바로 시작할 수도 있어요</span>
             </button>
           )}
           {/* 오른쪽 위 이모지 버튼 3개 */}
