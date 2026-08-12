@@ -644,6 +644,51 @@ img.cicon{object-fit:contain;border-radius:.2em;}
 /* 단계 안내띠: 그림 + 큰 글씨를 '가로로 나란히' — 세로 공간을 적게 쓰면서 그림은 크게 보여요.
    크기는 '높이'가 정하고 가로는 그림 비율대로 늘어나요.
    → 두 장을 붙여 만든 가로로 긴 그림(카드로 계산해요 3104x1024)은 자동으로 두 배 넓게 나와요. */
+/* ===== 계산하GO 윗부분 : 왼쪽 그림 · 오른쪽 계산대 모니터 (2026-08-12) ===== */
+.paytop{display:flex;gap:22px;align-items:flex-start;justify-content:center;flex-wrap:wrap;}
+.paytop-left{flex:0 1 380px;min-width:240px;display:flex;flex-direction:column;align-items:center;gap:8px;}
+.paytop-left .stage-scene{width:100%;height:auto;max-height:34vh;object-fit:contain;border-radius:18px;}
+.paytop-cap{display:flex;align-items:center;gap:10px;font-weight:900;font-size:1.2em;text-align:center;}
+.paytop-right{flex:1 1 460px;min-width:300px;display:flex;flex-direction:column;align-items:center;gap:6px;}
+.paytop-title{display:flex;align-items:center;gap:10px;font-weight:900;font-size:1.15em;}
+
+/* 모니터 — 그림 위에 '화면 안쪽'만 골라 물건을 얹어요.
+   안쪽 자리(6%/5%/6%/14.5%)는 바코드 화면.png 의 실제 화면 테두리를 재서 정한 값이에요. */
+.cmon{position:relative;width:100%;max-width:620px;aspect-ratio:1516/1012;}
+.cmon-frame{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;}
+.cmon-screen{position:absolute;left:6%;right:5%;top:6%;bottom:14.5%;
+  display:flex;flex-direction:column;gap:2%;padding:2.5% 3%;}
+.cmon-items{flex:1;display:grid;grid-template-columns:1fr 1fr;grid-auto-rows:1fr;gap:2.5%;align-content:start;}
+.cmon-item{display:flex;align-items:center;justify-content:space-between;gap:8px;
+  background:#fff;border:2px solid #e7e7ef;border-radius:12px;padding:4px 12px;
+  font-weight:800;font-size:clamp(.78em,1.5vw,1em);white-space:nowrap;overflow:hidden;}
+.cmon-item .ci-name{overflow:hidden;text-overflow:ellipsis;}
+.cmon-item .ci-price{flex:0 0 auto;}
+.cmon-total{flex:0 0 auto;display:flex;align-items:center;justify-content:center;gap:16px;
+  border-top:3px solid #ddd0b4;padding-top:2%;}
+.cmon-total-lbl{font-weight:900;font-size:clamp(.9em,1.7vw,1.25em);background:#fff;border-radius:10px;padding:3px 14px;}
+.cmon-total-num{font-weight:900;font-size:clamp(1.1em,2.4vw,1.8em);color:#c0392b;background:#fff;border-radius:10px;padding:3px 16px;}
+/* 물건이 4개를 넘으면 좌우 화살표로 넘겨요 (상품 목록과 같은 방식) */
+.cmon-nav{position:absolute;top:40%;transform:translateY(-50%);z-index:3;
+  width:clamp(42px,4.4vw,58px);height:clamp(42px,4.4vw,58px);border-radius:50%;
+  border:3px solid var(--line);background:rgba(255,255,255,.96);font-size:1.25em;
+  cursor:pointer;box-shadow:var(--shadow-lg);}
+.cmon-nav.left{left:-14px;} .cmon-nav.right{right:-14px;}
+.cmon-nav:disabled{opacity:.28;cursor:default;}
+.cmon-page{position:absolute;left:50%;transform:translateX(-50%);bottom:1%;z-index:3;
+  background:#fff;border:2px solid var(--line);border-radius:999px;padding:1px 14px;font-weight:800;font-size:.86em;}
+/* 세로가 짧은 기기 — 그림과 모니터를 함께 줄여 한 화면에 들어오게 */
+@media (max-height:820px){
+  .paytop-left .stage-scene{max-height:26vh;}
+  .paytop-cap{font-size:1.05em;}
+  .cmon{max-width:520px;}
+}
+@media (max-width:760px){
+  .paytop{gap:12px;}
+  .paytop-left{flex:1 1 100%;}
+  .paytop-left .stage-scene{max-height:20vh;}
+}
+
 .stepbar{display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap;
   background:#fff;border:2px solid #e9ecf4;border-radius:20px;padding:8px 18px;
   box-shadow:var(--shadow);margin:0 auto 6px;
@@ -4874,6 +4919,56 @@ function ScanStage({settings, basket, scanned, setScanned, budget, total, onDone
 /* =========================================================
    ④ 계산하GO!
 ========================================================= */
+/* ---- 🖥️ 계산대 모니터 (2026-08-12) ----
+   물건 목록을 그냥 글자 칸으로 두면 '계산대에서 찍히는 느낌'이 안 나서,
+   실제 마트처럼 **모니터 화면 안에** 물건과 총 금액을 띄웁니다.
+   그림은 `이미지/바코드 화면.png`(투명 배경 + 안쪽이 빈 모니터).
+   화면 안에는 한 번에 4개까지, 넘치면 좌우 ◀▶ 로 넘겨요(상품 목록과 같은 방식).
+   '총 금액'은 늘 아래에 붙어 있어 물건을 넘겨도 계속 보입니다. */
+function MonitorFrame(){
+  const srcs = imgList('이미지/바코드 화면');
+  const [i, setI] = useState(0);
+  const [failed, setFailed] = useState(false);
+  if(failed) return null;   // 그림이 없어도 화면 칸(.cmon-screen)만으로 동작해요
+  return <img className="cmon-frame" src={srcs[i]} alt="" aria-hidden="true"
+    onError={()=>{ if(i<srcs.length-1) setI(i+1); else setFailed(true); }} />;
+}
+function CheckoutMonitor({items, total}){
+  const PER = 4;
+  const [page, setPage] = useState(0);
+  const pages = Math.max(1, Math.ceil(items.length / PER));
+  const cur = Math.min(page, pages - 1);
+  const slice = items.slice(cur*PER, cur*PER + PER);
+  return (
+    <div className="cmon">
+      <MonitorFrame />
+      <div className="cmon-screen">
+        <div className="cmon-items">
+          {slice.map(p=>(
+            <span key={p.id} className="cmon-item">
+              <span className="ci-name">{p.name}{qtyOf(p)>1 && <b className="qty-tag"> &times;{qtyOf(p)}</b>}</span>
+              <b className="ci-price">{won(p.price*qtyOf(p))}</b>
+            </span>
+          ))}
+        </div>
+        <div className="cmon-total">
+          <span className="cmon-total-lbl">총 금액</span>
+          <b className="cmon-total-num">{won(total)}</b>
+        </div>
+      </div>
+      {pages > 1 && (
+        <React.Fragment>
+          <button className="cmon-nav left" disabled={cur===0}
+            onClick={()=>{ setPage(cur-1); sayBtn('앞을 봐요.'); }} aria-label="앞의 물건 보기">◀</button>
+          <button className="cmon-nav right" disabled={cur===pages-1}
+            onClick={()=>{ setPage(cur+1); sayBtn('다음을 봐요.'); }} aria-label="다음 물건 보기">▶</button>
+          <span className="cmon-page">{cur+1} / {pages} 쪽</span>
+        </React.Fragment>
+      )}
+    </div>
+  );
+}
+
 function PayStage({settings, basket, total, budget, onBack, onGoPay, checkoutMode}){
   const forced = settings.pay!=='choose' ? settings.pay : null;
   const chatOn = checkoutMode==='clerk' && settings.cashierChat!==false;
@@ -4881,15 +4976,23 @@ function PayStage({settings, basket, total, budget, onBack, onGoPay, checkoutMod
 
   return (
     <div className="col" style={{gap:10}}>
-      <StageScene stage="pay" />
-      <div className="card" style={{padding:12}}>
-        <div className="section-title" style={{fontSize:'1.1em', margin:'0 0 6px'}}>
-          {checkoutMode==='kiosk' ? '🖥️ 셀프 계산대' : '🧾 점원 계산대'} <Speak text={'모두 합해서 '+won(total)+'이에요.'} /></div>
-        <Paged items={basket} per={6} resetKey={'pay'+basket.length} cls="choose-list" render={p=>(
-          <div key={p.id} className="list-item"><span>{p.name}{qtyOf(p)>1 && <b className="qty-tag"> &times;{qtyOf(p)}</b>}</span><b>{won(p.price*qtyOf(p))}</b></div>
-        )} />
-        <hr/>
-        <div className="row"><b>총 금액</b><span className="spacer"></span><b className="bignum" style={{color:'#c0392b'}}>{won(total)}</b></div>
+      {/* 왼쪽 = 지금 무엇을 하는지(그림 + 글), 오른쪽 = 계산대 모니터 (2026-08-12 재구성).
+          예전엔 위에 가로 띠 그림, 아래에 글자 목록이라 '계산대' 느낌이 없었어요. */}
+      <div className="paytop">
+        <div className="paytop-left">
+          <StageArt key={4} num={4} s={{bg:'#f3f0fb', cap:'현금이나 카드로 계산해요', art:null}} />
+          <div className="paytop-cap">
+            <span>현금이나 카드로 계산해요</span>
+            <Speak text="현금이나 카드로 계산해요" />
+          </div>
+        </div>
+        <div className="paytop-right">
+          <div className="paytop-title">
+            {checkoutMode==='kiosk' ? '🖥️ 셀프 계산대' : '🧾 점원 계산대'}
+            <Speak text={'모두 합해서 '+won(total)+'이에요.'} />
+          </div>
+          <CheckoutMonitor items={basket} total={total} />
+        </div>
       </div>
 
       {phase==='greet' && (
