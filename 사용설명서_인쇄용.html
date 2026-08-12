@@ -34,13 +34,16 @@
   .printtip{ background:#eef7ff; border:2px solid #bcdcf7; border-radius:14px;
              padding:16px 18px; margin:0 0 24px; font-size:.97em; }
   .pt-row{ display:flex; align-items:center; gap:18px; flex-wrap:wrap; }
-  .pt-txt{ display:flex; flex-direction:column; gap:3px; min-width:220px; flex:1; }
-  .pt-txt b{ font-size:1.06em; }
-  .pt-foot{ margin-top:10px; color:#5b6b7d; font-size:.9em; }
-  /* 큼직한 인쇄 단추 — 컴퓨터가 익숙하지 않아도 한눈에 보이게 */
-  .printbtn{ font:inherit; font-weight:900; font-size:1.22em; color:#fff; cursor:pointer;
+  .pt-txt{ display:flex; flex-direction:column; gap:4px; min-width:220px; flex:1; }
+  .pt-txt > b{ font-size:1.04em; }
+  /* '인쇄물에 안 나온다'는 곁가지라 줄을 따로 쓰지 않고 괄호로 붙여요 */
+  .pt-note{ font-weight:600; font-size:.86em; color:#5b6b7d; white-space:nowrap; }
+  /* 이 줄이 두 줄로 꺾이지 않도록 단추 폭을 줄이고 글자도 살짝 작게 잡았습니다 */
+  .pt-how{ font-size:.95em; }
+  /* 인쇄 단추 — 한눈에 보이되, 옆 설명이 한 줄에 들어갈 만큼만 */
+  .printbtn{ font:inherit; font-weight:900; font-size:1.06em; color:#fff; cursor:pointer;
              background:linear-gradient(135deg,#4aa3e8,#2b7fc4); border:0; border-radius:999px;
-             padding:15px 34px; box-shadow:0 5px 14px rgba(43,127,196,.38); white-space:nowrap; }
+             padding:13px 22px; box-shadow:0 5px 14px rgba(43,127,196,.38); white-space:nowrap; }
   .printbtn:hover{ filter:brightness(1.07); transform:translateY(-1px); }
   .printbtn:active{ transform:translateY(1px); }
   /* 아래로 내려가도 계속 따라다니는 작은 인쇄 단추 (긴 문서라서) */
@@ -67,11 +70,10 @@
   <div class="pt-row">
     <button type="button" class="printbtn" onclick="window.print()">🖨️ 인쇄하기</button>
     <div class="pt-txt">
-      <b>이 단추를 누르면 바로 인쇄 창이 열려요.</b>
-      <span>종이로 뽑으려면 그대로 <b>인쇄</b>를 누르고, 파일로 남기려면 <b>대상</b>을 <b>‘PDF로 저장’</b>으로 바꾸세요.</span>
+      <b>이 단추를 누르면 바로 인쇄 창이 열려요. <span class="pt-note">(이 안내는 인쇄물에 안 나와요)</span></b>
+      <span class="pt-how">종이로 뽑으려면 <b>인쇄</b>를, 파일로 남기려면 <b>대상</b>을 <b>‘PDF로 저장’</b>으로 바꾸세요.</span>
     </div>
   </div>
-  <div class="pt-foot">이 안내 상자는 <b>인쇄물에는 나오지 않습니다.</b></div>
 </div>
 <button type="button" class="printfab" onclick="window.print()" title="인쇄하기">🖨️ 인쇄</button>
 <h1>GO! 문구마켓 — 선생님 사용설명서</h1>
