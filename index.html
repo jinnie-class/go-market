@@ -712,9 +712,11 @@ img.cicon{object-fit:contain;border-radius:.2em;}
 .cmon-page{font-weight:800;font-size:clamp(.72em,1.3vw,.9em);color:#8a7a5c;}
 /* 세로가 짧은 기기 — 그림과 모니터를 함께 줄여 한 화면에 들어오게 */
 @media (max-height:820px){
-  .paytop-left .stage-scene{max-height:26vh;}
+  .paytop-left .stage-scene{max-height:24vh;}
   .paytop-cap{font-size:1.05em;}
-  .cmon{max-width:520px;}
+  /* 모니터 높이 = 폭 × 0.667. 520px면 347px이라 점원 대화칸까지 더하면
+     1024×768에서 27px 넘쳤어요. 460px(≈307px)로 줄여 여유를 둡니다. (2026-08-13) */
+  .cmon{max-width:460px;}
 }
 @media (max-width:760px){
   .paytop{gap:12px;}
