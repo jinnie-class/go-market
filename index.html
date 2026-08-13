@@ -3166,13 +3166,15 @@ function TeacherSettings({settings, setSettings, onDone, onResult, students, set
   );
   const save = ()=>{ setSettings(s); onDone(); };
 
-  /* 📖 사용설명서 — index.html 옆의 `사용설명서_인쇄용.html` 을 새 창으로 엽니다 (2026-08-12).
-     ⚠️ 앱 안에 설명서를 복사해 넣지 않았습니다. 그러면 설명서를 고칠 때마다 두 군데를
-        고쳐야 하고, 한쪽만 고치면 서로 어긋나거든요. 파일 하나만 두고 열어 봅니다. */
+  /* 📖 사용설명서 — 선생님이 만드신 `사용설명서.pdf` 를 새 창으로 엽니다 (2026-08-13).
+     ⚠️ 예전엔 마크다운에서 만든 HTML(`사용설명서_인쇄용.html`)을 열었는데,
+        이제는 **PDF가 원본**입니다. PDF를 그대로 열어야 인쇄해도 그 모습 그대로 나와요.
+        (HTML로 다시 만들면 글꼴·줄바꿈·쪽 나눔이 달라집니다.)
+        브라우저의 PDF 보기 창에는 인쇄·내려받기 단추가 이미 붙어 있습니다. */
   const [manualOpened, setManualOpened] = useState(false);
   const openManual = ()=>{
     stopSpeak();
-    const w = window.open('사용설명서_인쇄용.html', '_blank');
+    const w = window.open('사용설명서.pdf', '_blank');
     if(!w){ alert('새 창이 열리지 않았어요. 브라우저의 팝업 차단을 풀어 주세요.'); return; }
     setManualOpened(true);
   };
@@ -3190,9 +3192,9 @@ function TeacherSettings({settings, setSettings, onDone, onResult, students, set
             '못 찾았다'고 단정하지 않고 **안 열렸을 때 무엇을 보면 되는지**만 알려 줍니다. */}
         {manualOpened && (
           <div className="card" style={{background:'#eef7ff', border:'2px solid #bcdcf7', marginBottom:16}}>
-            <b>📖 새 창에서 설명서를 열었어요. 그 창 맨 위의 파란 <u>🖨️ 인쇄하기</u> 단추를 누르세요.</b>
+            <b>📖 새 창에서 사용설명서(PDF)를 열었어요.</b>
             <p className="muted" style={{margin:'6px 0 0'}}>
-              <span style={{display:'block'}}>종이로 뽑으려면 그대로 <b>인쇄</b>, 파일로 남기려면 <b>대상</b>을 <b>‘PDF로 저장’</b>으로 바꾸면 돼요.</span>
+              <span style={{display:'block'}}>그 창 <b>오른쪽 위</b>에 <b>🖨️ 인쇄</b>와 <b>⬇️ 저장</b> 단추가 있어요. 눌러서 종이로 뽑거나 파일로 받으세요.</span>
               <span style={{display:'block'}}>새 창이 안 열렸다면 <b>팝업 차단</b> 때문이에요. 주소창 오른쪽 끝의 작은 아이콘을 눌러 <b>‘항상 허용’</b>을 고른 뒤 다시 눌러 주세요.</span>
             </p>
           </div>
