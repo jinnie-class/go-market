@@ -5,17 +5,20 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>GO! 문구마켓 — 사용설명서</title>
 <style>
-  /* 이 쪽은 **PDF를 감싸는 껍데기**입니다 (2026-08-13).
-     설명서를 HTML로 '다시 만들면' 글꼴·줄바꿈·쪽 나눔이 달라져서
-     "인쇄해도 PDF 그대로"가 깨집니다. 그래서 내용은 손대지 않고
-     사용설명서.pdf 를 그대로 띄우고, 위에 단추만 붙였어요. */
+  /* 설명서를 HTML 로 '다시 조판'하지 않았습니다 (2026-08-13).
+     다시 만들면 글꼴·줄바꿈·쪽 나눔이 달라져 "PDF 그대로"가 깨지거든요.
+     그래서 **PDF 쪽을 찍은 그림 5장**을 그대로 늘어놓습니다.
+
+     ⚠️ 화면용과 인쇄용을 나눠 두었습니다.
+        · 화면 : 그림 (720px, 휴대전화·태블릿 어디서나 확실히 보임)
+        · 인쇄·내려받기 : 원본 PDF (그림은 87dpi 라 종이에서 흐릿해요)
+        그림을 1600px 안팎으로 다시 찍어 넣으면 인쇄까지 그림으로 할 수 있습니다. */
   *{ box-sizing:border-box; }
-  html,body{ height:100%; }
   body{ margin:0; font-family:"맑은 고딕","Malgun Gothic",system-ui,sans-serif;
-        color:#2b2b3a; background:#eef1f6; display:flex; flex-direction:column; }
-  .bar{ flex:0 0 auto; display:flex; align-items:center; gap:12px; flex-wrap:wrap;
+        color:#2b2b3a; background:#eef1f6; }
+  .bar{ position:sticky; top:0; z-index:5; display:flex; align-items:center; gap:12px; flex-wrap:wrap;
         padding:12px 18px; background:#fff; border-bottom:2px solid #dfe3ea;
-        box-shadow:0 2px 10px rgba(0,0,0,.06); }
+        box-shadow:0 2px 10px rgba(0,0,0,.07); }
   .ttl{ font-weight:900; font-size:1.12em; margin-right:auto; }
   .btn{ font:inherit; font-weight:900; font-size:1em; color:#fff; cursor:pointer;
         border:0; border-radius:999px; padding:12px 22px; text-decoration:none;
@@ -23,45 +26,60 @@
   .btn.print{ background:linear-gradient(135deg,#4aa3e8,#2b7fc4); box-shadow:0 4px 12px rgba(43,127,196,.34); }
   .btn.save{ background:linear-gradient(135deg,#e8663a,#c94f26); box-shadow:0 4px 12px rgba(201,79,38,.32); }
   .btn:hover{ filter:brightness(1.07); }
-  .wrap{ flex:1 1 auto; min-height:0; padding:14px; }
-  iframe{ width:100%; height:100%; border:2px solid #dfe3ea; border-radius:12px; background:#fff; }
-  .fallback{ padding:14px 18px 22px; color:#5b6b7d; font-size:.95em; text-align:center; }
-  .fallback b{ color:#2b2b3a; }
+
+  /* ⚠️ 폭을 760px 로 묶습니다 (2026-08-13).
+     그림 원본이 720px 이라, 900px 로 벌리면 1.21배로 늘어나 글자가 뿌예져요.
+     여기서는 1.02배라 원본 그대로 또렷합니다. 그림을 더 크게 다시 찍으면 이 값을 올리세요. */
+  .pages{ max-width:760px; margin:0 auto; padding:20px 14px 48px; }
+  .page{ position:relative; margin:0 auto 22px; background:#fff; border-radius:10px;
+         box-shadow:0 4px 16px rgba(0,0,0,.13); overflow:hidden; }
+  /* 다섯 장의 세로가 6px씩 달라요(1016~1022). 가로에 맞춰 늘리면 나란히 보입니다. */
+  .page img{ display:block; width:100%; height:auto; }
+  .pno{ position:absolute; right:10px; bottom:8px; background:rgba(255,255,255,.9);
+        border:1px solid #dfe3ea; border-radius:999px; padding:2px 10px;
+        font-size:.82em; font-weight:800; color:#5b6b7d; }
+
+  .tip{ max-width:760px; margin:0 auto 6px; padding:0 14px; }
+  .tip .box{ background:#eef7ff; border:2px solid #bcdcf7; border-radius:12px;
+             padding:12px 16px; font-size:.95em; color:#33506b; }
+
   @media (max-width:640px){
     .ttl{ flex:1 0 100%; margin-bottom:4px; }
     .btn{ padding:11px 18px; font-size:.95em; }
   }
+
+  /* 종이로 뽑을 때 — 그림 한 장이 한 쪽. 단추와 안내는 빼요. */
+  @media print{
+    body{ background:#fff; }
+    .bar, .tip, .pno{ display:none !important; }
+    .pages{ max-width:none; padding:0; }
+    .page{ margin:0; box-shadow:none; border-radius:0;
+           break-after:page; page-break-after:always; }
+    .page:last-child{ break-after:auto; page-break-after:auto; }
+  }
+  @page{ margin:0; }
 </style>
 </head>
 <body>
   <div class="bar">
     <span class="ttl">📖 GO! 문구마켓 사용설명서</span>
-    <button type="button" class="btn print" onclick="doPrint()">🖨️ 인쇄하기</button>
+    <a class="btn print" href="사용설명서.pdf" target="_blank">🖨️ 인쇄하기</a>
     <a class="btn save" href="사용설명서.pdf" download="GO! 문구마켓 사용설명서.pdf">⬇️ PDF 내려받기</a>
   </div>
 
-  <div class="wrap">
-    <iframe id="pv" src="사용설명서.pdf" title="사용설명서"></iframe>
+  <div class="tip">
+    <div class="box">
+      아래로 내리면 <b>5쪽 전체</b>를 볼 수 있어요.
+      <b>종이로 뽑거나 파일로 받으실 때는 위의 단추</b>를 눌러 주세요 — 원본 PDF라 글자가 또렷하게 나옵니다.
+    </div>
   </div>
 
-  <div class="fallback">
-    설명서가 위에 보이지 않나요? <b><a href="사용설명서.pdf" target="_blank">여기를 눌러 바로 열어 보세요.</a></b>
-    <br>휴대전화나 일부 태블릿에서는 이 자리에 PDF가 안 나올 수 있어요.
+  <div class="pages">
+    <div class="page"><img src="이미지/설명서/1.png" alt="사용설명서 1쪽"><span class="pno">1 / 5</span></div>
+    <div class="page"><img src="이미지/설명서/2.png" alt="사용설명서 2쪽"><span class="pno">2 / 5</span></div>
+    <div class="page"><img src="이미지/설명서/3.png" alt="사용설명서 3쪽"><span class="pno">3 / 5</span></div>
+    <div class="page"><img src="이미지/설명서/4.png" alt="사용설명서 4쪽"><span class="pno">4 / 5</span></div>
+    <div class="page"><img src="이미지/설명서/5.png" alt="사용설명서 5쪽"><span class="pno">5 / 5</span></div>
   </div>
-
-<script>
-  /* 인쇄는 **PDF 자체**를 인쇄해야 모습이 그대로예요.
-     같은 폴더의 파일이라 대개 아래 방법으로 바로 인쇄 창이 뜨고,
-     브라우저가 막으면 PDF를 새 창으로 열어 그 창에서 인쇄하게 합니다. */
-  function doPrint(){
-    var f = document.getElementById('pv');
-    try{
-      f.contentWindow.focus();
-      f.contentWindow.print();
-    }catch(e){
-      window.open('사용설명서.pdf', '_blank');
-    }
-  }
-</script>
 </body>
 </html>

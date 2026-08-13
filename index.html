@@ -3166,15 +3166,15 @@ function TeacherSettings({settings, setSettings, onDone, onResult, students, set
   );
   const save = ()=>{ setSettings(s); onDone(); };
 
-  /* 📖 사용설명서 — 선생님이 만드신 `사용설명서.pdf` 를 새 창으로 엽니다 (2026-08-13).
-     ⚠️ 예전엔 마크다운에서 만든 HTML(`사용설명서_인쇄용.html`)을 열었는데,
-        이제는 **PDF가 원본**입니다. PDF를 그대로 열어야 인쇄해도 그 모습 그대로 나와요.
-        (HTML로 다시 만들면 글꼴·줄바꿈·쪽 나눔이 달라집니다.)
-        브라우저의 PDF 보기 창에는 인쇄·내려받기 단추가 이미 붙어 있습니다. */
+  /* 📖 사용설명서 — `사용설명서.html` 을 새 창으로 엽니다 (2026-08-13).
+     ⚠️ 설명서를 HTML 로 **다시 조판하지 않았습니다.** 다시 만들면 글꼴·줄바꿈·쪽 나눔이
+        달라져 "PDF 그대로"가 깨지거든요. 그 쪽은 PDF 쪽을 찍은 **그림 5장**을 늘어놓고,
+        인쇄·내려받기 단추만 원본 PDF 로 이어 둔 껍데기입니다.
+        · PDF 를 바로 열면 휴대전화·일부 태블릿에서 안 뜨는 일이 있어서 HTML 로 감쌌어요. */
   const [manualOpened, setManualOpened] = useState(false);
   const openManual = ()=>{
     stopSpeak();
-    const w = window.open('사용설명서.pdf', '_blank');
+    const w = window.open('사용설명서.html', '_blank');
     if(!w){ alert('새 창이 열리지 않았어요. 브라우저의 팝업 차단을 풀어 주세요.'); return; }
     setManualOpened(true);
   };
@@ -3192,9 +3192,9 @@ function TeacherSettings({settings, setSettings, onDone, onResult, students, set
             '못 찾았다'고 단정하지 않고 **안 열렸을 때 무엇을 보면 되는지**만 알려 줍니다. */}
         {manualOpened && (
           <div className="card" style={{background:'#eef7ff', border:'2px solid #bcdcf7', marginBottom:16}}>
-            <b>📖 새 창에서 사용설명서(PDF)를 열었어요.</b>
+            <b>📖 새 창에서 사용설명서를 열었어요. 아래로 내리면 5쪽 전체가 보입니다.</b>
             <p className="muted" style={{margin:'6px 0 0'}}>
-              <span style={{display:'block'}}>그 창 <b>오른쪽 위</b>에 <b>🖨️ 인쇄</b>와 <b>⬇️ 저장</b> 단추가 있어요. 눌러서 종이로 뽑거나 파일로 받으세요.</span>
+              <span style={{display:'block'}}>그 창 <b>맨 위</b>에 <b>🖨️ 인쇄하기</b>와 <b>⬇️ PDF 내려받기</b> 단추가 있어요. 종이로 뽑거나 파일로 받으실 때 쓰세요.</span>
               <span style={{display:'block'}}>새 창이 안 열렸다면 <b>팝업 차단</b> 때문이에요. 주소창 오른쪽 끝의 작은 아이콘을 눌러 <b>‘항상 허용’</b>을 고른 뒤 다시 눌러 주세요.</span>
             </p>
           </div>
