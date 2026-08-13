@@ -437,6 +437,10 @@ img.cicon{object-fit:contain;border-radius:.2em;}
 .sd-item img{width:100%;height:100%;object-fit:contain;}
 .sd-emoji{font-size:clamp(72px,12vh,120px);line-height:1;}
 .sd-name{font-size:1.5em;font-weight:900;}
+/* 선물 받은 순간의 축하 문구 — 이름 + 받았어요 + 칭찬을 한 덩어리로 크게 (2026-08-13) */
+.sd-msg{text-align:center;font-size:clamp(1.15em,2.2vh,1.5em);font-weight:800;line-height:1.5;color:var(--ink);}
+.sd-msg b{color:#c0392b;}
+.sd-praise{display:inline-block;margin-top:4px;font-weight:900;color:#177245;}
 /* 🔧 선생님 칸 — 비밀 가게를 나가지 않고 여기서 바로 모드를 바꾸고 물건을 넣고 뺍니다 (2026-08-11).
    ⚠️ 학생도 보고 있는 화면이라 **기본은 접혀 있어요**. 🔧 를 눌러야 열립니다.
       회색 바탕에 점선 테두리로 '진열장이 아니라 선생님 도구'임을 한눈에 구분되게 했어요. */
@@ -6598,6 +6602,18 @@ function SecretShop({items, mode, studentName, stampCount, onPick, onExit, onMod
      넘으면 ◀ 이전 / 다음 ▶ 로 넘겨요 — 상품 목록·캐릭터 고르기와 같은 방식이라 익숙해요. */
   /* 한 줄 5개만 — 두 줄로 깔면 편의점 배경이 거의 가려졌어요 (2026-08-12).
      비밀 가게는 '와, 여기 뭐가 있지?' 하는 장면이라 배경이 보이는 게 중요합니다. */
+  /* 선물을 고르면 폭죽이 2.8초 동안 터져요 (2026-08-13).
+     감각이 예민한 학생을 위한 '조용한 모드'에서는 터지지 않습니다
+     (그 모드가 켜지면 body 에 reduce-motion 이 붙어요). */
+  const [boom, setBoom] = useState(false);
+  useEffect(()=>{
+    if(!chosen) return;
+    if(document.body.classList.contains('reduce-motion')) return;
+    setBoom(true);
+    const t = window.setTimeout(()=> setBoom(false), 2800);
+    return ()=> window.clearTimeout(t);
+  }, [chosen]);
+
   const PER_SEC = 5;
   const [sPage, setSPage] = useState(0);
   const sPages = Math.max(1, Math.ceil(items.length / PER_SEC));
@@ -6612,15 +6628,21 @@ function SecretShop({items, mode, studentName, stampCount, onPick, onExit, onMod
   if(chosen){
     return (
       <div className="app secret-app">
+        {/* 선물을 받은 순간에는 폭죽이 터져요 — 이 앱에서 가장 기뻐할 장면이라서요.
+            2.6초 떨어지고 사라집니다. '조용한 모드'에서는 터지지 않아요. */}
+        <Confetti show={boom} />
         <div className="secret-scene">
           <BgImg name="비밀가게" className="secret-bg" dim={0.35} />
           <div className="secret-done">
             <div className="sd-item">{chosen.photo ? <img src={chosen.photo} alt="" /> : <span className="sd-emoji">{chosen.emoji||'🎁'}</span>}</div>
             <div className="sd-name">{chosen.name}</div>
-            <Hint kind="fit" style={{fontSize:'1.15em'}}
-              text={(studentName? studentName+'! ':'')+chosen.name+josa(chosen.name,'을','를')+' 받았어요. 도장을 모아 줘서 고마워요!'}>
-              🎉 <b>{chosen.name}</b>{josa(chosen.name,'을','를')} 받았어요!
-            </Hint>
+            {/* 선물 이름만 덩그러니 있으면 '받았다'는 느낌이 약해요.
+                이름 + 받았어요 + 칭찬을 한 덩어리로 크게 보여 줍니다. (2026-08-13) */}
+            <div className="sd-msg">
+              <b>{chosen.name}</b>{josa(chosen.name,'을','를')} 받았어요.<br/>
+              <span className="sd-praise">참 잘했어요! 🎉</span>
+            </div>
+            <Speak text={(studentName? studentName+'! ':'')+chosen.name+josa(chosen.name,'을','를')+' 받았어요. 참 잘했어요!'} />
             {/* 선물을 받았다고 가게를 나가 버리면 안 돼요 (2026-08-12).
                 선생님이 하나 더 주고 싶을 수도 있어서, 여기서는 **가게 안으로만** 돌아갑니다.
                 가게를 나가는 것은 가게 화면 위쪽의 '나가기'로만 해요. */}
