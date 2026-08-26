@@ -1,0 +1,285 @@
+<!doctype html>
+<html lang="ko">
+<meta charset="utf-8">
+<title>GO! 문구마켓 — 자료집 소개 쪽</title>
+<!-- ─────────────────────────────────────────────────────────────
+     GO! 문구마켓 소개 자료 (A4 2쪽) — 2026-08-26
+
+     📌 이 파일은 선생님의 「심심할 틈이? 없다구! 여가의 활용」 자료집
+        서식(핵심활동·미술·읽기 쪽)을 그대로 흉내 낸 것입니다.
+        → 인쇄하기 → PDF로 저장 → 그 PDF를 보고 한글(HWP)로 다시 만드시면 됩니다.
+
+     📌 그림 넣는 법
+     이 파일 옆의 `소개자료` 폴더에 아래 이름으로 저장하기만 하면 자동으로 들어갑니다.
+        소개자료/1.png ~ 소개자료/6.png   (HTML은 고치지 않으셔도 돼요)
+     그림이 없으면 '여기에 무엇을 넣으세요' 안내 상자가 대신 보입니다.
+
+     · 자세한 사용법은 `사용설명서.html` 에 있습니다. 이 자료는 '한눈에 보기'용.
+     · 오른쪽 아래 인쇄 단추는 인쇄물에는 나오지 않습니다.
+     ───────────────────────────────────────────────────────────── -->
+<style>
+:root{
+  --ink:#1a1a1a;            /* 본문 검정 */
+  --lilac:#b9a6d4;          /* 자료집 보라 테두리 */
+  --lilac-bg:#efe9f7;       /* 라벨 연보라 배경 */
+  --lilac-bar:#e3d9f0;      /* 페이지 가장자리 세로 띠 */
+  --blue:#2e5fa3;           /* 설명문·소제목 파랑 */
+  --gray:#6b6b78;
+  --line:#c9c9d4;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  font-family:"맑은 고딕","Malgun Gothic","HY헤드라인M",system-ui,sans-serif;
+  color:var(--ink); background:#dfe3ea; line-height:1.62;
+  font-size:10.5pt; letter-spacing:.2px;
+  word-break:keep-all; overflow-wrap:break-word;
+  -webkit-font-smoothing:antialiased;
+}
+.page{
+  position:relative; width:210mm; min-height:297mm; margin:14px auto; background:#fff;
+  padding:14mm 18mm 12mm; box-shadow:0 2px 18px rgba(40,50,80,.10);
+  display:flex; flex-direction:column;
+}
+/* 페이지 좌우 가장자리 연보라 세로 띠 (자료집 장식) */
+.page::before,.page::after{content:'';position:absolute;top:0;bottom:0;width:3.5mm;background:var(--lilac-bar);}
+.page::before{left:0;} .page::after{right:0;}
+
+/* ── 머리말: 심심할 틈이? 없다구! 여가의 활용 ── */
+.hd{display:flex;justify-content:flex-end;align-items:center;gap:6px;
+  font-size:8.4pt;font-weight:800;color:#8a6ea8;letter-spacing:.3px;margin:0 0 5px;}
+.hd .mascot{width:9mm;height:9mm;border-radius:50%;border:1px dashed var(--lilac);
+  display:flex;align-items:center;justify-content:center;font-size:6pt;
+  color:#a894c4;font-weight:700;line-height:1.1;text-align:center;overflow:hidden;}
+.hd .mascot img{width:100%;height:100%;object-fit:contain;}
+
+/* ── 제목 줄: [영역 라벨] + [제목 박스 + 배지] ── */
+.title{display:flex;align-items:stretch;margin:0 0 9mm;}
+.title .tag{flex:none;width:19mm;border:1.4px solid var(--lilac);border-radius:7px;
+  background:var(--lilac-bg);display:flex;align-items:center;justify-content:center;
+  font-size:11pt;font-weight:800;letter-spacing:1px;z-index:2;}
+.title .bar{flex:1;min-width:0;margin-left:-8px;border:1.4px solid var(--lilac);
+  border-radius:9px;background:#fff;padding:7px 16px 7px 22px;
+  display:flex;align-items:center;justify-content:center;gap:7px;}
+.title .bar h1{font-size:17pt;font-weight:800;margin:0;letter-spacing:3px;line-height:1.3;}
+.title .bar .badge{flex:none;width:6.5mm;height:6.5mm;border-radius:50%;background:var(--blue);
+  color:#fff;font-size:7.6pt;font-weight:800;display:flex;align-items:center;
+  justify-content:center;letter-spacing:0;align-self:flex-end;margin-bottom:2px;}
+
+/* ── 설명 문단 (읽기 자료처럼 파란 글씨) ── */
+.intro{color:var(--blue);text-align:justify;margin:0 0 6mm;text-indent:1em;}
+.intro b{color:var(--blue);font-weight:800;}
+
+/* ── *준비물 / *목적 같은 별표 항목 ── */
+.star{margin:0 0 5mm;text-align:justify;}
+.star .k{font-weight:800;}
+.star .note{display:block;padding-left:2.2em;text-indent:-.2em;color:#333;margin-top:2px;}
+
+/* ── ▪ 소제목 ── */
+h2{font-size:11pt;font-weight:800;color:var(--blue);margin:0 0 3mm;
+  letter-spacing:.5px;display:flex;align-items:center;gap:5px;}
+h2::before{content:'▪';font-size:9pt;}
+h2 span{text-decoration:underline;text-underline-offset:3px;}
+h2 em{font-style:normal;font-size:8.6pt;font-weight:700;color:var(--gray);
+  text-decoration:none;letter-spacing:0;}
+
+/* ── ①②③ 번호 목록 ── */
+.steps{margin:0 0 5mm;}
+.steps .it{display:flex;gap:6px;align-items:flex-start;margin:0 0 1.5mm;}
+.steps .no{flex:none;font-weight:800;color:var(--ink);}
+.steps .tx{flex:1;min-width:0;text-align:justify;}
+.steps .tx b{font-weight:800;}
+.dash{margin:0 0 5mm;}
+.dash .it{display:flex;gap:6px;align-items:flex-start;margin:0 0 2mm;}
+.dash .no{flex:none;font-weight:800;}
+.dash .tx{flex:1;min-width:0;text-align:justify;}
+.dash .tx b{font-weight:800;}
+.sub{display:block;color:#555;font-size:9.6pt;padding-left:0;margin-top:1px;}
+
+/* ── 사진 줄 (자료집처럼 한 박스 안에 가로로 나란히) ── */
+.strip{border:1px solid var(--line);padding:2.5mm;margin:0 0 5mm;
+  display:grid;gap:2.5mm;background:#fff;}
+/* ① 큰 그림은 폭 절반으로 줄여 가운데. 가로 전체(174mm)로 두면
+   높이가 98mm라 1쪽이 A4를 48mm 넘쳤어요. (2026-08-26) */
+.strip.n1{grid-template-columns:1fr;}
+.strip.n1 .cell{max-width:52%;margin:0 auto;}
+/* ⑤⑥ 사진 줄은 폭 84%. 가로 전체면 2쪽 여유가 4mm밖에 안 남았어요. */
+.strip.n2{grid-template-columns:1fr 1fr;max-width:84%;margin-left:auto;margin-right:auto;}
+.strip.n3{grid-template-columns:repeat(3,1fr);}
+.cell{margin:0;}
+.cell .frame{overflow:hidden;background:#f6f6fa;display:flex;
+  align-items:center;justify-content:center;aspect-ratio:4/3;}
+.cell.wideframe .frame{aspect-ratio:16/9;}
+.cell img{width:100%;height:100%;object-fit:contain;display:block;}
+.cell figcaption{font-size:8.2pt;color:var(--gray);text-align:center;
+  margin-top:1.5mm;line-height:1.4;letter-spacing:0;}
+.cell figcaption b{color:var(--blue);}
+/* 그림이 아직 없을 때 */
+.cell.empty .frame{border:1.2px dashed var(--lilac);
+  background:repeating-linear-gradient(45deg,#faf8fd,#faf8fd 8px,#f2edf9 8px,#f2edf9 16px);}
+.cell.empty img{display:none;}
+.cell.empty .frame::before{content:attr(data-guide);font-size:8.2pt;color:#8a7aa4;
+  font-weight:700;text-align:center;line-height:1.6;white-space:pre-line;padding:3mm;letter-spacing:0;}
+
+/* ── ※ 참고 상자 ── */
+.ref{border:1.2px solid var(--lilac);border-radius:7px;background:#faf8fd;
+  padding:3mm 5mm;margin:0 0 4mm;font-size:9.8pt;}
+.ref b{font-weight:800;}
+
+/* ── 꼬리말 ── */
+.ft{margin-top:auto;padding-top:5mm;text-align:right;
+  font-size:8.4pt;font-weight:800;color:#8a6ea8;letter-spacing:.3px;}
+
+/* ── 인쇄 단추 (인쇄물에는 안 나옴) ── */
+.tools{position:fixed;right:18px;bottom:18px;z-index:9;}
+.tools button{font:inherit;font-weight:800;font-size:10pt;cursor:pointer;border:none;
+  border-radius:999px;padding:11px 18px;color:#fff;background:#7a5fa8;
+  box-shadow:0 4px 14px rgba(40,50,80,.22);}
+.tools button:hover{filter:brightness(1.08);}
+
+@media print{
+  body{background:#fff;}
+  .page{width:auto;min-height:0;height:269mm;margin:0;padding:0 12mm;box-shadow:none;}
+  .page::before{left:-10mm;} .page::after{right:-10mm;}
+  .page:first-of-type{break-after:page;}
+  .tools{display:none !important;}
+  h2{break-after:avoid;}
+  .title,.strip,.ref,.steps .it,.dash .it{break-inside:avoid;}
+  @page{size:A4;margin:14mm 12mm;}
+}
+</style>
+
+<!-- ══════════════════════════ 1쪽 ══════════════════════════ -->
+<div class="page">
+
+  <div class="hd">
+    <span>심심할 틈이? 없다구! 여가의 활용</span>
+    <span class="mascot"><img src="소개자료/마스코트.png" alt="" onerror="this.remove()">캐릭터</span>
+  </div>
+
+  <div class="title">
+    <div class="tag">웹 앱</div>
+    <div class="bar"><h1>GO!&nbsp;문구마켓</h1><span class="badge">웹</span></div>
+  </div>
+
+  <p class="intro">
+    GO! 문구마켓은 학생이 <b>하고 싶은 여가 활동을 정하고, 그 활동에 필요한 문구를 스스로 골라 사서,
+    집에 와서 그 문구로 즐겁게 노는 것</b>까지를 한 번에 경험하는 웹 앱입니다. 문구점에서 물건을 사는 일은
+    그 과정의 한 부분일 뿐이며, 계산을 잘하는 것보다 <b>고르고 활용하는 경험</b>에 중점을 둡니다.
+    그래서 물건 담기를 자동으로 막지 않고, 돈이 모자라면 무엇을 뺄지 학생이 직접 정하도록 했습니다.
+  </p>
+
+  <p class="star">
+    <span class="k">*준비물:</span> 인터넷이 되는 기기(전자칠판·태블릿·노트북), 크롬 또는 엣지 브라우저,
+    안내받은 웹 주소
+    <span class="note">※ 설치하거나 내려받을 것이 없습니다. 주소만 입력하면 바로 열립니다.</span>
+    <span class="note">※ 학생의 이름·좋아요·활동 기록·도장은 <b>그 기기의 브라우저에만</b> 저장되므로,
+      학생이 늘 같은 기기·같은 브라우저를 쓰도록 해 주세요.</span>
+  </p>
+
+  <h2><span>이렇게 진행해요</span> <em>실제 화면은 11단계 · 아래는 큰 흐름 5단계</em></h2>
+  <div class="steps">
+    <div class="it"><span class="no">①</span><span class="tx"><b>무엇하고 놀까?</b> — 8가지 여가 활동 가운데 오늘 하고 싶은 것을 고른다.</span></div>
+    <div class="it"><span class="no">②</span><span class="tx"><b>무엇이 필요할까?</b> — 그 활동에 필요한 준비물을 확인하고, 지갑에 쓸 돈을 넣는다.</span></div>
+    <div class="it"><span class="no">③</span><span class="tx"><b>구경하GO! 고르GO!</b> — 3층 매장을 둘러보고 필요한 문구를 바구니에 담는다.</span></div>
+    <div class="it"><span class="no">④</span><span class="tx"><b>찍어보GO! 계산하GO!</b> — 바코드를 찍어 값을 확인하고 점원 또는 키오스크에서 계산한다.</span></div>
+    <div class="it"><span class="no">⑤</span><span class="tx"><b>즐기GO!</b> — 산 문구로 실제 여가 활동을 하고, 마무리에서 도장을 받는다.</span></div>
+  </div>
+
+  <div class="strip n1">
+    <figure class="cell wideframe">
+      <div class="frame" data-guide="① 앱 첫 화면 (가로로 넓게)&#10;소개자료 폴더에 1.png 로 저장"><img src="소개자료/1.png" alt=""></div>
+    </figure>
+  </div>
+
+  <div class="strip n3">
+    <figure class="cell">
+      <div class="frame" data-guide="② 구경하GO!&#10;3층 매장&#10;(2.png)"><img src="소개자료/2.png" alt=""></div>
+      <figcaption><b>구경하GO!</b> 진열대를 눌러 코너로</figcaption>
+    </figure>
+    <figure class="cell">
+      <div class="frame" data-guide="③ 계산하GO!&#10;점원 또는 키오스크&#10;(3.png)"><img src="소개자료/3.png" alt=""></div>
+      <figcaption><b>계산하GO!</b> 인사·주문·감사 표현</figcaption>
+    </figure>
+    <figure class="cell">
+      <div class="frame" data-guide="④ 즐기GO!&#10;산 문구로 활동&#10;(4.png)"><img src="소개자료/4.png" alt=""></div>
+      <figcaption><b>즐기GO!</b> 산 문구로 여가 활동</figcaption>
+    </figure>
+  </div>
+
+  <div class="ft">심심할 틈이? 없다구! 여가의 활용 · 1</div>
+</div>
+
+<!-- ══════════════════════════ 2쪽 ══════════════════════════ -->
+<div class="page">
+
+  <div class="hd">
+    <span>심심할 틈이? 없다구! 여가의 활용</span>
+    <span class="mascot"><img src="소개자료/마스코트.png" alt="" onerror="this.remove()">캐릭터</span>
+  </div>
+
+  <h2><span>이렇게 활용해요</span></h2>
+  <div class="dash">
+    <div class="it"><span class="no">-</span><span class="tx">
+      <b>앱을 먼저 해 보고, 「문구점에 가요」 읽기 자료를 읽어요.</b>
+      읽기 자료 속 문구점이 바로 이 앱이라 건물·층별 안내·이야기 순서가 똑같고, 직접 해 본 일을
+      글에서 다시 만나므로 글이 훨씬 쉽게 읽힙니다.
+      <span class="sub">A수준(점원·현금)은 설정 4번 <b>현금</b>, B수준(키오스크·카드)은 <b>카드</b>로 맞춰 주세요.</span></span></div>
+    <div class="it"><span class="no">-</span><span class="tx">
+      <b>앱 속 문구는 모두 실제 다이소에 있는 물품이에요.</b> 학생과 함께 앱에서 고른 그 물건을
+      실제 매장에서 그대로 찾을 수 있습니다.
+      <span class="sub">마지막 화면의 「실제 문구점 쇼핑 목록」을 인쇄해 가정으로 보내면, 학생이 가족과
+      다이소에 가서 직접 사 보는 <b>가정 연계 과제</b>가 됩니다.</span></span></div>
+    <div class="it"><span class="no">-</span><span class="tx">
+      <b>특수학급 지역사회적응훈련 자료로 쓰기 좋아요.</b> 교실에서 실패 부담 없이 여러 번 연습한 뒤
+      실제 매장으로 나갑니다.
+      <span class="sub">예산·구매 개수·결제 방법을 학생 수준에 맞춰 쉬운 것부터 단계적으로 올릴 수 있어요.</span></span></div>
+    <div class="it"><span class="no">-</span><span class="tx">
+      <b>화폐 가운데 「지폐」 개념을 익히기 좋아요.</b> 동전 없이 1,000·5,000·10,000·50,000원
+      지폐로만 이루어져 있습니다.
+      <span class="sub">설정에서 「남은 돈 보기」를 켜면 남은 돈을 지폐 그림으로 확인합니다.
+      다만 <b>계산은 목적이 아니라 도구</b>임을 기억해 주세요.</span></span></div>
+  </div>
+
+  <div class="strip n2">
+    <figure class="cell wideframe">
+      <div class="frame" data-guide="⑤ 「실제 문구점 쇼핑 목록」 인쇄물&#10;(인쇄한 종이를 찍거나 인쇄 미리보기를 캡쳐)&#10;(5.png)"><img src="소개자료/5.png" alt=""></div>
+      <figcaption>앱에서 고른 문구가 <b>종이 쇼핑 목록</b>으로 — 이 종이를 들고 실제 매장에 갑니다.</figcaption>
+    </figure>
+    <figure class="cell wideframe">
+      <div class="frame" data-guide="⑥ 실제 다이소에서 물건을 고르는 사진&#10;또는 지폐로 계산하는 화면&#10;(6.png)"><img src="소개자료/6.png" alt=""></div>
+      <figcaption>교실에서 연습한 그대로 <b>실제 매장</b>에서 — 가정 연계로 이어집니다.</figcaption>
+    </figure>
+  </div>
+
+  <h2><span>학생에 맞게 바꿔요</span> <em>첫 화면 오른쪽 위 「설정」 · 13가지</em></h2>
+  <div class="dash">
+    <div class="it"><span class="no">-</span><span class="tx">
+      <b>먼저 정할 것</b> — 학생 등록 / 예산(학생이 정하기·선생님이 정하기) / 최대 구매 개수(1·2·3·5·제한 없음)
+      / 결제 방법(현금·카드·학생이 선택) / 계산 진행 방식(간단히·계산 연습)</span></div>
+    <div class="it"><span class="no">-</span><span class="tx">
+      <b>필요에 따라</b> — 글자 크기(크게·아주 크게) / 점원과 대화하기 / 남은 돈 보기 /
+      조용한 모드(소리·반짝임 줄이기) / 우리 반 문구 추가 / 비밀 가게(도장 보상)</span></div>
+  </div>
+
+  <div class="ref">
+    <b>※ 자세한 사용 방법은 「GO! 문구마켓 사용 설명서」를 참고하세요.</b><br>
+    앱 첫 화면 오른쪽 위의 <b>사용설명서</b> 단추를 누르면 바로 열립니다.
+    처음 확인할 6가지 준비, 13가지 설정 자세히 보기, 자주 묻는 질문이 담겨 있습니다.
+  </div>
+
+  <div class="ft">심심할 틈이? 없다구! 여가의 활용 · 2</div>
+</div>
+
+<div class="tools"><button onclick="window.print()">🖨️ 인쇄하기 → PDF로 저장</button></div>
+
+<script>
+/* 그림이 아직 없으면 '무엇을 넣으세요' 안내 상자를 대신 보여 줍니다.
+   소개자료 폴더에 1.png ~ 6.png 를 넣으면 안내가 사라지고 그림이 나와요. */
+document.querySelectorAll('.cell img').forEach(function(im){
+  var mark = function(){ im.closest('.cell').classList.add('empty'); };
+  im.addEventListener('error', mark);
+  if(im.complete && im.naturalWidth === 0) mark();
+});
+</script>
+</html>
